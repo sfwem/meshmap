@@ -1,0 +1,10 @@
+give me a bit!
+
+add to httpd.conf (/etc/httpd/conf/httpd.conf or on Debian /etc/apache2/httpd.conf)
+
+Include conf/extra/httpd-meshmap.conf
+
+Restart Apache
+
+The cronscript can be run from cron every minute (or at whatever interval you choose)
+* * * * * /home/kg6wxc/MeshMap/cronscript.sh
