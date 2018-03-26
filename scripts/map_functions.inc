@@ -346,6 +346,7 @@ function load_LinkedTO($node_info, $TopoList)
                 ////5
                 /////6
                 //////7
+                ///////8
                 
                 if ($value['linkto'] == $node)
                 {              
