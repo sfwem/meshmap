@@ -337,8 +337,11 @@ function load_LinkedTO($node_info, $TopoList)
             //if there's no location info (at each end of the link) ignore the entry
             if ($value['nodelat'] && $value['linklon'])
             {
+                
+                //this is the section that is exploding in php7
+                
                 if ($value['linkto'] == $node)
-                {
+                {              
                     //echo var_dump($node_info['node']);
                     $linkedNode = array($value['node']);
                     $linkedNodesKeyNameArray = array("costFrom", "costTo", "distance", "bearing");
