@@ -340,6 +340,7 @@ function load_LinkedTO($node_info, $TopoList)
                 
                 //this is the section that is exploding in php7
                 //
+                //
                 
                 if ($value['linkto'] == $node)
                 {              
