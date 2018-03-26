@@ -339,12 +339,23 @@ function load_LinkedTO($node_info, $TopoList)
             {
                 if ($value['linkto'] == $node)
                 {
+                    //echo var_dump($node_info['node']);
+                    $linkedNode = array($value['node']);
+                    $linkedNodesKeyNameArray = array("costFrom", "costTo", "distance", "bearing");
+                    $linkedNode[$value['node']] = array_fill_keys($linkedNodesKeyNameArray, "");
+                    $linkedNode[$value['node']]['costFrom'] = $value['cost'];
+                    $linkInfoForStationPopups[$node_info['node']][] = $linkedNode;
                     //this will be the cost FROM each linked station back TO the node we are currently looking at in the while loop
-                    $linkInfoForStationPopups[$node_info['node']][$value['node']]["costFrom"] = $value['cost'];
+                    //$linkInfoForStationPopups[$node_info['node']][$value['node']] = array_fill_keys($linkedNodesKeyNameArray, $value['cost']);
+                    unset($linkedNodesKeyNameArray);
+                    //$linkInfoForStationPopups[$node_info['node']] = array($value['node'] => "");
                 }
                 if ($value['node'] == $node)
                 {
+                    //$linkedNodesKeyNameArray = array("costTo", "distance", "bearing");
                     //this will be the cost TO each linked station FROM the node we are currently looking at in the while loop
+                    //distance and bearing added too for goo measure! :)
+                    //$linkInfoForStationPopups[$node_info['node']][$value['linkto']] = array_fill_keys($linkedNodesKeyNameArray, "");
                     $linkInfoForStationPopups[$node_info['node']][$value['linkto']]["costTo"] = $value['cost'];
                     //add in the distance to that linked node
                     $linkInfoForStationPopups[$node_info['node']][$value['linkto']]["distance"] = $value['distance'];
