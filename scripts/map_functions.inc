@@ -316,8 +316,12 @@ function load_LinkedTO($node_info, $TopoList)
 {
     $linkedToList = "";
     $linkInfoForStationPopups = array($node_info['node'] => array());
+    
+    //don't init what is going to be an array as a string!!
     //$linkInfoForStationPopups = array($node_info['node'] => "");
+    
     $node = $node_info['node'];
+    
     //and build a big 3D array of it all
     //like  this:
     //array
@@ -331,6 +335,7 @@ function load_LinkedTO($node_info, $TopoList)
     //			"CostFrom"
     //			"CostTo"
     //etc..etc..
+    
     if (isset($TopoList))
     {
         foreach ($TopoList as $value)
@@ -343,19 +348,13 @@ function load_LinkedTO($node_info, $TopoList)
                 
                 if ($value['linkto'] == $node)
                 {              
-                    
-                    //original lines (leave for now)
                     //this will be the cost FROM each linked station back TO the node we are currently looking at in the while loop
+                    //original line (leave for now)
                     //$linkInfoForStationPopups[$node_info['node']][$value['node']]["costFrom"] = $value['cost'];
-                    
-                    
-                    //the new line(s)
-//                    $linkedNodeArray = array($value['node']);
-//                    $linkInfoForStationPopups[$node_info['node']][$linkedNodeArray] = array('costFrom' => $value['cost'], 'costTo' => "", 'distance' => "", 'bearing' => "");
-//                    $linkInfoForStationPopups[$node_info['node']][] = array($value['node'] => array('costFrom' => $value['cost'], 'costTo' => "", 'distance' => "", 'bearing' => ""));
-                    $linkInfoForStationPopups[$node_info['node']][$value['node']] = array('costFrom' => $value['cost'], 'costTo' => "", 'distance' => "", 'bearing' => "");
-                    
-                    
+                                        
+                    //the new line
+                    //had to create the array correctly! fixed 3-28-2018 - wxc
+                    $linkInfoForStationPopups[$node_info['node']][$value['node']] = array('costFrom' => $value['cost'], 'costTo' => "", 'distance' => "", 'bearing' => "");                    
                 }
                 if ($value['node'] == $node)
                 {
