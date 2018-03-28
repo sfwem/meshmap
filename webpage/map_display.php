@@ -178,7 +178,7 @@ echo "<script src='javascripts/leaflet-hash.js'></script>\n";
 //we're just going to tell if we were called from a host that has ".local.mesh" in it and forget all this nonsense...
 global $mesh;
 $httpHostName = $_SERVER['HTTP_HOST'];
-if (strpos($httpHostName, '.local.mesh') || strpos($httpHostName, '')) {
+if (strpos($httpHostName, '.local.mesh')) { //|| strpos($httpHostName, '')) {
 	$mesh = 1;
 }
 
