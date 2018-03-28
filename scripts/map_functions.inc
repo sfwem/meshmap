@@ -315,8 +315,8 @@ function load_LinkList($NodeList, $TopoList)
 function load_LinkedTO($node_info, $TopoList)
 {
     $linkedToList = "";
-    //$linkInfoForStationPopups = array($node_info['node'] => array());
-    $linkInfoForStationPopups = array($node_info['node'] => "");
+    $linkInfoForStationPopups = array($node_info['node'] => array());
+    //$linkInfoForStationPopups = array($node_info['node'] => "");
     $node = $node_info['node'];
     //and build a big 3D array of it all
     //like  this:
@@ -349,16 +349,13 @@ function load_LinkedTO($node_info, $TopoList)
                     //$linkInfoForStationPopups[$node_info['node']][$value['node']]["costFrom"] = $value['cost'];
                     
                     
-                    //echo var_dump($node_info['node']);
-                    //$linkedNode = array($value['node']);
-                    //$linkedNodesKeyNameArray = array("costFrom", "costTo", "distance", "bearing");
-                    //$linkedNode[$value['node']] = array_fill_keys($linkedNodesKeyNameArray, "");
-                    //$linkedNode[$value['node']]['costFrom'] = $value['cost'];
-                    $linkInfoForStationPopups[$node_info['node']] = array($value['linkto'] => array('costFrom' => $value['cost'], 'costTo' => "", 'distance' => "", 'bearing' => ""));
-//                    $linkInfoForStationPopups[$node_info['node']] = $linkedNode;
-                    //$linkInfoForStationPopups[$node_info['node']][$value['node']] = array_fill_keys($linkedNodesKeyNameArray, $value['cost']);
-                    //unset($linkedNodesKeyNameArray);
-                    //$linkInfoForStationPopups[$node_info['node']] = array($value['node'] => "");
+                    //the new line(s)
+//                    $linkedNodeArray = array($value['node']);
+//                    $linkInfoForStationPopups[$node_info['node']][$linkedNodeArray] = array('costFrom' => $value['cost'], 'costTo' => "", 'distance' => "", 'bearing' => "");
+//                    $linkInfoForStationPopups[$node_info['node']][] = array($value['node'] => array('costFrom' => $value['cost'], 'costTo' => "", 'distance' => "", 'bearing' => ""));
+                    $linkInfoForStationPopups[$node_info['node']][$value['node']] = array('costFrom' => $value['cost'], 'costTo' => "", 'distance' => "", 'bearing' => "");
+                    
+                    
                 }
                 if ($value['node'] == $node)
                 {
