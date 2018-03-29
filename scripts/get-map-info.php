@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php $mtimeStart = microtime(true);
+//
 /*************************************************************************************
 * get-map-info script v2 by kg6wxc\eric satterlee kg6wxc@gmail.com
 * This script is the heart of kg6wxcs' mesh map system.
