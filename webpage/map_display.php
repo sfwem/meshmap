@@ -21,6 +21,14 @@
  **************************************************************************/
 
 /* Current version notes
+ * 
+ * March 2018
+ * wow, it's been that long huh?
+ * now using git repo at https://mapping.kg6wxc.net/git/meshmap
+ * fixed issues with running the webpage on PHP 7.2.3, it should be good now.
+ * tested on PHP 5.6.30 7.0.27-0+deb9u1 and 7.2.3
+ * had to create an array properly and not let PHP fix my mistakes for me. :)
+ * more to come!
  *
  * June 2017
  * -----------------
