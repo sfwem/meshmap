@@ -1,6 +1,10 @@
 #!/usr/bin/env php
 <?php $mtimeStart = microtime(true);
+<<<<<<< HEAD
 //
+=======
+//testing
+>>>>>>> refs/remotes/origin/master
 /*************************************************************************************
 * get-map-info script v2 by kg6wxc\eric satterlee kg6wxc@gmail.com
 * This script is the heart of kg6wxcs' mesh map system.
@@ -265,22 +269,16 @@ if ($getNodeInfo) {
 				$firmware_version = $result['firmware_version'];
 				$olsrdInfo = 0;
 
-				//commented for testing 10.20.2017
-				//make it always on
 				//changed again to exclude some nodes 10-21-2017
+				/************
+				 * REMOVED due to issues
+				 * DO NOT UNCOMMENT FOR NOW
+				 ************/
 				//if (version_compare($result['firmware_version'], "3.16.0.0", ">") || strpos($result['firmware_version'], "evelop-16") || $result['firmware_version'] === "linux" || $result['firmware_version'] === "Linux") {
-				//if ($ipAddr !== "10.162.170.94" && $ipAddr !== "10.242.25.124" && $ipAddr !== "10.108.102.244") {
-				    /************
-				     * Temporarily REMOVED due to issues
-				     ************/
-				//uncommented 11:30pm oct11 2017
-				//commented out again 14:20 oct13 2017
-				//enabled again 10.20.2017
 				//    $olsrdInfo = wxc_netcat("$ipAddr");
 				//	$noPort9090 = 1;
 				//}
-				
-				
+								
 				//maybe in the future we'll be able to get this info remotely too and use it for something
 				//$olsrdDotDrawInfo = wxc_netcat("$nodeName.local.mesh","2004", null, null);	//save the polled nodes local dot_draw info (never know we may want it for something)
 				
