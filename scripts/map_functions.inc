@@ -315,8 +315,13 @@ function load_LinkList($NodeList, $TopoList)
 function load_LinkedTO($node_info, $TopoList)
 {
     $linkedToList = "";
-    $linkInfoForStationPopups = array($node_info['node'] => "");
+    $linkInfoForStationPopups = array($node_info['node'] => array());
+    
+    //don't init what is going to be an array as a string!!
+    //$linkInfoForStationPopups = array($node_info['node'] => "");
+    
     $node = $node_info['node'];
+    
     //and build a big 3D array of it all
     //like  this:
     //array
@@ -330,6 +335,7 @@ function load_LinkedTO($node_info, $TopoList)
     //			"CostFrom"
     //			"CostTo"
     //etc..etc..
+    
     if (isset($TopoList))
     {
         foreach ($TopoList as $value)
@@ -337,14 +343,25 @@ function load_LinkedTO($node_info, $TopoList)
             //if there's no location info (at each end of the link) ignore the entry
             if ($value['nodelat'] && $value['linklon'])
             {
+                
+                //this is the section that is exploding in php7.2.3
+                
                 if ($value['linkto'] == $node)
-                {
+                {              
                     //this will be the cost FROM each linked station back TO the node we are currently looking at in the while loop
-                    $linkInfoForStationPopups[$node_info['node']][$value['node']]["costFrom"] = $value['cost'];
+                    //original line (leave for now)
+                    //$linkInfoForStationPopups[$node_info['node']][$value['node']]["costFrom"] = $value['cost'];
+                                        
+                    //the new line
+                    //had to create the array correctly! fixed 3-28-2018 - wxc
+                    $linkInfoForStationPopups[$node_info['node']][$value['node']] = array('costFrom' => $value['cost'], 'costTo' => "", 'distance' => "", 'bearing' => "");                    
                 }
                 if ($value['node'] == $node)
                 {
+                    //$linkedNodesKeyNameArray = array("costTo", "distance", "bearing");
                     //this will be the cost TO each linked station FROM the node we are currently looking at in the while loop
+                    //distance and bearing added too for goo measure! :)
+                    //$linkInfoForStationPopups[$node_info['node']][$value['linkto']] = array_fill_keys($linkedNodesKeyNameArray, "");
                     $linkInfoForStationPopups[$node_info['node']][$value['linkto']]["costTo"] = $value['cost'];
                     //add in the distance to that linked node
                     $linkInfoForStationPopups[$node_info['node']][$value['linkto']]["distance"] = $value['distance'];

@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php $mtimeStart = microtime(true);
+//
 /*************************************************************************************
 * get-map-info script v2 by kg6wxc\eric satterlee kg6wxc@gmail.com
 * This script is the heart of kg6wxcs' mesh map system.
@@ -33,7 +34,7 @@
 * OTHER NOTES HERE
 ******/
 
-$INCLUDE_DIR = "/home/kg6wxc/MeshMap";
+$INCLUDE_DIR = "/srv/meshmap";
 
 //our user-settings file. (ALWAYS REQUIRED!, change path if you moved it!)
 $USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini");
@@ -44,7 +45,7 @@ require $INCLUDE_DIR . "/scripts/wxc_functions.inc";
 //output only to console, nothing saved. (great to just see what it does)
 $TEST_MODE_NO_SQL = 0;
 //output to console, but *with* calls to the database. (see what it's doing while saving data)
-$TEST_MODE_WITH_SQL = 0;
+$TEST_MODE_WITH_SQL = 1;
 
 //are we in either test mode?
 if ($TEST_MODE_NO_SQL) {
