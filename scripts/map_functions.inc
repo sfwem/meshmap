@@ -345,7 +345,6 @@ function load_LinkedTO($node_info, $TopoList)
             {
                 
                 //this is the section that is exploding in php7.2.3
-                
                 if ($value['linkto'] == $node)
                 {              
                     //this will be the cost FROM each linked station back TO the node we are currently looking at in the while loop
@@ -354,7 +353,12 @@ function load_LinkedTO($node_info, $TopoList)
                                         
                     //the new line
                     //had to create the array correctly! fixed 3-28-2018 - wxc
-                    $linkInfoForStationPopups[$node_info['node']][$value['node']] = array('costFrom' => $value['cost'], 'costTo' => "", 'distance' => "", 'bearing' => "");                    
+                    if (is_array($linkInfoForStationPopups[$node_info['node']][$value['node']])) {
+                        $linkInfoForStationPopups[$node_info['node']][$value['node']]["costFrom"] = $value['cost'];
+                    }else {
+//                      $linkInfoForStationPopups[$node_info['node']][$value['node']] = array('costFrom' => $value['cost'], 'costTo' => "", 'distance' => "", 'bearing' => "");
+                        $linkInfoForStationPopups[$node_info['node']][$value['node']] = array('costFrom' => $value['cost']);
+                    }
                 }
                 if ($value['node'] == $node)
                 {
