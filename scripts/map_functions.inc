@@ -353,7 +353,7 @@ function load_LinkedTO($node_info, $TopoList)
                                         
                     //the new line
                     //had to create the array correctly! fixed 3-28-2018 - wxc
-                    if (is_array($linkInfoForStationPopups[$node_info['node']][$value['node']])) {
+                    if (isset($linkInfoForStationPopups[$node_info['node']][$value['node']]) && is_array($linkInfoForStationPopups[$node_info['node']][$value['node']])) {
                         $linkInfoForStationPopups[$node_info['node']][$value['node']]["costFrom"] = $value['cost'];
                     }else {
 //                      $linkInfoForStationPopups[$node_info['node']][$value['node']] = array('costFrom' => $value['cost'], 'costTo' => "", 'distance' => "", 'bearing' => "");
