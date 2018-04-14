@@ -60,9 +60,10 @@ INITIAL SETUP FOR A RASPBIAN 9 (Stretch) SYSTEM
 4: Edit httpd-meshmap.conf to reflect the correct directories.
 
 5: Copy httpd-meshmap.conf to the apache2 "Conf Available" directory, /etc/apache2/conf-available
-  Edit /etc/apache2/httpd.conf and add the line: Include conf/extra/httpd-meshmap.conf somewhere.
   Once that is all done, run: sudo a2enconf httpd-meshmap
   If successful, it will tell you to reload apache, do so.
+  *Other linux distibutions may require you to copy this file into /etc/httpd/extra and then edit
+  /etc/httpd/httpd.conf and add the line: Include extra/httpd-meshmap.conf somewhere.
 
 6: Load up the page: http://myhostname/meshmap/index.php and you should hopefully see your data.
   Map tiles are one of the biggest issues with something like this and are beyond the scope of this README 
