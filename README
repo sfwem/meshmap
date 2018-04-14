@@ -2,6 +2,8 @@ AREDN Network Automatic Mapping System
 2016-2018 - Eric Satterlee / KG6WXC
 This README file last updated: april 2018
 
+Addtional Credit to: Mark/N2MH and K6GSE for their work on this project.
+
 REQUIREMENTS:
 -------------
   Apache webserver (or equiv)
@@ -10,8 +12,12 @@ REQUIREMENTS:
   An available AREDN Mesh node, preferably connected to an AREDN network...
   Map Tiles, either in a static directory or available via some tile server.
 
+
 MAP TILE SERVER INFO
 -------------
+  Without a map tile server, Mesh users may not see any map tiles. On the mesh, you cannot expect the client 
+  to have internet access in order to retrieve the tiles, you must provide them yourself, one way or another.
+
   It is way beyond the scope of this README file to help in setting up a map tile server.
   You are unfortunaly on your own there.
   It is a time consuming and computationaly expensive process, but can be done on "normal" hardware.
@@ -19,8 +25,6 @@ MAP TILE SERVER INFO
   A good place to start for more info is: https://switch2osm.org/serving-tiles/
   If you attempt it, be patient, you will get it wrong a few times but in the end you might be suprised. :)
 
-  Without a map tile server, Mesh users may not see any map tiles. On the mesh, you cannot expect the client 
-  to have internet access in order to retrieve the tiles, you must provide them yourself, one way or another.
 
 INITIAL SETUP FOR A RASPBIAN 9 (Stretch) SYSTEM
 -------------
@@ -82,3 +86,31 @@ INITIAL SETUP FOR A RASPBIAN 9 (Stretch) SYSTEM
   * * * * * /home/kg6wxc/MeshMap/cronscript.sh
 
   Use crontab -e to edit your users cron jobs.
+
+
+UPDATING
+------------
+  Simply run a "git pull" from the meshmap directory and the scripts will be updated from the git repo.
+  The user-settings.inc, meshmap-settings.ini, cronscript.sh, and custom.inc files will *not* be affected by updating.
+  If you make changes beyond the user editable files I encourage you to perhaps push the changes upstream,
+  please contact kg6wxc@gmail.com if you wish to do so.
+
+  I am making changes all the time, it would be a good idea to run "git pull" from time to time to find any updates.
+
+
+NOTES ON USAGE OF THE MAP PAGES
+------------
+  There is an "admin" page, which is still in the works, what is there now does work tho.
+  Try to load up: http://<hostname>/meshmap/admin/admin.php in your web browser.
+  I've tried to provide instructions on the admin pages themselves.
+  From the admin pages you can "fix" a nodes location,
+  which can be helpful for those users that forget the "-" in front of their longitude. :)
+  The admin pages also allow for the addition of "Non Mesh" Markers, fire stations, police stations, EOC's , etc...
+
+
+CONTRIBUTING
+------------
+  Contribution is encouraged!!
+  I can't think of everything!
+  If you find an improvement, typo or whatever, please, send an email to kg6wxc@gmail.com and we can get you 
+  setup with write access if you'd like!
