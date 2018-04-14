@@ -52,7 +52,7 @@ if ($argv[1] == ("--help" || "--h" || "-help" || "-h" || "/?" || "?")) {
     echo "(useful to make sure everything is working)\n";
     echo "--test-mode-with-sql\tDO access the database AND output to screen\n";
     echo "(useful to see if everything is working and there are no errors reading/writing to the database)\n";
-    echo "\n";
+    echo "\n\n";
     exit();
 }
 $TEST_MODE_NO_SQL = 0;
