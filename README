@@ -83,7 +83,7 @@ INITIAL SETUP FOR A RASPBIAN 9 (Stretch) SYSTEM
   You must edit the cronscript.sh file and make sure the path to get-map-info.php is correct!
 
   A cron entry is as easy as this:
-  * * * * * /home/kg6wxc/MeshMap/cronscript.sh
+  * * * * * /home/pi/meshmap/cronscript.sh
 
   Use crontab -e to edit your users cron jobs.
 
