@@ -31,7 +31,7 @@ INITIAL SETUP FOR A RASPBIAN 9 (Stretch) SYSTEM
   Here is an example of creating a mySQL user on Raspbian (which would apply for most linuxes):
     sudo mysql
      CREATE USER 'mesh-map'@'localhost' IDENTIFIED BY 'password';
-     GRANT SELECT, INSERT, UPDATE, DELETE, DROP, TRIGGER on node_map.* TO 'mesh-map'@'localhost';
+     GRANT SELECT, DELETE, DROP, INSERT, TRIGGER, UPDATE on node_map.* TO 'mesh-map'@'localhost';
      FLUSH PRIVLEGES;
 
 3: Decompress user-files.tar.gz

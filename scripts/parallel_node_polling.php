@@ -2,12 +2,12 @@
 $INCLUDE_DIR = "..";
 $USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini");
 require $INCLUDE_DIR . "/scripts/wxc_functions.inc";
-@include $INCLUDE_DIR . "/wxc_custom.inc";
-foreach (get_included_files() as $filename) {
-	if (strpos($filename, 'wxc_custom.inc')) {
-		$wxc_custom = 1;
-	}
-}
+@include $INCLUDE_DIR . "/custom.inc";
+//foreach (get_included_files() as $filename) {
+//	if (strpos($filename, 'wxc_custom.inc')) {
+//		$wxc_custom = 1;
+//	}
+//}
 
 $ipAddr = $argv[1];
 $do_sql = $argv[2];

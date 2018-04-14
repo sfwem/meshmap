@@ -1,7 +1,7 @@
 <?php
 /*Aug 7, 2017 9:49:30 AM
 *view_removed_nodes.php
-*Eric Satterlee - KG6WXC aka ride
+*Eric Satterlee - KG6WXC
 */
 //simple page to to view removed nodes
 //nodes are removed from the main database table
@@ -9,7 +9,7 @@
 $INCLUDE_DIR = "../..";
 $USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini");
 require $INCLUDE_DIR . "/scripts/wxc_functions.inc";
-@include $INCLUDE_DIR . "/wxc_custom.inc";
+@include $INCLUDE_DIR . "/custom.inc";
 
 $sql_connection = wxc_connectToMySQL();
 

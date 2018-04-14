@@ -2,7 +2,7 @@
 $INCLUDE_DIR = "../..";
 $USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini");
 include $INCLUDE_DIR . "/scripts/wxc_functions.inc";
-@include $INCLUDE_DIR . "/wxc_custom.inc";
+@include $INCLUDE_DIR . "/custom.inc";
 
 $sqlSrvStatus;
 $arname = "";

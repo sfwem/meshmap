@@ -42,6 +42,10 @@ $USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini");
 //kg6wxc's functions. (ALWAYS REQUIRED!, change path if you moved it!)
 require $INCLUDE_DIR . "/scripts/wxc_functions.inc";
 
+//the custom include file
+//the "@" just suppresses any errors if the file is not found, the file is optional
+@include $INCLUDE_DIR . "/custom.inc";
+
 /***********************************************************************
  *DO NOT CHANGE ANYTHING BELOW HERE UNLESS YOU KNOW WHAT YOU ARE DOING!!!!
  ************************************************************************/
@@ -95,8 +99,8 @@ if ($TEST_MODE_NO_SQL) {
 
 //this is probably missing for you, do not worry about it.
 //It just contains very site specific things, you don't need it.
-@include $INCLUDE_DIR . "/wxc_custom.inc";
-$wxc_custom = 0;
+//@include $INCLUDE_DIR . "/wxc_custom.inc";
+//$wxc_custom = 0;
 
 //(WiP)checks for some things we need to run
 //(currently only really checks for the mysqli php extension
@@ -110,11 +114,11 @@ $currentTime = wxc_getCurrentDateTime();
 //it should not effect your site at all.
 //It's safe to leave it here unless you have major problems because of it.
 //That shouldn't really happen. Don't change unless you know what you are doing.
-foreach (get_included_files() as $filename) {
-	if (strpos($filename, 'wxc_custom.inc')) {
-		$wxc_custom = 1;
-	}
-}
+//foreach (get_included_files() as $filename) {
+//	if (strpos($filename, 'wxc_custom.inc')) {
+//		$wxc_custom = 1;
+//	}
+//}
 
 $sql_db_tbl = $USER_SETTINGS['sql_db_tbl'];
 $sql_db_tbl_node = $USER_SETTINGS['sql_db_tbl_node'];

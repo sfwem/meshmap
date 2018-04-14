@@ -116,7 +116,7 @@ require $INCLUDE_DIR . "/scripts/map_functions.inc";
 
 
 date_default_timezone_set($USER_SETTINGS['localTimeZone']);
-@include $INCLUDE_DIR . "/wxc_custom.inc";
+@include $INCLUDE_DIR . "/custom.inc";
 /*
 * SQL Connections
 *********************/
