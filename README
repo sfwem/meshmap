@@ -4,7 +4,7 @@ This README file last updated: april 2018
 
 REQUIREMENTS:
 -------------
-  Apache webserver
+  Apache webserver (or equiv)
   PHP
   MySQL/MariaDB
   An available AREDN Mesh node, preferably connected to an AREDN network...
@@ -20,7 +20,7 @@ MAP TILE SERVER INFO
   If you attempt it, be patient, you will get it wrong a few times but in the end you might be suprised. :)
 
   Without a map tile server, Mesh users may not see any map tiles. On the mesh, you cannot expect the client 
-  to have internet access in order to retrieve the tiles, you must provide them yourself.
+  to have internet access in order to retrieve the tiles, you must provide them yourself, one way or another.
 
 INITIAL SETUP FOR A RASPBIAN 9 (Stretch) SYSTEM
 -------------
@@ -38,6 +38,8 @@ INITIAL SETUP FOR A RASPBIAN 9 (Stretch) SYSTEM
   Example: tar -zxvf user-files.tar.gz
   This will create the files for the settings, They are distributed in compressed format
   so that *your* files do not get overwritten when the rest of the scripts get updated.
+  (if anyone has a better idea for how to keep the user edited files "away" from the git repo,
+  yet still in the same directory, it'd be great to hear about it)
 
   The file scripts/user-settings.ini is probably the most important.
   It is very important to make sure your SQL username and password are correct in scripts/user-settings.ini!!
