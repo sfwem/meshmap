@@ -48,10 +48,11 @@ require $INCLUDE_DIR . "/scripts/wxc_functions.inc";
 if ($argv[1] == ("--help" || "--h" || "-help" || "-h" || "/?" || "?")) {
     echo $argv[0] . " Usage:\n\n";
     echo $argv[1] . "\tThis help message\n";
-    echo "--test-mode-node-sql\tDO NOT access database only output to screen\n";
+    echo "--test-mode-no-sql\tDO NOT access database only output to screen\n";
     echo "(useful to make sure everything is working)\n";
     echo "--test-mode-with-sql\tDO access the database AND output to screen\n";
     echo "(useful to see if everything is working and there are no errors reading/writing to the database)\n";
+    echo "No arguments to this script will run it in \"silent\" mode, good for cron jobs! :)";
     echo "\n";
     exit();
 }
