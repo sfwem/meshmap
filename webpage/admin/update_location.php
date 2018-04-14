@@ -5,7 +5,7 @@
 */
 //simple page to change node locations on the map
 //this page does the actual changing
-$INCLUDE_DIR = "/srv/meshmap";
+$INCLUDE_DIR = "../..";
 $USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini");
 require $INCLUDE_DIR . "/scripts/wxc_functions.inc";
 @include $INCLUDE_DIR . "/wxc_custom.inc";

@@ -23,7 +23,7 @@
 ***************************************************************************/
 
 
-$INCLUDE_DIR = "/srv/meshmap";
+$INCLUDE_DIR = "..";
 $USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini");
 global $MESH_SETTINGS;
 $MESH_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/meshmap-settings.ini");

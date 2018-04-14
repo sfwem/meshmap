@@ -34,7 +34,7 @@
 * OTHER NOTES HERE
 ******/
 
-$INCLUDE_DIR = "/srv/meshmap";
+$INCLUDE_DIR = "..";
 
 //our user-settings file. (ALWAYS REQUIRED!, change path if you moved it!)
 $USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini");
@@ -42,40 +42,45 @@ $USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini");
 //kg6wxc's functions. (ALWAYS REQUIRED!, change path if you moved it!)
 require $INCLUDE_DIR . "/scripts/wxc_functions.inc";
 
-//output only to console, nothing saved. (great to just see what it does)
-$TEST_MODE_NO_SQL = 0;
-//output to console, but *with* calls to the database. (see what it's doing while saving data)
-$TEST_MODE_WITH_SQL = 1;
-
-//are we in either test mode?
-if ($TEST_MODE_NO_SQL) {
-	$showRuntime = 1;
-	$testLinkInfo = 1;
-	$testNodePolling = 1;
-	$do_sql = 0;
-	$getLinkInfo = 1;
-	$getNodeInfo = 1;
-	echo "TEST MODE (NO SQL) ENABLED!\n";
-}elseif ($TEST_MODE_WITH_SQL) {
-	$showRuntime = 1;
-	$testLinkInfo = 1;
-	$testNodePolling = 1;
-	$do_sql = 1;
-	$getLinkInfo = 0;
-	$getNodeInfo = 0;
-	echo "TEST MODE (WITH SQL) ENABLED!\n";
-}else {
-	$showRuntime = 0;
-	$testLinkInfo = 0;
-	$testNodePolling = 0;
-	$do_sql = 1;
-	$getLinkInfo = 0;
-	$getNodeInfo = 0;
-}
-
 /***********************************************************************
  *DO NOT CHANGE ANYTHING BELOW HERE UNLESS YOU KNOW WHAT YOU ARE DOING!!!!
  ************************************************************************/
+$TEST_MODE_NO_SQL = 0;
+$TEST_MODE_WITH_SQL = 0;
+if ($argv[1] == "--test-mode-no-sql") {
+    //output only to console, nothing saved. (great to just see what it does)
+    $TEST_MODE_NO_SQL = 1;
+}
+if ($argv[1] == "--test-mode-with-sql") {
+    //output to console, but *with* calls to the database. (see what it's doing while saving data)
+    $TEST_MODE_WITH_SQL = 1;
+}
+
+//are we in either test mode?
+if ($TEST_MODE_NO_SQL) {
+    $showRuntime = 1;
+    $testLinkInfo = 1;
+    $testNodePolling = 1;
+    $do_sql = 0;
+    $getLinkInfo = 1;
+    $getNodeInfo = 1;
+    echo "TEST MODE (NO SQL) ENABLED!\n";
+}elseif ($TEST_MODE_WITH_SQL) {
+    $showRuntime = 1;
+    $testLinkInfo = 1;
+    $testNodePolling = 1;
+    $do_sql = 1;
+    $getLinkInfo = 0;
+    $getNodeInfo = 0;
+    echo "TEST MODE (WITH SQL) ENABLED!\n";
+}else {
+    $showRuntime = 0;
+    $testLinkInfo = 0;
+    $testNodePolling = 0;
+    $do_sql = 1;
+    $getLinkInfo = 0;
+    $getNodeInfo = 0;
+}
 
 //this is probably missing for you, do not worry about it.
 //It just contains very site specific things, you don't need it.

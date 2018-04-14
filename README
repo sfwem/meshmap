@@ -1,10 +1,81 @@
-give me a bit!
+AREDN Network Automatic Mapping System
+2016-2018 - Eric Satterlee / KG6WXC
+This README file last updated: april 2018
 
-add to httpd.conf (/etc/httpd/conf/httpd.conf or on Debian /etc/apache2/httpd.conf)
+REQUIREMENTS:
+-------------
+  Apache webserver
+  PHP
+  MySQL/MariaDB
+  An available AREDN Mesh node, preferably connected to an AREDN network...
+  Map Tiles, either in a static directory or available via some tile server.
 
-Include conf/extra/httpd-meshmap.conf
+MAP TILE SERVER INFO
+-------------
+  It is way beyond the scope of this README file to help in setting up a map tile server.
+  You are unfortunaly on your own there.
+  It is a time consuming and computationaly expensive process, but can be done on "normal" hardware.
+  It also takes 100's of GB of HD space if you want to map the entire world.
+  A good place to start for more info is: https://switch2osm.org/serving-tiles/
+  If you attempt it, be patient, you will get it wrong a few times but in the end you might be suprised. :)
 
-Restart Apache
+  Without a map tile server, Mesh users may not see any map tiles. On the mesh, you cannot expect the client 
+  to have internet access in order to retrieve the tiles, you must provide them yourself.
 
-The cronscript can be run from cron every minute (or at whatever interval you choose)
-* * * * * /home/kg6wxc/MeshMap/cronscript.sh
+INITIAL SETUP FOR A RASPBIAN 9 (Stretch) SYSTEM
+-------------
+1: Import the SQL file to create the database
+  Example: sudo mysql < node_map.sql
+
+2: Create a user for the database, you might have to login to the mysql as root.
+  Here is an example of creating a mySQL user on Raspbian (which would apply for most linuxes):
+    sudo mysql
+     CREATE USER 'mesh-map'@'localhost' IDENTIFIED BY 'password';
+     GRANT SELECT, INSERT, UPDATE, DELETE, DROP, TRIGGER on node_map.* TO 'mesh-map'@'localhost';
+     FLUSH PRIVLEGES;
+
+3: Decompress user-files.tar.gz
+  Example: tar -zxvf user-files.tar.gz
+  This will create the files for the settings, They are distributed in compressed format
+  so that *your* files do not get overwritten when the rest of the scripts get updated.
+
+  The file scripts/user-settings.ini is probably the most important.
+  It is very important to make sure your SQL username and password are correct in scripts/user-settings.ini!!
+  Also important is, if the system that this is running on cannot resolve "localnode.local.mesh" you can 
+  change that in the user-settings.ini file.
+
+  There are many other things you can change in the ini files.
+
+  There is also a "custom.ini" file that can be used for more site specific overrides if needed.
+
+3.5: To make sure it is all working at this point is probably a good idea.
+  You should now be able to run get-map-info.php from the scripts directory.
+  I would suggest giving it a test run first.
+  Run it like this for test mode: ./get-map-info.php --test-mode-no-sql
+  That will just make sure the scripts can reach your localnode and the rest of the network.
+  It will output it's progress, but is not updating the database.
+  Run: ./get-map-info.php --test-mode-with-sql to have it output it's progress and update the database.
+  Run: ./get-map-info.php without arguments for "normal" mode, where there is no on screen output
+
+4: Edit httpd-meshmap.conf to reflect the correct directories.
+
+5: Copy httpd-meshmap.conf to the apache2 "Conf Available" directory, /etc/apache2/conf-available
+  Edit /etc/apache2/httpd.conf and add the line: Include conf/extra/httpd-meshmap.conf somewhere.
+  Once that is all done, run: sudo a2enconf httpd-meshmap
+  If successful, it will tell you to reload apache, do so.
+
+6: Load up the page: http://myhostname/meshmap/index.php and you should hopefully see your data.
+  Map tiles are one of the biggest issues with something like this and are beyond the scope of this README 
+  file.
+
+
+7: The cronscript.sh file is to automatically run the polling script and can be run from cron every minute.
+  (or at whatever interval you choose)
+  The script will only run when the polling intervals in the user-settings.ini file have expired.
+
+  You must edit the cronscript.sh file and make sure the path to get-map-info.php is correct!
+
+  A cron entry is as easy as this:
+  * * * * * /home/kg6wxc/MeshMap/cronscript.sh
+
+  Use crontab -e to edit your users cron jobs.

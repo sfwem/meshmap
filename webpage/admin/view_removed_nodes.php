@@ -6,7 +6,7 @@
 //simple page to to view removed nodes
 //nodes are removed from the main database table
 //if they have not been heard from in 30 days
-$INCLUDE_DIR = "/srv/meshmap";
+$INCLUDE_DIR = "../..";
 $USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini");
 require $INCLUDE_DIR . "/scripts/wxc_functions.inc";
 @include $INCLUDE_DIR . "/wxc_custom.inc";
