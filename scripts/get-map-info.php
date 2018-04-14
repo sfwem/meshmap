@@ -46,13 +46,13 @@ require $INCLUDE_DIR . "/scripts/wxc_functions.inc";
  *DO NOT CHANGE ANYTHING BELOW HERE UNLESS YOU KNOW WHAT YOU ARE DOING!!!!
  ************************************************************************/
 if ($argv[1] == ("--help" || "--h" || "-help" || "-h" || "/?" || "?")) {
-    echo $argv[0] . " Usage:\n\n";
+    echo $argv[0] . " Usage:\n";
     echo $argv[1] . "\tThis help message\n";
     echo "--test-mode-node-sql\tDO NOT access database only output to screen\n";
     echo "(useful to make sure everything is working)\n";
     echo "--test-mode-with-sql\tDO access the database AND output to screen\n";
     echo "(useful to see if everything is working and there are no errors reading/writing to the database)\n";
-    echo "\n\n";
+    echo "\n";
     exit();
 }
 $TEST_MODE_NO_SQL = 0;
