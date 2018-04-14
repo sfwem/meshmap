@@ -49,7 +49,11 @@ require $INCLUDE_DIR . "/scripts/wxc_functions.inc";
 /***********************************************************************
  *DO NOT CHANGE ANYTHING BELOW HERE UNLESS YOU KNOW WHAT YOU ARE DOING!!!!
  ************************************************************************/
-if ($argv[1] == ("--help" || "--h" || "-help" || "-h" || "/?" || "?")) {
+$script_arg = "";
+if (isset($argv[1])) {
+    $script_arg = $argv[1];
+}
+if ($script_arg == "--help" || $script_arg == "--h" || $script_arg == "-help" || $script_arg == "-h" || $script_arg == "/?" || $script_arg == "?") {
     echo $argv[0] . " Usage:\n\n";
     echo $argv[1] . "\tThis help message\n\n";
     echo "--test-mode-no-sql\tDO NOT access database only output to screen\n";
@@ -62,11 +66,11 @@ if ($argv[1] == ("--help" || "--h" || "-help" || "-h" || "/?" || "?")) {
 }
 $TEST_MODE_NO_SQL = 0;
 $TEST_MODE_WITH_SQL = 0;
-if ($argv[1] == "--test-mode-no-sql") {
+if ($script_arg == "--test-mode-no-sql") {
     //output only to console, nothing saved. (great to just see what it does)
     $TEST_MODE_NO_SQL = 1;
 }
-if ($argv[1] == "--test-mode-with-sql") {
+if ($script_arg == "--test-mode-with-sql") {
     //output to console, but *with* calls to the database. (see what it's doing while saving data)
     $TEST_MODE_WITH_SQL = 1;
 }
