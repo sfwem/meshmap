@@ -498,6 +498,7 @@ function build_Marker($node_info, $node_ServiceList, $node_LinkedList, $node_Fir
         "', icon: " . $icon . "}).bindPopup(\" " . $nodeUrl . " (" . $band . ")<br>" . $node_info['lat'] .
         ", " . $node_info['lon'] . "<br>SSID: " . $node_info['ssid'] . "<br>Channel: " . $node_info['channel'] .
         ", Bandwidth: " . $node_info['chanbw'] . "<br>" . $node_info['model'] . "<br>" . $firmware .
+        "<br>Last Polled: " . $node_info['last_seen'] .
         $node_ServiceList . $node_LinkedList . "\").addTo(" . $AssignedLayer . ") ,\n"; // Close out this node
     /*
     * If Upgrade Suggested add Node to that layer

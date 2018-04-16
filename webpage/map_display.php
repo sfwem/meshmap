@@ -107,6 +107,9 @@ $USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini");
 global $MESH_SETTINGS;
 $MESH_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/meshmap-settings.ini");
 
+//Increase PHP memory limit to 128M (you may need more if you are connected to a "Mega Mesh" :) )
+ini_set('memory_limit', '128M');
+
 /*******************************************************
  *YOU REALLY SHOULD NOT NEED TO EDIT ANYTHING BELOW HERE*
  *******************************************************/

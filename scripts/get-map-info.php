@@ -1,6 +1,5 @@
 #!/usr/bin/env php
 <?php $mtimeStart = microtime(true);
-//testing
 /*************************************************************************************
 * get-map-info script v2 by kg6wxc\eric satterlee kg6wxc@gmail.com
 * This script is the heart of kg6wxcs' mesh map system.
@@ -45,6 +44,9 @@ require $INCLUDE_DIR . "/scripts/wxc_functions.inc";
 //the custom include file
 //the "@" just suppresses any errors if the file is not found, the file is optional
 @include $INCLUDE_DIR . "/custom.inc";
+
+//Increase PHP memory limit to 128M (you may need more if you are connected to a "Mega Mesh" :) )
+ini_set('memory_limit', '128M');
 
 /***********************************************************************
  *DO NOT CHANGE ANYTHING BELOW HERE UNLESS YOU KNOW WHAT YOU ARE DOING!!!!
@@ -101,11 +103,6 @@ if ($TEST_MODE_NO_SQL) {
     $getNodeInfo = 0;
 }
 
-//this is probably missing for you, do not worry about it.
-//It just contains very site specific things, you don't need it.
-//@include $INCLUDE_DIR . "/wxc_custom.inc";
-//$wxc_custom = 0;
-
 //(WiP)checks for some things we need to run
 //(currently only really checks for the mysqli php extension
 wxc_checkConfigs();
@@ -113,16 +110,6 @@ wxc_checkConfigs();
 //what time is it now? returns a DateTime Object with current time.
 date_default_timezone_set($USER_SETTINGS['localTimeZone']);
 $currentTime = wxc_getCurrentDateTime();
-
-//this just tells the script if kg6wxc's custom stuff is there or not
-//it should not effect your site at all.
-//It's safe to leave it here unless you have major problems because of it.
-//That shouldn't really happen. Don't change unless you know what you are doing.
-//foreach (get_included_files() as $filename) {
-//	if (strpos($filename, 'wxc_custom.inc')) {
-//		$wxc_custom = 1;
-//	}
-//}
 
 $sql_db_tbl = $USER_SETTINGS['sql_db_tbl'];
 $sql_db_tbl_node = $USER_SETTINGS['sql_db_tbl_node'];
@@ -197,6 +184,13 @@ if ($do_sql) {
 	}elseif ($currently_polling_nodes['currently_running'] == 1) {
 		//if ($currently_polling_nodes['script_last_run'])
 		$getNodeInfo = 0;
+	}
+	//hopefully catch a stalled polling run after 3 * node_polling_interval has expired.
+	//something may have gone wonky and the node polling run never completed and never had a chance
+	//to unset the "currently_running" bit in the DB,
+	//this *should* catch that and and just run the node polling again
+	if ($currently_polling_nodes['currently_running'] == 1 && $intervalNodeInMinutes >= intval($USER_SETTINGS['node_polling_interval']) * 3) {
+	    $getNodeInfo = 1;
 	}
 }
 
