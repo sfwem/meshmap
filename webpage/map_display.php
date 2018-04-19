@@ -2,7 +2,7 @@
 /**
  * @name       MeshMap - a dynamic map for the mesh network
  * @category   Mesh
- * @author     Eric Satterlee, KG6WXC with K6GSE
+ * @author     Eric Satterlee, KG6WXC with Glen, K6GSE and Mark, N2MH
  * @version    $Id$
  * @license    Open Source
  * @abstract   Eric has written a tool called get-map-info which retrieves HAM Mesh network devices,
@@ -15,7 +15,7 @@
  *                   with contributions from: CC-BY-SA http://creativecommons.org/licenses/by-sa/2.0/
  *             Map tiles by Stamen Design http://stamen.com, under CC BY 3.0
  *             Map style http://viewfinderpanoramas.org
- *             Icons from http://www.flaticon.com under CC BY 3.0
+ *             Non Mesh Marker Icons from http://www.flaticon.com under CC BY 3.0
  *             OpenTopoMap https://opentopomap.org
  *
  **************************************************************************/
@@ -99,8 +99,7 @@
 *
 *  v.01 inital map Oct 2016
 * -----------------
-**/
-//
+*/
 
 $INCLUDE_DIR = "..";
 $USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini");
@@ -110,19 +109,14 @@ $MESH_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/meshmap-settings.ini");
 //Increase PHP memory limit to 128M (you may need more if you are connected to a "Mega Mesh" :) )
 ini_set('memory_limit', '128M');
 
-/*******************************************************
- *YOU REALLY SHOULD NOT NEED TO EDIT ANYTHING BELOW HERE*
- *******************************************************/
-
 require $INCLUDE_DIR . "/scripts/wxc_functions.inc";
 require $INCLUDE_DIR . "/scripts/map_functions.inc";
-
 
 date_default_timezone_set($USER_SETTINGS['localTimeZone']);
 @include $INCLUDE_DIR . "/custom.inc";
 /*
-* SQL Connections
-*********************/
+* SQL Connection
+*/
 wxc_connectToMySQL();
 
 /*
@@ -146,29 +140,41 @@ global $STABLE_MESH_VERSION;
 $STABLE_MESH_VERSION = $USER_SETTINGS['current_stable_fw_version'];
 
 $page_header = <<< EOD
-    <!DOCTYPE html PUBLIC
-            '-//W3C//DTD XHTML 1.0 Transitional//EN''http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
-    <!-- START HTML  -->
-    <!-- AREDN mesh network dynamic map -->
-    <!-- Created by KG6WXC with help from N2MH and K6GSE -->
-    <html xmlns='http://www.w3.org/1999/xhtml'>
-    <head>
-    <meta http-equiv='Pragma' content='no-cache'>
-    <meta http-equiv='Expires' content='-1'>
-    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+<!DOCTYPE html PUBLIC
+    '-//W3C//DTD XHTML 1.0 Transitional//EN''http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<!-- START HTML  -->
+<!-- AREDN mesh network dynamic map -->
+<!-- Created by KG6WXC with help from N2MH and K6GSE -->
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta http-equiv='Pragma' content='no-cache'>
+<meta http-equiv='Expires' content='-1'>
+<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
 EOD;
 
 echo $page_header;
 echo "<title>" . $USER_SETTINGS['pageTitle'] . "</title>\n";
 
-// This section used to try and tell if we are being called from the mesh or not
-// If we are being called from the mesh, we use the offline copies of the add-on scripts
-// If not, set it up so everything is fetched from the internet
+/*
+* This section will try to tell if the client has internet access or not
+* If we are being called from the mesh, without internet access,
+* we use the offline copies of the add-on scripts and try to load maps locally
+* If there is internet access, set it up so everything is fetched from the internet
+*/
+global $inetAccess;
+global $mesh;
 
-//But now, forget all this "try to determine if the client is "online" or not" BS.
-//Do you know how many freaking definitions there for "being online" or not?
-//We only want to test for one thing in this case, but noooooo, none of it works...
-//Thanks for trying...
+if (isset($_GET['inetAccess'])) {
+    $inetAccess = $_GET['inetAccess'];
+    if ($inetAccess == "1") {
+        $mesh = "0";
+    }elseif ($inetAccess == "0") {
+        $mesh = "1";
+    }
+}else {
+    $inetAccess = "0";
+    $mesh = "1";
+}
 
 //Just serve up the damn files! I mean really, how much data is it?
 //did we create a highspeed data mesh network or did we recreate packet?
@@ -187,67 +193,14 @@ echo "<script src='javascripts/leaflet-hash.js'></script>\n";
 //CORRECTION: is_connected() does work, but it only tells us if the SERVER has access to google...
 //totally not what we want at all...
 //we're just going to tell if we were called from a host that has ".local.mesh" in it and forget all this nonsense...
-global $mesh;
 $httpHostName = $_SERVER['HTTP_HOST'];
 if (strpos($httpHostName, '.local.mesh')) { //|| strpos($httpHostName, '')) {
 	$mesh = 1;
 }
 
-//Here was some javascript I was trying but it did not work right either.
-//onload and onerror were *always* null no matter what I tried...
-//whatever happened to trying to make things work the same across all platforms/browsers/etc?
-//I'm going to leave this just in case someone comes up with a way to make it work.
-$clientOnlineTest = <<< EOD
-<script>
-	function clientInternetAccess() {
-		var jsOnline = ["//unpkg.com/leaflet@1.0.1/dist/leaflet.js",
-					"//bbecquet.github.io/Leaflet.PolylineOffset/leaflet.polylineoffset.js",
-					"//api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js",
-					"//ismyrnow.github.io/leaflet-groupedlayercontrol/src/leaflet.groupedlayercontrol.js"];
-		
-		var cssOnline = ["//unpkg.com/leaflet@1.0.1/dist/leaflet.css",
-					"//api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css",
-					"//ismyrnow.github.io/leaflet-groupedlayercontrol/src/leaflet.groupedlayercontrol.css"];
-		for (var q = 0, l = jsOnline.length; q < l; q++) {
-			document.getElementsByTagName("head")[0].innerHTML += ("<script src=\"" + jsOnline[q] + "\"></scr" + "ipt>");
-		}
-		for (var q = 0, l = cssOnline.length; q < l; q++) {
-			document.getElementsByTagName("head")[0].innerHTML += ("<link href=\"" + cssOnline[q] + "\" rel=\"stylesheet\">");
-		}
-	}
-	function clientNoInternet() {
-		var jsLocal	=	["javascripts/leaflet.js", "javascripts/leaflet.polylineoffset.js",
-						"javascripts/Leaflet.fullscreen.min.js",
-						"javascripts/leaflet.groupedlayercontrol.min.js"];
-		
-		var cssLocal	=	["css/leaflet.css", "css/leaflet.fullscreen.css",
-							"css/leaflet.groupedlayercontrol.min.css"];
-		for (var q = 0, l = jsLocal.length; q < l; q++) {
-			document.getElementsByTagName("head")[0].innerHTML += ("<script src=\"" + jsLocal[q] + "\"></scr" + "ipt>");
-		}
-		for (var q = 0, l = cssLocal.length; q < l; q++) {
-			document.getElementsByTagName("head")[0].innerHTML += ("<link href=\"" + cssLocal[q] + "\" rel=\"stylesheet\">");
-		}
-	}
-	var i = new Image();
-	i.onload = clientInternetAccess();
-	i.onerror = clientNoInternet();
-	//change url to an image you know is live
-	i.src = "http://www.weather.gov/css/images/usa_gov.png";
-	//+ escape(Date());
-	
-	
-</script>
-
-EOD;
-//end of WXC's javascript "onlinechecker" attempt
-
 echo "\n";
 echo "</head>\n";
 echo "<body>\n";
-//echo $clientOnlineTest;
-//echo "\n";
-//echo "\n";
 
 // If this page *is* called from an Internet enabled site:
 // Remove the top logo and make the map a bit smaller
@@ -270,16 +223,15 @@ else
     {
         echo "<MapTitle>";
         echo "<img src='" . $USER_SETTINGS['pageLogo'] .
-            "' width='50' style='vertical-align: middle;'>\n";
-        ;
-        echo "</MapTitle>";
+            "' width='50' style='vertical-align: middle;'>";
+        echo "</MapTitle>\n";
     }
     if (isset($USER_SETTINGS['logoHeaderText']))
     {
         echo "<MapTitle>";
         echo $USER_SETTINGS['logoHeaderText'];
         echo "<br>";
-        echo "</MapTitle>";
+        echo "</MapTitle>\n";
     }
     if (isset($USER_SETTINGS['welcomeMessage']))
     {
@@ -287,7 +239,7 @@ else
         echo $USER_SETTINGS['welcomeMessage'];
         //echo "<br>";
         echo "&nbsp;&nbsp;";
-        echo "</Welcome_MSG>";
+        echo "</Welcome_MSG>\n";
 		echo "<Welcome_MSG2>";
 		echo $USER_SETTINGS['otherTopOfMapMsg'];
 		echo "<br>";
@@ -322,10 +274,6 @@ $numLinks = $numLinks['linksWithLocations'];
 $numLinksTotal = count($TopoList);
 
 $Content = "";
-
-//WXC change: commented out the below line, as it was causing another map sized <div> to be created.
-//this additional <div> was empty, but then it would cause a second "you are connected to the internet...." message.
-//$Content .= "<div id='meshmap' style='width: 100%; height: 685px;'>\n"; // Closing tag at end of primary routine
 
 $filetime = 'Today';
 
