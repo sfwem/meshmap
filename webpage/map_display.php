@@ -276,6 +276,8 @@ echo "</div>\n";
 //$numNodes = count($NodeList);	// WXC change: this was giving the wrong number.
 //should not count nodes that have no location info, they are not on the map...
 //just using this for now.
+
+//it is still giving the wrong number WXC -april 2018
 $numNodes = wxc_getMySql("SELECT COUNT(*) as nodesWithLocations FROM node_info where (lat is not null or 0 or '') and (lon is not null or 0 or '')");
 $numNodes = $numNodes['nodesWithLocations'];
 $numNodesTotal = count($NodeList);
@@ -285,6 +287,7 @@ $numMarkers = count($MarkerList);
 
 //$numLinks = count($TopoList);	// WXC change: probably the same thing going on here too
 //just using this for now
+//same here, probably still giving the wrong number WXC - april 2018
 $numLinks = wxc_getMySql("SELECT COUNT(*) as linksWithLocations FROM topology WHERE (nodelat is not null or 0 or '' or '0') and (nodelon is not null or 0 or '' or '0') or (linklat is not null or 0 or '' or '0') and (linklon is not null or 0 or '' or '0')");
 $numLinks = $numLinks['linksWithLocations'];
 $numLinksTotal = count($TopoList);
@@ -320,22 +323,11 @@ $Content .= instantiate_Map();
 //    echo "</Mesh_MSG>";
 //}
 
-//who cares?? WXC
-//if (is_connected() && $USER_SETTINGS['inetServerText'])
-//{
-//    echo "<Internet_MSG>";
-//    echo sprintf($USER_SETTINGS['inetServerText'], $USER_SETTINGS['inetServerHostname']);
-//    echo "<br>";
-//    echo "</Internet_MSG>\n";
-//}
-
-
 $Content .= "</script>\n";
 $Content .= "</div>\n"; // Closing tag
 
 
 // Display Page
-// -----------------------------
 echo $Content;
 
 
@@ -355,4 +347,3 @@ echo "</html>\n";
 ********************************************************************************************************************/
 
 ?>
-
