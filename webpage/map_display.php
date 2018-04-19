@@ -4,7 +4,7 @@
  * @category   Mesh
  * @author     Eric Satterlee, KG6WXC with Glen, K6GSE and Mark, N2MH
  * @version    $Id$
- * @license    Open Source
+ * @license    Open Source GPL version 3
  * @abstract   Eric has written a tool called get-map-info which retrieves HAM Mesh network devices,
  *                     their configuration and Linkage information. These details are populated in several SQL tables.
  *                     The map.php routine extracts the DB details and creates a dynamic map of those nodes and links.
@@ -177,9 +177,33 @@ EOD;
 echo $page_header;
 echo "<title>" . $USER_SETTINGS['pageTitle'] . "</title>\n";
 
-//Just serve up the damn files! I mean really, how much data is it?
-//did we create a highspeed data mesh network or did we recreate packet?
-//stop crying over a few extra bytes going over RF...
+/*
+ * If the client has internet access load everything from there
+ * if not, use the local resources.
+ */
+echo "<link href='css/meshmap.css' rel='stylesheet'>\n";
+
+if (!$mesh) {
+    echo "<link rel='stylesheet' href='//unpkg.com/leaflet@1.3.1/dist/leaflet.css'>\n";
+    echo "<script src='//unpkg.com/leaflet@1.3.1/dist/leaflet.js'></script>\n";
+    echo "<script src='//bbecquet.github.io/Leaflet.PolylineOffset/leaflet.polylineoffset.js'></script>\n";
+    echo "<script src='//api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>\n";
+    echo "<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet'>\n";
+    echo "<script src='//ismyrnow.github.io/leaflet-groupedlayercontrol/src/leaflet.groupedlayercontrol.js'></script>\n";
+    echo "<link rel='stylesheet' href='//ismyrnow.github.io/leaflet-groupedlayercontrol/src/leaflet.groupedlayercontrol.css'>\n";
+    echo "<script src='//mlevans.com/leaflet-hash/javascripts/leaflet-hash.js'></script>\n";
+}else {
+    echo "<link href='css/leaflet.css' rel='stylesheet'>\n";
+    echo "<script src='javascripts/leaflet.js'></script>\n";
+    echo "<script src='javascripts/leaflet.polylineoffset.js'></script>\n";
+    echo "<script src='javascripts/Leaflet.fullscreen.min.js'></script>\n";
+    echo "<link href='css/leaflet.fullscreen.css' rel='stylesheet'>\n";
+    echo "<script src='javascripts/leaflet.groupedlayercontrol.min.js'></script>\n";
+    echo "<link href='css/leaflet.groupedlayercontrol.min.css' rel='stylesheet'>\n";
+    echo "<script src='javascripts/leaflet-hash.js'></script>\n";
+}
+
+/*
 echo "<link href='css/meshmap.css' rel='stylesheet'>\n";
 echo "<link href='css/leaflet.css' rel='stylesheet'>\n";
 echo "<script src='javascripts/leaflet.js'></script>\n";
@@ -189,15 +213,7 @@ echo "<link href='css/leaflet.fullscreen.css' rel='stylesheet'>\n";
 echo "<script src='javascripts/leaflet.groupedlayercontrol.min.js'></script>\n";
 echo "<link href='css/leaflet.groupedlayercontrol.min.css' rel='stylesheet'>\n";
 echo "<script src='javascripts/leaflet-hash.js'></script>\n";
-
-// WXC change: is_connected() does not seem to work
-//CORRECTION: is_connected() does work, but it only tells us if the SERVER has access to google...
-//totally not what we want at all...
-//we're just going to tell if we were called from a host that has ".local.mesh" in it and forget all this nonsense...
-$httpHostName = $_SERVER['HTTP_HOST'];
-if (strpos($httpHostName, '.local.mesh')) { //|| strpos($httpHostName, '')) {
-	$mesh = 1;
-}
+*/
 
 echo "\n";
 echo "</head>\n";
