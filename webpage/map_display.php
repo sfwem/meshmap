@@ -113,6 +113,28 @@ require $INCLUDE_DIR . "/scripts/wxc_functions.inc";
 require $INCLUDE_DIR . "/scripts/map_functions.inc";
 
 date_default_timezone_set($USER_SETTINGS['localTimeZone']);
+
+/*
+ * This section will try to tell if the client has internet access or not
+ * If we are being called from the mesh, without internet access,
+ * we use the offline copies of the add-on scripts and try to load maps locally
+ * If there is internet access, set it up so everything is fetched from the internet
+ */
+global $inetAccess;
+global $mesh;
+
+if (isset($_GET['inetAccess'])) {
+    $inetAccess = $_GET['inetAccess'];
+    if ($inetAccess == "1") {
+        $mesh = "0";
+    }elseif ($inetAccess == "0") {
+        $mesh = "1";
+    }
+}else {
+    $inetAccess = "0";
+    $mesh = "1";
+}
+
 @include $INCLUDE_DIR . "/custom.inc";
 /*
 * SQL Connection
@@ -154,27 +176,6 @@ EOD;
 
 echo $page_header;
 echo "<title>" . $USER_SETTINGS['pageTitle'] . "</title>\n";
-
-/*
-* This section will try to tell if the client has internet access or not
-* If we are being called from the mesh, without internet access,
-* we use the offline copies of the add-on scripts and try to load maps locally
-* If there is internet access, set it up so everything is fetched from the internet
-*/
-global $inetAccess;
-global $mesh;
-
-if (isset($_GET['inetAccess'])) {
-    $inetAccess = $_GET['inetAccess'];
-    if ($inetAccess == "1") {
-        $mesh = "0";
-    }elseif ($inetAccess == "0") {
-        $mesh = "1";
-    }
-}else {
-    $inetAccess = "0";
-    $mesh = "1";
-}
 
 //Just serve up the damn files! I mean really, how much data is it?
 //did we create a highspeed data mesh network or did we recreate packet?
