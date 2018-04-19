@@ -191,7 +191,7 @@ if (!$mesh) {
     echo "<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet'>\n";
     echo "<script src='//ismyrnow.github.io/leaflet-groupedlayercontrol/src/leaflet.groupedlayercontrol.js'></script>\n";
     echo "<link rel='stylesheet' href='//ismyrnow.github.io/leaflet-groupedlayercontrol/src/leaflet.groupedlayercontrol.css'>\n";
-    echo "<script src='//mlevans.com/leaflet-hash/javascripts/leaflet-hash.js'></script>\n";
+    echo "<script src='//github.com/mlevans/leaflet-hash/blob/master/leaflet-hash.js'></script>\n";
 }else {
     echo "<link href='css/leaflet.css' rel='stylesheet'>\n";
     echo "<script src='javascripts/leaflet.js'></script>\n";
