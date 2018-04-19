@@ -239,7 +239,7 @@ else
     {
         echo "<MapTitle>";
         echo "<img src='" . $USER_SETTINGS['pageLogo'] .
-            "' width='50' style='vertical-align: middle;'>";
+            "' alt='Map or Club Logo' width='50' style='vertical-align: middle;'>";
         echo "</MapTitle>\n";
     }
     if (isset($USER_SETTINGS['logoHeaderText']))
