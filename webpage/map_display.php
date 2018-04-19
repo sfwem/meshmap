@@ -161,12 +161,12 @@ if ($filetime)
 global $STABLE_MESH_VERSION;
 $STABLE_MESH_VERSION = $USER_SETTINGS['current_stable_fw_version'];
 
+
 $page_header = <<< EOD
-<!DOCTYPE html PUBLIC
-    '-//W3C//DTD XHTML 1.0 Transitional//EN''http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<!DOCTYPE html>
 <!-- AREDN mesh network dynamic map -->
 <!-- Created by KG6WXC with help from N2MH and K6GSE -->
-<html xmlns='http://www.w3.org/1999/xhtml'>
+<html lang='en' xmlns='http://www.w3.org/1999/xhtml'>
 <head>
 <meta http-equiv='Pragma' content='no-cache'>
 <meta http-equiv='Expires' content='-1'>
@@ -295,7 +295,7 @@ $filetime = 'Today';
 
 //$Content .= "<div id='mapid' style='width: 100%; height: 95%;'>\n";
 //$Content .= "</div>\n";
-$Content .= "<script type=\"text/javascript\">";
+$Content .= "<script>";
 
 $Content .= add_MapLayers();
 $Content .= add_MapImages($numNodes, $numLinks, $numMarkers);

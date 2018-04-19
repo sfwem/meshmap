@@ -57,10 +57,10 @@ $page_header = <<< EOD
     <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css">
 	<style type="text/css" class="init"></style>
     <!-- <script type="text/javascript" language="javascript" src="//code.jquery.com/jquery-1.12.4.js"></script> -->
-	<script type="text/javascript" language="javascript" src="javascripts/jquery-3.2.1.js"></script>
+	<script src="javascripts/jquery-3.2.1.js"></script>
     <!-- <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script> -->
-    <script type="text/javascript" language="javascript" src="javascripts/jquery.dataTables.min.js"></script>
-	<script type="text/javascript" class="init">
+    <script src="javascripts/jquery.dataTables.min.js"></script>
+	<script class="init">
         $(document).ready(function() {
             $('#meshdata').DataTable( {
             "scrollX": true,
