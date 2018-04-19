@@ -164,7 +164,6 @@ $STABLE_MESH_VERSION = $USER_SETTINGS['current_stable_fw_version'];
 $page_header = <<< EOD
 <!DOCTYPE html PUBLIC
     '-//W3C//DTD XHTML 1.0 Transitional//EN''http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
-<!-- START HTML  -->
 <!-- AREDN mesh network dynamic map -->
 <!-- Created by KG6WXC with help from N2MH and K6GSE -->
 <html xmlns='http://www.w3.org/1999/xhtml'>
@@ -174,7 +173,7 @@ $page_header = <<< EOD
 <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
 EOD;
 
-echo $page_header;
+echo $page_header . "\n";
 echo "<title>" . $USER_SETTINGS['pageTitle'] . "</title>\n";
 
 /*
@@ -331,7 +330,7 @@ $Content .= instantiate_Map();
 //}
 
 
-$Content .= "</script>";
+$Content .= "</script>\n";
 $Content .= "</div>\n"; // Closing tag
 
 
@@ -348,7 +347,7 @@ echo $Content;
 //    echo "</Internet_MSG>";
 //}
 
-echo "</div>\n"; // End division meshmap
+//echo "</div>\n"; // End division meshmap
 echo "</body>\n";
 echo "</html>\n";
 /*
