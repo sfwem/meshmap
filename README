@@ -1,55 +1,54 @@
 REQUIREMENTS:
 -------------
-  Apache webserver (or equiv)  
-  PHP  
-  PHP mysqli extension  
-  MySQL/MariaDB  
-  An available AREDN Mesh node, preferably connected to an AREDN network...  
-  Map Tiles, either in a static directory or available via some tile server.  
+	Apache webserver (or equiv)  
+	PHP  
+	PHP mysqli extension   
+	MySQL/MariaDB  
+	An available AREDN Mesh node, preferably connected to an AREDN network...  
+	Map Tiles, either in a static directory or available via some tile server.  
 
 
 MAP TILE SERVER INFO
 -------------
-  **Without a map tile server or static tiles, Mesh users may not see any map tiles.**  
-  On the mesh, you *cannot* expect the client to have internet access in order to retrieve the tiles,  
-  you must provide them yourself, one way or another.  
-  The main map webpage will *try* and check for internet access in the near future. (it's in the works)  
+	**Without a map tile server or static tiles, Mesh users may not see any map tiles.**  
+	On the mesh, you *cannot* expect the client to have internet access in order to retrieve the tiles, you must provide them yourself, one way or another.  
+	The main map webpage will *try* and check for internet access in the near future. (it's in the works)  
   
-  It is *way* beyond the scope of this README file to help in setting up a map tile server.  
-  You are unfortunaly on your own there.  
-  It is a time consuming and computationaly expensive process, but can be done on "normal" hardware.  
-  It also takes 100's of GB of HD space if you want to map the entire world, and that *does not* include the tiles themselves, that is only for the data required to **make** the map tiles.  
-  A good place to start for more info is: [https://switch2osm.org/serving-tiles/](https://switch2osm.org/serving-tiles/)  
-  If you attempt it, be patient, you *will* get it wrong more than a few times but in the end you might be suprised. :)  
-
+	It is *way* beyond the scope of this README file to help in setting up a map tile server.  
+	You are unfortunaly on your own there.  
+	It is a time consuming and computationaly expensive process, but can be done on "normal" hardware.  
+	It also takes 100's of GB of HD space if you want to map the entire world, and that *does not* include the tiles themselves, that is only for the data required to **make** the map tiles.  
+	A good place to start for more info is: [https://switch2osm.org/serving-tiles/](https://switch2osm.org/serving-tiles/)  
+	If you attempt it, be patient, you *will* get it wrong more than a few times but in the end you might be suprised. :)  
 
 INITIAL SETUP FOR A RASPBIAN 9 (Stretch) SYSTEM
 -------------
-1: Import the SQL file to create the database
-  Example: sudo mysql < node_map.sql
+	**1: Import the SQL file to create the database**  
+		*Example*: sudo mysql < node_map.sql
 
-2: Create a user for the database, you might have to login to the mysql as root.
-  Here is an example of creating a mySQL user on Raspbian (which would apply for most linuxes):
-    sudo mysql
-     CREATE USER 'mesh-map'@'localhost' IDENTIFIED BY 'password';
-     GRANT SELECT, DELETE, DROP, INSERT, TRIGGER, UPDATE on node_map.* TO 'mesh-map'@'localhost';
-     FLUSH PRIVLEGES;
+	**2: Create a user for the database, you might have to login to the mysql server as root.**  
+		Here is an example of creating a mySQL user on Raspbian (which would apply for most linuxes):  
+			sudo mysql  
+			CREATE USER 'mesh-map'@'localhost' IDENTIFIED BY 'password';  
+			GRANT SELECT, DELETE, DROP, INSERT, TRIGGER, UPDATE on node_map.* TO 'mesh-map'@'localhost';  
+			FLUSH PRIVLEGES;  
 
-3: Decompress user-files.tar.gz
-  Example: tar -zxvf user-files.tar.gz
-  This will create the files for the settings, They are distributed in compressed format
-  so that *your* files do not get overwritten when the rest of the scripts get updated.
-  (if anyone has a better idea for how to keep the user edited files "away" from the git repo,
-  yet still in the same directory, it'd be great to hear about it)
-
-  The file scripts/user-settings.ini is probably the most important.
-  It is very important to make sure your SQL username and password are correct in scripts/user-settings.ini!!
-  Also important is, if the system that this is running on cannot resolve "localnode.local.mesh" you can 
-  change that in the user-settings.ini file.
-
-  There are many other things you can change in the ini files.
-
-  There is also a "custom.ini" file that can be used for more site specific overrides if needed.
+	**3: Decompress user-files.tar.gz**  
+		*Example*: tar -zxvf user-files.tar.gz  
+		This will create the files for the settings, They are distributed in compressed format  
+		so that *your* files do not get overwritten when the rest of the scripts get updated.  
+		(if anyone has a better idea for how to keep the user edited files "away" from the git repo,  
+		yet still in the same directory, it'd be great to hear about it)  
+  
+		The file scripts/user-settings.ini is probably the most important.  
+		It is very important to make sure your SQL username and password are correct in scripts/user-settings.ini!!  
+		Also important is, if the system that this is running on cannot resolve "localnode.local.mesh" you can  
+		change that in the user-settings.ini file.  
+  
+		There are many other things you can change in the ini files. Default Map center position, the hearder messages, etc.  
+  
+		There is also a "custom.ini" file that can be used for more site specific overrides if needed.  
+		If you have a need to "hide" passwords, or set the system to use offline maps only, etc... this is the file to do it in.
 
 3.5: To make sure it is all working at this point is probably a good idea.
   You should now be able to run get-map-info.php from the scripts directory.
