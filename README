@@ -1,3 +1,5 @@
+This README file last updated: april 2018  
+  
 REQUIREMENTS:
 -------------
 Apache webserver (or equiv)  
@@ -19,6 +21,8 @@ It is a time consuming and computationaly expensive process, but can be done on 
 It also takes 100's of GB of HD space if you want to map the entire world, and that *does not* include the tiles themselves, that is only for the data required to **make** the map tiles.  
 A good place to start for more info is: [https://switch2osm.org/serving-tiles/](https://switch2osm.org/serving-tiles/)  
 If you attempt it, be patient, you *will* get it wrong more than a few times but in the end you might be suprised. :)  
+  
+You might be able to convice KG6WXC to create local map tiles for you, if the area you want is in the USA...  
 
 INITIAL SETUP FOR A RASPBIAN 9 (Stretch) SYSTEM
 -------------
@@ -104,11 +108,10 @@ CONTRIBUTING
 ------------
 **Contribution is encouraged!!**  
 I can't think of *everything*!  
-If you find an improvement, typo or whatever, please, send an email to kg6wxc@gmail.com and we can get you setup with write access if you'd like!  
+If you find an improvement, typo, or whatever, please, send an email to kg6wxc@gmail.com and we can get you setup with write access if you'd like!  
 
 CREDITS
 ------------
 2016-2018 - Eric Satterlee / KG6WXC  
-This README file last updated: april 2018  
   
 Addtional Credit to: Mark/N2MH and Glen/K6GSE for their work on this project.

@@ -10,6 +10,7 @@ if (PHP_SAPI !== 'cli') {
 $mtimeStart = microtime(true);
 /*************************************************************************************
 * get-map-info script v3 by kg6wxc\eric satterlee kg6wxc@gmail.com
+* Licensed under GPLv3 or later
 * This script is the heart of kg6wxcs' mesh map system.
 * bug fixes, improvements and corrections are welcomed!
 *                                                                                               
@@ -47,7 +48,19 @@ $mtimeStart = microtime(true);
 **************************************************************************************/
 
 /******
-* OTHER NOTES HERE
+* This file is part of the Mesh Mapping System.
+* The Mesh Mapping System is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* The Mesh Mapping System is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with The Mesh Mapping System.  If not, see <http://www.gnu.org/licenses/>.
 ******/
 
 $INCLUDE_DIR = "..";
@@ -68,6 +81,7 @@ ini_set('memory_limit', '128M');
 /***********************************************************************
  *DO NOT CHANGE ANYTHING BELOW HERE UNLESS YOU KNOW WHAT YOU ARE DOING!!!!
  ************************************************************************/
+
 $script_arg = "";
 if (isset($argv[1])) {
     $script_arg = $argv[1];

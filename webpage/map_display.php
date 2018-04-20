@@ -4,7 +4,7 @@
  * @category   Mesh
  * @author     Eric Satterlee, KG6WXC with Glen, K6GSE and Mark, N2MH
  * @version    $Id$
- * @license    Open Source GPL version 3
+ * @license    GPLv3 or later
  * @abstract   Eric has written a tool called get-map-info which retrieves HAM Mesh network devices,
  *                     their configuration and Linkage information. These details are populated in several SQL tables.
  *                     The map.php routine extracts the DB details and creates a dynamic map of those nodes and links.
@@ -46,6 +46,22 @@
  * GSE: Added Popup to Link lines.
  * GSE: Added another popup for those nodes with an non-standard firmware version. ( Visiable when layer is active )
 **/
+
+/******
+* This file is part of the Mesh Mapping System.
+* The Mesh Mapping System is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* The Mesh Mapping System is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.  
+*
+* You should have received a copy of the GNU General Public License   
+* along with The Mesh Mapping System.  If not, see <http://www.gnu.org/licenses/>.
+******/
 
 /* Historical Notes ( colapsed )
 * early march 2017
