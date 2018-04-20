@@ -1,4 +1,11 @@
 <?php
+if (PHP_SAPI !== 'cli') {
+    $file = basename($_SERVER['PHP_SELF']);
+    exit("<style>html{text-align: center;}p{display: inline;}</style>
+        <br><strong>This script ($file) should only be run from the
+        <p style='color: red;'>command line</p>!</strong>
+        <br>exiting...");
+}
 $INCLUDE_DIR = "..";
 $USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini");
 require $INCLUDE_DIR . "/scripts/wxc_functions.inc";
@@ -27,9 +34,9 @@ if($sysinfoJson === FALSE) {
 	wxc_checkErrorMessage($error, $ipAddr);
 			
 	//got nothing...
-	break;
+	//break;
 	//just skip the next IP
-	continue;
+	//continue;
 }else {
 	//node is there, get all the info we can
 	//get all the data from the json file and decode it
@@ -37,7 +44,7 @@ if($sysinfoJson === FALSE) {
 	
 	//if there's nothing really there just skip to the next IP
 	if (!$result) {
-		continue;
+		//continue;
 	}
 	//first let's see what node we are dealing with
 	//$node = $GLOBALS['node'] = $result['node'];

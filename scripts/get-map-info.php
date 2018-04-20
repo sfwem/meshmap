@@ -1,11 +1,28 @@
 #!/usr/bin/env php
-<?php $mtimeStart = microtime(true);
+<?php
+if (PHP_SAPI !== 'cli') {
+    $file = basename($_SERVER['PHP_SELF']);
+    exit("<style>html{text-align: center;}p{display: inline;}</style>
+        <br><strong>This script ($file) should only be run from the 
+        <p style='color: red;'>command line</p>!</strong>
+        <br>exiting...");
+}
+$mtimeStart = microtime(true);
 /*************************************************************************************
-* get-map-info script v2 by kg6wxc\eric satterlee kg6wxc@gmail.com
+* get-map-info script v3 by kg6wxc\eric satterlee kg6wxc@gmail.com
 * This script is the heart of kg6wxcs' mesh map system.
 * bug fixes, improvements and corrections are welcomed!
 *                                                                                               
 * One Script to rule them all!!
+* 
+* Mid April 2018
+* Added the above check for CLI environment, this script should not be run in the browser!
+* It will now exit if you try to do so.
+* Cleaned up the Array generation in the map_functions file, PHP 7.2.3 barfed all over before,
+* It is now done properly and has been tested on php5 and php7.
+* moved the entire system to a new private git repo.
+* more to come....
+*
 *
 *late march 2017
 *Many, many updates and changes.
