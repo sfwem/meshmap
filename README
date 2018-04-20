@@ -2,6 +2,7 @@ REQUIREMENTS:
 -------------
   Apache webserver (or equiv)  
   PHP  
+  PHP mysqli extension  
   MySQL/MariaDB  
   An available AREDN Mesh node, preferably connected to an AREDN network...  
   Map Tiles, either in a static directory or available via some tile server.  
@@ -9,15 +10,17 @@ REQUIREMENTS:
 
 MAP TILE SERVER INFO
 -------------
-  Without a map tile server, Mesh users may not see any map tiles. On the mesh, you cannot expect the client 
-  to have internet access in order to retrieve the tiles, you must provide them yourself, one way or another.  
-
-  It is way beyond the scope of this README file to help in setting up a map tile server.  
+  **Without a map tile server or static tiles, Mesh users may not see any map tiles.**  
+  On the mesh, you *cannot* expect the client to have internet access in order to retrieve the tiles,  
+  you must provide them yourself, one way or another.  
+  The main map webpage will *try* and check for internet access in the near future. (it's in the works)  
+  
+  It is *way* beyond the scope of this README file to help in setting up a map tile server.  
   You are unfortunaly on your own there.  
   It is a time consuming and computationaly expensive process, but can be done on "normal" hardware.  
-  It also takes 100's of GB of HD space if you want to map the entire world.  
-  A good place to start for more info is: https://switch2osm.org/serving-tiles/  
-  If you attempt it, be patient, you will get it wrong more than a few times but in the end you might be suprised. :)  
+  It also takes 100's of GB of HD space if you want to map the entire world, and that *does not* include the tiles themselves, that is only for the data required to **make** the map tiles.  
+  A good place to start for more info is: [https://switch2osm.org/serving-tiles/](https://switch2osm.org/serving-tiles/)  
+  If you attempt it, be patient, you *will* get it wrong more than a few times but in the end you might be suprised. :)  
 
 
 INITIAL SETUP FOR A RASPBIAN 9 (Stretch) SYSTEM
