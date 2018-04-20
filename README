@@ -26,96 +26,91 @@ INITIAL SETUP FOR A RASPBIAN 9 (Stretch) SYSTEM
 *Example*:    sudo mysql < node_map.sql
 
 **2: Create a user for the database, you might have to login to the mysql server as root.**  
-	Here is an example of creating a mySQL user on Raspbian (which would apply for most linuxes):  
-    sudo mysql  
-    CREATE USER 'mesh-map'@'localhost' IDENTIFIED BY 'password';  
-    GRANT SELECT, DELETE, DROP, INSERT, TRIGGER, UPDATE on node_map.* TO 'mesh-map'@'localhost';  
-    FLUSH PRIVLEGES;  
+Here is an example of creating a mySQL user on Raspbian (which would apply for most linuxes):  
+	sudo mysql  
+		CREATE USER 'mesh-map'@'localhost' IDENTIFIED BY 'password';  
+		GRANT SELECT, DELETE, DROP, INSERT, TRIGGER, UPDATE on node_map.* TO 'mesh-map'@'localhost';  
+		FLUSH PRIVLEGES;  
 
 **3: Decompress user-files.tar.gz**  
-	*Example*: tar -zxvf user-files.tar.gz  
-	This will create the files for the settings, They are distributed in compressed format  
-	so that *your* files do not get overwritten when the rest of the scripts get updated.  
-	(if anyone has a better idea for how to keep the user edited files "away" from the git repo,  
-	yet still in the same directory, it'd be great to hear about it)  
+*Example*: tar -zxvf user-files.tar.gz  
+This will create the files for the settings, They are distributed in compressed format  
+so that *your* files do not get overwritten when the rest of the scripts get updated.  
+(if anyone has a better idea for how to keep the user edited files "away" from the git repo,  
+yet still in the same directory, it'd be great to hear about it)  
   
-	The file scripts/user-settings.ini is probably the most important.  
-	It is very important to make sure your SQL username and password are correct in scripts/user-settings.ini!!  
-	Also important is, if the system that this is running on cannot resolve "localnode.local.mesh" you can  
-	change that in the user-settings.ini file.  
+The file scripts/user-settings.ini is probably the most important.  
+It is **very important** to make sure your SQL username and password are correct in scripts/user-settings.ini!!  
+Also important is, if the system that this is running on cannot resolve "localnode.local.mesh" you can  
+change that in the user-settings.ini file.  
   
-	There are many other things you can change in the ini files. Default Map center position, the hearder messages, etc.  
+There are many other things you can change in the ini files. Default Map center position, the hearder messages, etc.  
   
-	There is also a "custom.ini" file that can be used for more site specific overrides if needed.  
-	If you have a need to "hide" passwords, or set the system to use offline maps only, etc... this is the file to do it in.
+There is also a "custom.ini" file that can be used for more site specific overrides if needed.  
+If you have a need to "hide" passwords, or set the system to use offline maps only, etc... this is the file to do it in.
 
-3.5: To make sure it is all working at this point is probably a good idea.
-  You should now be able to run get-map-info.php from the scripts directory.
-  I would suggest giving it a test run first.
-  Run it like this for test mode: ./get-map-info.php --test-mode-no-sql
-  That will just make sure the scripts can reach your localnode and the rest of the network.
-  It will output it's progress, but is not updating the database.
-  Run: ./get-map-info.php --test-mode-with-sql to have it output it's progress and update the database.
-  Run: ./get-map-info.php without arguments for "normal" mode, where there is no on screen output
+**3.5: To make sure it is all working at this point is probably a good idea.**
+You should now be able to run get-map-info.php from the scripts directory.  
+I would suggest giving it a test run first.  
+Run it like this for test mode: ./get-map-info.php --test-mode-no-sql  
+That will just make sure the scripts can reach your localnode and the rest of the network.  
+With --test-mode-no-sql, the script will output it's progress, but is not updating the database.  
+  
+If the --test-mode-no-sql is successful, you can go ahead and run the script with --test-mode-with-sql or just without any arguments.  
+Run: ./get-map-info.php --test-mode-with-sql to have it output it's progress and update the database.  
+Run: ./get-map-info.php without arguments for "normal" mode, where there is no on screen output. (this is for cron)  
 
-4: Edit httpd-meshmap.conf to reflect the correct directories.
+**4: Edit httpd-meshmap.conf to reflect the correct directories.**
 
-5: Copy httpd-meshmap.conf to the apache2 "Conf Available" directory, /etc/apache2/conf-available
-  Once that is all done, run: sudo a2enconf httpd-meshmap
-  If successful, it will tell you to reload apache, do so.
-  *Other linux distibutions may require you to copy this file into /etc/httpd/extra and then edit
-  /etc/httpd/httpd.conf and add the line: Include extra/httpd-meshmap.conf somewhere.
+**5: Copy httpd-meshmap.conf to the apache2 "Conf Available" directory, /etc/apache2/conf-available**
+Once the file is copied, run: sudo a2enconf httpd-meshmap  
+If successful, it will tell you to reload apache, do so.  
+*Other linux distibutions may require you to copy this file into /etc/httpd/extra and then edit
+/etc/httpd/httpd.conf and add the line: Include extra/httpd-meshmap.conf somewhere.*  
 
-6: Load up the page: http://myhostname/meshmap/index.php and you should hopefully see your data.
-  Map tiles are one of the biggest issues with something like this and are beyond the scope of this README 
-  file.
+**6: Load up the page: http://myhostname/meshmap/index.php and you should hopefully see your data.**
+Map tiles are one of the biggest issues with something like this and are beyond the scope of this README file.
 
-
-7: The cronscript.sh file is to automatically run the polling script and can be run from cron every minute.
-  (or at whatever interval you choose)
-  The script will only run when the polling intervals in the user-settings.ini file have expired.
-
-  You must edit the cronscript.sh file and make sure the path to get-map-info.php is correct!
-
-  A cron entry is as easy as this:
-  * * * * * /home/pi/meshmap/cronscript.sh
-
-  Use crontab -e to edit your users cron jobs.
-
-
+**7: The cronscript.sh file is to automatically run the polling script and can be run from cron every minute.**
+(or at whatever interval you choose)
+The script will only run when the polling intervals in the user-settings.ini file have expired.
+  
+You **must** edit the cronscript.sh file and make sure the path to get-map-info.php is correct!
+  
+A cron entry is as easy as this:
+	* * * * * /home/pi/meshmap/cronscript.sh  
+  
+Use crontab -e to edit your users cron jobs.  
+  
 UPDATING
 ------------
-  Simply run a "git pull" from the meshmap directory and the scripts will be updated from the git repo.
-  The user-settings.inc, meshmap-settings.ini, cronscript.sh, and custom.inc files will *not* be affected by updating.
-  If you make changes beyond the user editable files I encourage you to perhaps push the changes upstream,
-  please contact kg6wxc@gmail.com if you wish to do so.
-
-  I am making changes all the time, it would be a good idea to run "git pull" from time to time to find any updates.
-
+Simply run a "git pull" from the meshmap directory and the scripts will be updated from the git repo.
+The user-settings.inc, meshmap-settings.ini, cronscript.sh, and custom.inc files will *not* be affected by updating.
+If you make changes beyond the user editable files I encourage you to perhaps push the changes upstream,
+please contact kg6wxc@gmail.com if you wish to do so.
+  
+I am making changes all the time, it would be a good idea to run "git pull" from time to time to find any updates.
 
 NOTES ON USAGE OF THE MAP PAGES
 ------------
-  http://(hostname)/meshmap/node_report.php will show you all the info in the DB without trying to map anything.
-  This can be useful to see if all the data is there or to find nodes that have no location set. (or other issues)
-
-  There is an "admin" page, which is still in the works, what is there now does work tho.
-  Try to load up: http://(hostname)/meshmap/admin/admin.php in your web browser.
-  I've tried to provide instructions on the admin pages themselves.
-  From the admin pages you can "fix" a nodes location,
-  which can be helpful for those users that forget the "-" in front of their longitude. :)
-  The admin pages also allow for the addition of "Non Mesh" Markers, fire stations, police stations, EOC's , etc...
-
+http://(hostname)/meshmap/node_report.php will show you all the info in the DB without trying to map anything.
+This can be useful to see if all the data is there or to find nodes that have no location set. (or other issues)
+  
+There is an "admin" page, which is still in the works, what is there now does work tho.
+Try to load up: http://(hostname)/meshmap/admin/admin.php in your web browser.
+I've tried to provide instructions on the admin pages themselves.
+From the admin pages you can "fix" a nodes location, which can be helpful for those users that forget the "-" in front of their longitude. :)
+The admin pages also allow for the addition of "Non Mesh" Markers, fire stations, police stations, EOC's , etc...
 
 CONTRIBUTING
 ------------
-  Contribution is encouraged!!
-  I can't think of everything!
-  If you find an improvement, typo or whatever, please, send an email to kg6wxc@gmail.com and we can get you 
-  setup with write access if you'd like!
+**Contribution is encouraged!!**
+I can't think of *everything*!
+If you find an improvement, typo or whatever, please, send an email to kg6wxc@gmail.com and we can get you setup with write access if you'd like!
 
 CREDITS
 ------------
-2016-2018 - Eric Satte0rlee / KG6WXC  
+2016-2018 - Eric Satterlee / KG6WXC  
 This README file last updated: april 2018  
-
+  
 Addtional Credit to: Mark/N2MH and Glen/K6GSE for their work on this project.
