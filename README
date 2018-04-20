@@ -100,11 +100,11 @@ UPDATING
 
 NOTES ON USAGE OF THE MAP PAGES
 ------------
-  http://<hostname/meshmap/node_report.php will show you all the info in the DB without trying to map anything.
+  http://(hostname)/meshmap/node_report.php will show you all the info in the DB without trying to map anything.
   This can be useful to see if all the data is there or to find nodes that have no location set. (or other issues)
 
   There is an "admin" page, which is still in the works, what is there now does work tho.
-  Try to load up: http://<hostname>/meshmap/admin/admin.php in your web browser.
+  Try to load up: http://(hostname)/meshmap/admin/admin.php in your web browser.
   I've tried to provide instructions on the admin pages themselves.
   From the admin pages you can "fix" a nodes location,
   which can be helpful for those users that forget the "-" in front of their longitude. :)
