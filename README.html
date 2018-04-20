@@ -1,0 +1,113 @@
+<p>AREDN Network Automatic Mapping System
+2016-2018 - Eric Satterlee / KG6WXC
+This README file last updated: april 2018</p>
+
+<p>Addtional Credit to: Mark/N2MH and Glen/K6GSE for their work on this project.</p>
+
+<h2>REQUIREMENTS:</h2>
+
+<p>  Apache webserver (or equiv)
+  PHP
+  MySQL/MariaDB
+  An available AREDN Mesh node, preferably connected to an AREDN network&hellip;
+  Map Tiles, either in a static directory or available via some tile server.</p>
+
+<h2>MAP TILE SERVER INFO</h2>
+
+<p>  Without a map tile server, Mesh users may not see any map tiles. On the mesh, you cannot expect the client
+  to have internet access in order to retrieve the tiles, you must provide them yourself, one way or another.</p>
+
+<p>  It is way beyond the scope of this README file to help in setting up a map tile server.
+  You are unfortunaly on your own there.
+  It is a time consuming and computationaly expensive process, but can be done on &ldquo;normal&rdquo; hardware.
+  It also takes 100&rsquo;s of GB of HD space if you want to map the entire world.
+  A good place to start for more info is: https://switch2osm.org/serving-tiles/
+  If you attempt it, be patient, you will get it wrong a few times but in the end you might be suprised. :)</p>
+
+<h2>INITIAL SETUP FOR A RASPBIAN 9 (Stretch) SYSTEM</h2>
+
+<p>1: Import the SQL file to create the database
+  Example: sudo mysql &lt; node_map.sql</p>
+
+<p>2: Create a user for the database, you might have to login to the mysql as root.
+  Here is an example of creating a mySQL user on Raspbian (which would apply for most linuxes):
+    sudo mysql
+     CREATE USER &lsquo;mesh-map&rsquo;@&lsquo;localhost&rsquo; IDENTIFIED BY &lsquo;password&rsquo;;
+     GRANT SELECT, DELETE, DROP, INSERT, TRIGGER, UPDATE on node_map.* TO &lsquo;mesh-map&rsquo;@&lsquo;localhost&rsquo;;
+     FLUSH PRIVLEGES;</p>
+
+<p>3: Decompress user-files.tar.gz
+  Example: tar -zxvf user-files.tar.gz
+  This will create the files for the settings, They are distributed in compressed format
+  so that <em>your</em> files do not get overwritten when the rest of the scripts get updated.
+  (if anyone has a better idea for how to keep the user edited files &ldquo;away&rdquo; from the git repo,
+  yet still in the same directory, it&rsquo;d be great to hear about it)</p>
+
+<p>  The file scripts/user-settings.ini is probably the most important.
+  It is very important to make sure your SQL username and password are correct in scripts/user-settings.ini!!
+  Also important is, if the system that this is running on cannot resolve &ldquo;localnode.local.mesh&rdquo; you can
+  change that in the user-settings.ini file.</p>
+
+<p>  There are many other things you can change in the ini files.</p>
+
+<p>  There is also a &ldquo;custom.ini&rdquo; file that can be used for more site specific overrides if needed.</p>
+
+<p>3.5: To make sure it is all working at this point is probably a good idea.
+  You should now be able to run get-map-info.php from the scripts directory.
+  I would suggest giving it a test run first.
+  Run it like this for test mode: ./get-map-info.php &ndash;test-mode-no-sql
+  That will just make sure the scripts can reach your localnode and the rest of the network.
+  It will output it&rsquo;s progress, but is not updating the database.
+  Run: ./get-map-info.php &ndash;test-mode-with-sql to have it output it&rsquo;s progress and update the database.
+  Run: ./get-map-info.php without arguments for &ldquo;normal&rdquo; mode, where there is no on screen output</p>
+
+<p>4: Edit httpd-meshmap.conf to reflect the correct directories.</p>
+
+<p>5: Copy httpd-meshmap.conf to the apache2 &ldquo;Conf Available&rdquo; directory, /etc/apache2/conf-available
+  Once that is all done, run: sudo a2enconf httpd-meshmap
+  If successful, it will tell you to reload apache, do so.
+  *Other linux distibutions may require you to copy this file into /etc/httpd/extra and then edit
+  /etc/httpd/httpd.conf and add the line: Include extra/httpd-meshmap.conf somewhere.</p>
+
+<p>6: Load up the page: http://myhostname/meshmap/index.php and you should hopefully see your data.
+  Map tiles are one of the biggest issues with something like this and are beyond the scope of this README
+  file.</p>
+
+<p>7: The cronscript.sh file is to automatically run the polling script and can be run from cron every minute.
+  (or at whatever interval you choose)
+  The script will only run when the polling intervals in the user-settings.ini file have expired.</p>
+
+<p>  You must edit the cronscript.sh file and make sure the path to get-map-info.php is correct!</p>
+
+<p>  A cron entry is as easy as this:
+  * * * * * /home/pi/meshmap/cronscript.sh</p>
+
+<p>  Use crontab -e to edit your users cron jobs.</p>
+
+<h2>UPDATING</h2>
+
+<p>  Simply run a &ldquo;git pull&rdquo; from the meshmap directory and the scripts will be updated from the git repo.
+  The user-settings.inc, meshmap-settings.ini, cronscript.sh, and custom.inc files will <em>not</em> be affected by updating.
+  If you make changes beyond the user editable files I encourage you to perhaps push the changes upstream,
+  please contact kg6wxc@gmail.com if you wish to do so.</p>
+
+<p>  I am making changes all the time, it would be a good idea to run &ldquo;git pull&rdquo; from time to time to find any updates.</p>
+
+<h2>NOTES ON USAGE OF THE MAP PAGES</h2>
+
+<p>  http://&lt;hostname/meshmap/node_report.php will show you all the info in the DB without trying to map anything.
+  This can be useful to see if all the data is there or to find nodes that have no location set. (or other issues)</p>
+
+<p>  There is an &ldquo;admin&rdquo; page, which is still in the works, what is there now does work tho.
+  Try to load up: http://<hostname>/meshmap/admin/admin.php in your web browser.
+  I&rsquo;ve tried to provide instructions on the admin pages themselves.
+  From the admin pages you can &ldquo;fix&rdquo; a nodes location,
+  which can be helpful for those users that forget the &ldquo;-&rdquo; in front of their longitude. :)
+  The admin pages also allow for the addition of &ldquo;Non Mesh&rdquo; Markers, fire stations, police stations, EOC&rsquo;s , etc&hellip;</p>
+
+<h2>CONTRIBUTING</h2>
+
+<p>  Contribution is encouraged!!
+  I can&rsquo;t think of everything!
+  If you find an improvement, typo or whatever, please, send an email to kg6wxc@gmail.com and we can get you
+  setup with write access if you&rsquo;d like!</p>
