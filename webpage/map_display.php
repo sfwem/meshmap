@@ -139,8 +139,8 @@ date_default_timezone_set($USER_SETTINGS['localTimeZone']);
 global $inetAccess;
 global $mesh;
 
-if (isset($_GET['inetAccess'])) {
-    $inetAccess = $_GET['inetAccess'];
+if (isset($_GET['inetAccess']) || isset($_POST['inetAccess'])) {
+    $inetAccess = $_GET['inetAccess'] || $_POST['inetAccess'];
     if ($inetAccess == "1") {
         $mesh = "0";
     }elseif ($inetAccess == "0") {
@@ -152,6 +152,66 @@ if (isset($_GET['inetAccess'])) {
 }
 
 @include $INCLUDE_DIR . "/custom.inc";
+
+if (!isset($GLOBALS['internet_only'])) {
+function testForInet() {
+    $page = <<< EOD
+<!DOCTYPE html>
+<html>
+<head>
+<title>meshmap internet check page</title>
+<script src='javascripts/ping.min.js'></script>
+<script>
+function postData(path, params, method) {
+    method = method || "post";
+    var form = document.createElement("form");
+    form.setAttribute("method", method);
+    form.setAttribute("action", path);
+    for (var key in params) {
+        if (params.hasOwnProperty(key)) {
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", key);
+            hiddenField.setAttribute("value", params[key]);
+
+            form.appendChild(hiddenField);
+        }
+    }
+    document.body.appendChild(form);
+    form.submit();
+}
+
+var p = new Ping();
+var value = "0";
+p.ping("//google.com", function(err, data) {
+        if (err) {
+                value = 0;
+        }else {
+                value = 1;
+        }
+        //window.location.replace("map_display.php?inetAccess="+value);
+        postData('map_display.php', {inetAccess: value});
+});
+</script>
+</head>
+<body>
+Just a quick check for internet access so we can load the appropriate maps, etc...
+<br>
+Please be patient, this should only take a moment.
+</body>
+</html>
+EOD;
+    echo $page;
+    //return;
+    exit("<br><br>reloading...");
+}
+}
+if (!isset($GLOBALS['internet_only'])) {
+    if (!isset($_POST['inetAccess'])) {
+        testForInet();
+    }
+}
+
 /*
 * SQL Connection
 */
@@ -206,6 +266,7 @@ if (!$mesh) {
     echo "<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet'>\n";
     echo "<script src='//ismyrnow.github.io/leaflet-groupedlayercontrol/src/leaflet.groupedlayercontrol.js'></script>\n";
     echo "<link rel='stylesheet' href='//ismyrnow.github.io/leaflet-groupedlayercontrol/src/leaflet.groupedlayercontrol.css'>\n";
+    echo "<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.0.10/css/all.css' integrity='sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg' crossorigin='anonymous'>\n";
 
 }else {
     echo "<link href='css/leaflet.css' rel='stylesheet'>\n";
@@ -215,9 +276,11 @@ if (!$mesh) {
     echo "<link href='css/leaflet.fullscreen.css' rel='stylesheet'>\n";
     echo "<script src='javascripts/leaflet.groupedlayercontrol.min.js'></script>\n";
     echo "<link href='css/leaflet.groupedlayercontrol.min.css' rel='stylesheet'>\n";
+    echo "<link href='javascripts/fontawesome-all.css' rel='stylesheet'>\n";
 }
 echo "<script src='javascripts/leaflet-hash.js'></script>\n";
-
+echo "<script src='javascripts/L.Control.SlideMenu.js'></script>\n";
+echo "<link href='css/L.Control.SlideMenu.css' rel='stylesheet'>\n";
 /*
 echo "<link href='css/meshmap.css' rel='stylesheet'>\n";
 echo "<link href='css/leaflet.css' rel='stylesheet'>\n";
@@ -284,6 +347,25 @@ else
         echo "<br>";
         echo "</Warning_MSG>";
     }
+}
+
+/*
+if (isset($GLOBALS['no_req_msg'])) {
+    if ($GLOBALS['no_req_msg'] == "1") {
+        //output nothing!!
+    }
+}else {
+    echo "<strong><a style=\"color: inherit;text-decoration: none;\" href=\"\" title=\"" .
+    $GLOBALS['USER_SETTINGS']['where_is_my_node'] . "\">Where the heck is my node??</a>\n";
+        
+}
+*/
+if (isset($GLOBALS['hide_admin'])) {
+    if ($GLOBALS['hide_admin'] == "1") {
+        //output nothing!!
+    }
+}else {
+    echo "<strong><a style=\"float: right;\" href=\"admin/admin.php\">The \"Admin\" type page</a>\n";
 }
 
 echo "<div id='mapid' style='width: 100%; height: 95%;'>\n";

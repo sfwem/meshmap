@@ -724,7 +724,7 @@ function load_Topology($whereClause = null, $orderBy = null)
  *
  * This routine adds the MapLayers needed
  * the (navigator.online) controls the display for online or offline browsers
- * No it doesn't, it doesn't tell you crap really... being on a LAN makes navigator.onLine true!!!
+ * No it doesn't, it doesn't tell you crap really... being on a LAN makes navigator.online true!!! DO NOT USE IT.
  * It has no bearing whatsoever if internet access is available or not
  *
  *
@@ -735,9 +735,7 @@ function add_MapLayers()
 if($GLOBALS['mesh']) {
 	$offline_map_tiles = $GLOBALS['USER_SETTINGS']['offlineMapTileDir'];
 	$Content = <<< EOD
-        // navigator.onLine *DOES NOT* work!!
-        
-            var offlineMapTiles = "$offline_map_tiles/{z}/{x}/{y}.png";
+            var offlineMapTiles = "$offline_map_tiles";
             var defaultMap = new L.tileLayer(offlineMapTiles);
 
             var baseLayers = {"Offline Map": defaultMap};
@@ -745,8 +743,24 @@ if($GLOBALS['mesh']) {
         \n\n
 EOD;
 }else {
+    $Content = "\n";
+    $baseLayersString = "var baseLayers = {";
+    $map_num = 0;
+    foreach ($GLOBALS['USER_SETTINGS']['inetTileServer'] as $map_name => $map_url) {
+        if(@strpos($map_name, "-Default")) {
+            $map_name = preg_replace('/-Default/', '', $map_name);
+            $Content .= "var defaultMap = new L.tileLayer('" . $map_url . "');\n";
+            $baseLayersString .= "\"" . $map_name . "\": defaultMap,";
+        }else {
+            $map_num++;
+            $Content .= "var map" . $map_num . " = new L.tileLayer('" . $map_url . "');\n";
+            $baseLayersString .= "\"" . $map_name . "\": map" . $map_num . ",";
+        }
+    }
+    $baseLayersString .= "};\n";
+    $Content .= $baseLayersString;
+/*
     $Content = <<< EOD
-        //if (navigator.onLine) <-- *DOES NOT* work. REMOVED
             var OSMMapURL = '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
             var terrainMapURL = '//stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg';
             var topoMapURL = '//{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
@@ -759,6 +773,7 @@ EOD;
 
 		\n\n
 EOD;
+*/
 }
     return $Content;
 }
@@ -1070,9 +1085,30 @@ function instantiate_Map()
      * Scale Control
      */
     L.control.scale().addTo(map);\n
+/*
+*The "help" button
+*/
+var contents = "";
+
+EOD;
+
+    
+//    $help_msg = file_get_contents('../webpage/help_msg.html');
+//    $Content .= "L.Control.slideMenu(\"" . $help_msg . "\").addTo(map);\n";
+
+    $help_msg_file = fopen("help_msg.html", "r");
+    if ($help_msg_file) {
+        while (($line = fgets($help_msg_file)) != false) {
+            $Content .= "contents += \"" . trim(preg_replace('/\s\s+/', ' ', $line)) . "\";\n";
+        }
+        fclose($help_msg_file);
+    }else {
+        $Content .= "alert('Could not open help_msg.html');\n";
+    }
+    $Content .= "\nL.control.slideMenu(contents, {width: '400px'}).addTo(map);\n";
 	/* Attribution */
 	//attributionCtrl({position: 'bottomleft'}).addTo(map);\n
-EOD;
+
 
     return $Content;
 }

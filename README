@@ -20,7 +20,7 @@ You are unfortunaly on your own there.
 It is a time consuming and computationaly expensive process, but can be done on "normal" hardware.  
 It also takes 100's of GB of HD space if you want to map the entire world, and that *does not* include the tiles themselves, that is only for the data required to **make** the map tiles.  
 A good place to start for more info is: [https://switch2osm.org/serving-tiles/](https://switch2osm.org/serving-tiles/)  
-If you attempt it, be patient, you *will* get it wrong more than a few times but in the end you might be suprised. :)  
+If you attempt it, be patient, you *will* get it wrong more than a few times but in the end you might be surprised. :)  
   
 You might be able to convice KG6WXC to create local map tiles for you, if the area you want is in the USA...  
 
@@ -48,7 +48,8 @@ It is **very important** to make sure your SQL username and password are correct
 Also important is, if the system that this is running on cannot resolve "localnode.local.mesh" you can  
 change that in the user-settings.ini file.  
   
-There are many other things you can change in the ini files. Default Map center position, the hearder messages, etc.  
+There are many other things you can change in the ini files. Default Map center position, the header messages, etc.  
+*Please read* the comments in the user-settings.ini file for more info about the different settings.  
   
 There is also a "custom.ini" file that can be used for more site specific overrides if needed.  
 If you have a need to "hide" passwords, or set the system to use offline maps only, etc... this is the file to do it in.
@@ -89,6 +90,10 @@ UPDATING
 ------------
 Simply run a "git pull" from the meshmap directory and the scripts will be updated from the git repo.  
 The user-settings.inc, meshmap-settings.ini, cronscript.sh, and custom.inc files will *not* be affected by updating.  
+The settings in the ini files *may* still change in future versions.  
+For now tho, if the ini files change, and you still have the old ones in use, things will probably break! Be Warned!  
+Hopefully in the future this process can be more automated.  
+  
 If you make changes beyond the user editable files I encourage you to perhaps push the changes upstream, please contact kg6wxc@gmail.com if you wish to do so.  
   
 I am making changes all the time, it would be a good idea to run "git pull" from time to time to find any updates.  
