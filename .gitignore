@@ -1,7 +1,6 @@
 custom.inc
 **/custom.inc
-**/custom*
 **/user-settings.ini
-**/cronscript*
+**/cronscript.sh
 **/meshmap-settings.ini
 
