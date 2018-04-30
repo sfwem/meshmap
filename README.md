@@ -1,6 +1,6 @@
 <!-- KG6WXC MeshMap README.md file -->
 <!-- April 2018 -->
-<img src="https://mapping.kg6wxc.net/meshmap/images/MESHMAP_LOGO.svg" style="float:left; vertical-align: middle;"><h1 style="float: left; vertical-align: middle;">MeshMap</h1>  
+<img src="https://mapping.kg6wxc.net/meshmap/images/MESHMAP_LOGO.svg" style="float:left; vertical-align: middle;"/><h1 style="float: left; vertical-align: middle;">MeshMap</h1>  
 <br/>
 <br/>
 <br/>
