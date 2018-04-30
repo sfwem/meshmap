@@ -1,4 +1,7 @@
-<img src="https://mapping.kg6wxc.net/meshmap/images/MESHMAP_LOGO.svg" style="float:left; vertical-align: middle;"/><h1 style="float: left; vertical-align: middle;">MeshMap</h1>  
+<!-- KG6WXC MeshMap README.md file -->
+<!-- April 2018 -->
+<img src="https://mapping.kg6wxc.net/meshmap/images/MESHMAP_LOGO.svg" style="float:left; vertical-align: middle;"><h1 style="float: left; vertical-align: middle;">MeshMap</h1>  
+<br/>
 <br/>
 <br/>
 <br/>
@@ -8,7 +11,7 @@ Automated mapping of AREDN Networks.
 2016-2018 - Eric Satterlee / KG6WXC  
 Addtional Credit to: Mark/N2MH and Glen/K6GSE for their work on this project.  
 Licensed under GPL v3  
-Donations or Beer accepted! :) (paypal coming soon, email: kg6wxc@gmail.com in the meantime.)
+Donations / Beer accepted! :) (paypal possibly coming soon, email: kg6wxc@gmail.com in the meantime.)
 
 [Demo Map](https://mapping.kg6wxc.net/meshmap)
 
@@ -32,7 +35,8 @@ Donations or Beer accepted! :) (paypal coming soon, email: kg6wxc@gmail.com in t
 (You don't need to be a pro, but this should not be your first trip to a command line)  
 
 <blockquote style="background: #d3d3d3;">In theory, this <em>should</em> run on a Windows system as well.<br/>
-It does not require anything specific to Linux (<em>Perhaps with the exception of cron</em>).<br/>
+It does not require anything specific to Linux (<em>Perhaps with the exception of the cron task.</em>)<br/>
+There is no reason that it could not be adapted to run from a Windows scheduled task though.<br/>
 PHP is PHP after all.</blockquote>  
 
 ### Map Tile Server info
