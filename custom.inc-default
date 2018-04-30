@@ -1,0 +1,5 @@
+<?php
+//you can override some things with this file...
+//sql passwords, user settings, etc.
+
+?>
