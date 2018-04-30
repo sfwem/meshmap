@@ -1,4 +1,4 @@
-<p><img src="https://mapping.kg6wxc.net/meshmap/images/MESHMAP_LOGO.svg" style="float:left; vertical-align: middle;"><h1 style="float: left; vertical-align: middle;">MeshMap</h1><br/>
+<p><img src="https://mapping.kg6wxc.net/meshmap/images/MESHMAP_LOGO.svg" style="float:left; vertical-align: middle;"/><h1 style="float: left; vertical-align: middle;">MeshMap</h1><br/>
 <br/>
 <br/>
 <br/>
@@ -36,8 +36,8 @@ Donations or Beer accepted! :) (paypal coming soon, email: kg6wxc@gmail.com in t
 </ul>
 
 
-<blockquote style="background: #d3d3d3;">In theory, this <em>should</em> run on a Windows system as well.<br>
-It does not require anything specific to Linux (<em>Perhaps with the exception of cron</em>).<br>
+<blockquote style="background: #d3d3d3;">In theory, this <em>should</em> run on a Windows system as well.<br/>
+It does not require anything specific to Linux (<em>Perhaps with the exception of cron</em>).<br/>
 PHP is PHP after all.</blockquote>
 
 
@@ -57,7 +57,7 @@ It also takes <em>100&rsquo;s of GB of HD space</em> if you want to map the enti
 A good place to start for more info is: <a href="https://switch2osm.org/serving-tiles/">https://switch2osm.org/serving-tiles/</a><br/>
 If you attempt it, be patient, you <em>will</em> get it wrong more than a few times but in the end you might be surprised. :)</p>
 
-<blockquote style="background: #d3d3d3;">Another option is that some programs, Xastir in particular, will save the map tiles they use.<br>
+<blockquote style="background: #d3d3d3;">Another option is that some programs, Xastir in particular, will save the map tiles they use.<br/>
 You *can* use those tiles as well, but they must be made to be accessible by your webserver.</blockquote>
 
 
@@ -102,7 +102,7 @@ It is <strong>very important</strong> to make sure your SQL username and passwor
 </ul>
 
 
-<blockquote style="background: #FFFF99;">The way the user editable files are distrubuted will change in the near future, for now use this method.<br>
+<blockquote style="background: #FFFF99;">The way the user editable files are distrubuted will change in the near future, for now use this method.<br/>
 I will <em>always</em> strive to not overwrite your site changes when I make updates to certain files.</blockquote>
 
 
@@ -114,7 +114,7 @@ You should now be able to run get-map-info.php from the scripts directory.<br/>
 I would suggest giving it a test run or two first.<br/>
 Node polling can take lots of time, espessialy on a large network. Be Patient! :)<br/>
 Enter the meshmap/scripts directory.<br/>
-  <blockquote style="background: #66CC66;">Tip: if you get a &ldquo;command not found&rdquo; error, you may need to run it like this:<br> <code>./get-map-info.php &lt;option&gt;</code> </blockquote>
+  <blockquote style="background: #66CC66;">Tip: if you get a &ldquo;command not found&rdquo; error, you may need to run it like this:<br/> <code>./get-map-info.php &lt;option&gt;</code> </blockquote>
 These are options you can send to get-map-info.php:
 
 <blockquote><p><code>--test-mode-no-sql</code><br/>
@@ -124,14 +124,14 @@ Output to console only, <em>do not</em> read/write to the database.<br/>
 <code>--test-mode-with-sql</code><br/>
 Output to console <em>and</em> read/write to the database.<br/>
   <blockquote style="background: #FFFF99;">This will ensure everything is setup correctly and get some data into your database!</blockquote>
-  <blockquote style="background: #66CC66;">Tip: <em><strong>Do not</strong></em> ctrl-C out of the script while it is using the database!<br>
-  Let it finish, even if it seems hung up.<br>
-  You should recieve some error if something is <em>actually</em> wrong.<br>
+  <blockquote style="background: #66CC66;">Tip: <em><strong>Do not</strong></em> ctrl-C out of the script while it is using the database!<br/>
+  Let it finish, even if it seems hung up.<br/>
+  You should recieve some error if something is <em>actually</em> wrong.<br/>
   Using ctrl-C to stop the script midway will cause problems in the database, <em>do not</em> do it!</blockquote></p></blockquote></li>
 </ul>
 
 
-<blockquote style="background: #d3d3d3;">If the --test-mode-no-sql is successful, you can go ahead and run the script with --test-mode-with-sql or just without any options.<br>
+<blockquote style="background: #d3d3d3;">If the --test-mode-no-sql is successful, you can go ahead and run the script with --test-mode-with-sql or just without any options.<br/>
 Run the script without options and there is no on screen output (this is for cron).</blockquote>
 
 
@@ -142,7 +142,8 @@ Run the script without options and there is no on screen output (this is for cro
 Once the file is copied, you need to edit it and make sure the <code>&lt;Alias&gt;</code> and <code>&lt;Directory&gt;</code> directives have the correct paths.<br/>
 After you have made sure the file is correct then run: <code>sudo a2enconf httpd-meshmap</code><br/>
 This is will load the config into Apache and if successful, it will tell you to reload apache, do so.<br/>
-  <blockquote style="background: #d3d3d3;"><em>Other linux distibutions may require you to copy this file into /etc/httpd/extra<br>and then edit /etc/httpd/httpd.conf and add the line:</em> <code>Include extra/httpd-meshmap.conf</code> <em>somewhere.</em></blockquote></p></li>
+  <blockquote style="background: #d3d3d3;"><em>Other linux distibutions may require you to copy this file into /etc/httpd/extra<br/>
+and then edit /etc/httpd/httpd.conf and add the line:</em> <code>Include extra/httpd-meshmap.conf</code> <em>somewhere.</em></blockquote></p></li>
 <li><p><strong>6: Load up the page: http://myhostname/meshmap/index.php and you should hopefully see your data.</strong><br/>
 You may or may not see any map tiles, depending on if the system you are using to view the page has access to the internet or not.<br/>
 Even without map tiles, you should still see your data being mapped out.</p></li>
@@ -152,7 +153,8 @@ Copy the cronscript.sh file out of the meshmap directory and place it in the hom
 Then, you <strong>must</strong> edit the cronscript.sh file and make sure the path it uses to get to the scripts directory is correct!<br/>
 After that, create a cron entry with <code>crontab -e</code><br/>
 A cron entry is as easy as this: <code>* * * * * /home/pi/cronscript.sh</code><br/>
-  <blockquote style="background: #d3d3d3;">You <em>can</em> safely run the script every minute in cron like this.<br>It won&rsquo;t actually do anything unless the intervals specified in the ini file have expired.</blockquote></p></li>
+  <blockquote style="background: #d3d3d3;">You <em>can</em> safely run the script every minute in cron like this.<br/>
+It won&rsquo;t actually do anything unless the intervals specified in the ini file have expired.</blockquote></p></li>
 </ul>
 
 
