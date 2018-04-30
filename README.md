@@ -35,7 +35,7 @@ Donations / Beer accepted! :) (paypal possibly coming soon, email: kg6wxc@gmail.
 (You don't need to be a pro, but this should not be your first trip to a command line)  
 
 <blockquote style="background: #d3d3d3;">In theory, this <em>should</em> run on a Windows system as well.<br/>
-It does not require anything specific to Linux (<em>Perhaps with the exception of the cron task.</em>)<br/>
+It does not require anything specific to Linux (<em>Perhaps with the exception of the cron task</em>).<br/>
 There is no reason that it could not be adapted to run from a Windows scheduled task though.<br/>
 PHP is PHP after all.</blockquote>  
 
@@ -55,8 +55,14 @@ If you attempt it, be patient, you *will* get it wrong more than a few times but
 <blockquote style="background: #d3d3d3;">Another option is that some programs, Xastir in particular, will save the map tiles they use.<br/>
 You *can* use those tiles as well, but they must be made to be accessible by your webserver.</blockquote>  
 
-You *might* be able to convice KG6WXC to create local map tiles for you, if the area you want is in the USA... It literally takes *days* to make them though!  
-
+You *might* be able to convince KG6WXC to create local map tiles for you, if the area you want is in the USA, he does not have the available SSD space for the entire world... yet.  
+If you do ask, be prepared, it literally takes KG6WXC's system about 3-4 days just to render the tiles for a smallish area and it's kind of a PITA!  
+<blockquote style="background: #d3d3d3;">As an example, KG6WXC once made tiles for the Mesa Az. mesh group.<br/>
+It was a smallish area around Phoenix Az, out to a zoom of about 8 or something.<br/>
+It ended up at around 3GB of map tiles and took about 4 days of total run time to render on the server...<br/>
+<em>and</em> it had to restart a few times too, due to running out of 8GB of RAM and having to tweak a few things along the way... so it actually took longer than that.<br/>
+Building/Using a map tile server is not for the faint of heart!</blockquote>
+ 
 ## Initial setup for a freshly installed Raspbian 9 (Stretch) system
 ----------
 (*Should* work for other Linuxes as well, change where needed)
