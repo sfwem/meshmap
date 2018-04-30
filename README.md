@@ -8,7 +8,7 @@ Automated mapping of AREDN Networks.
 2016-2018 - Eric Satterlee / KG6WXC  
 Addtional Credit to: Mark/N2MH and Glen/K6GSE for their work on this project.  
 Licensed under GPL v3  
-Donations/Beers accepted! :) (paypal coming soon, email: kg6wxc@gmail.com in the meantime.)
+Donations or Beer accepted! :) (paypal coming soon, email: kg6wxc@gmail.com in the meantime.)
 
 [Demo Map](https://mapping.kg6wxc.net/meshmap)
 
