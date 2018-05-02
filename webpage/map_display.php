@@ -130,7 +130,7 @@ $INCLUDE_DIR = "..";
 //check for users user-settings.ini file and use it if it exists
 //use the default one if it does not
 global $USER_SETTINGS;
-if (file_exists("$INCLUDE_DIR . /scripts/user-settings.ini")) {
+if (file_exists($INCLUDE_DIR . "/scripts/user-settings.ini")) {
     $USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini");
 }else {
     echo "You <strong><em>must</em></strong> copy the user-settings.ini-default file to user-settings.ini and edit it!\n";
@@ -139,7 +139,7 @@ if (file_exists("$INCLUDE_DIR . /scripts/user-settings.ini")) {
 global $MESH_SETTINGS;
 //check for users user-settings.ini file and use it if it exists
 //use the default one if it does not
-if (file_exists("$INCLUDE_DIR . /scripts/meshmap-settings.ini")) {
+if (file_exists($INCLUDE_DIR . "/scripts/meshmap-settings.ini")) {
     $MESH_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/meshmap-settings.ini");
 }else {
     $MESH_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/meshmap-settings.ini-default");
