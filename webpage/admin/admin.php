@@ -30,11 +30,13 @@ if (!$sql_connection) {
 <head>
 <title>MeshMap Admin Page</title>
 
-if (file_exists("./admin.css") {
-	<link rel='stylesheet' href='admin.css'>
+<?php
+if (file_exists("./admin.css")) {
+	echo "<link rel='stylesheet' href='admin.css'>\n";
 }else {
-	<link rel='stylesheet' href='admin.css-default'>
+	echo "<link rel='stylesheet' href='admin.css-default'>\n";
 }
+?>
 <!-- extra javascripts and css needed -->
 <script src='../javascripts/jquery-3.2.1.js'></script>
 <!-- <script type="text/javascript" src="../javascripts/jquery.dataTables.min.js"></script> -->
