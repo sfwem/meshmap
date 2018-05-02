@@ -6,7 +6,8 @@
  * @subcategory Display Map routines
  * @package     Active Node List
  * @author      Eric Satterlee, KG6WXC with K6GSE
- * @copyright   Copyright (c) 2017 as Open Source
+ * @copyright   Copyright (c) 2018 as Open Source
+ * @license     GPLv3 or later
  * @version     $Id$
  * @abstract    Eric has written a tool called get-map-info which retrieves HAM Mesh network devices,
  *                     their configuration and Linkage information. These details are populated in several SQL tables.
@@ -1046,7 +1047,7 @@ function show_MapMarkerDetails($numNodes, $numLinks, $numMarkers, $numNodesTotal
     	$numNodesTotal . " Total nodes in the database." . '\n' . "Nodes without Location info cannot be shown.\">" .
     	$numNodes . "</a> Nodes shown, with <a style=\"color: inherit;text-decoration: none;\" href=\"\" title=\"" .
     	$numLinksTotal . " Total links in the database." . '\n' . "Nodes without Location info cannot have links shown.\">" . 
-    	$numLinks . " links " . "&nbsp;|&nbsp;Data Last Acquired @ " . $filetime . "</strong>';\n";
+    	$numLinks . "</a> links " . "&nbsp;|&nbsp;Data Last Acquired @ " . $filetime . "</strong>';\n";
 
     $Content .= "WXCAttribution = 'Map originally created by <a href=mailto:kg6wxc@gmail.com>KG6WXC</a> Oct 2016&nbsp;with N2MH and K6GSE contributions&nbsp;|&nbsp;';\n";
 

@@ -63,10 +63,23 @@ $mtimeStart = microtime(true);
 * along with The Mesh Mapping System.  If not, see <http://www.gnu.org/licenses/>.
 ******/
 
+//Increase PHP memory limit to 128M (you may need more if you are connected to a "Mega Mesh" :) )
+ini_set('memory_limit', '128M');
+
+/***********************************************************************
+ *DO NOT CHANGE ANYTHING BELOW HERE UNLESS YOU KNOW WHAT YOU ARE DOING!!!!
+ ************************************************************************/
 $INCLUDE_DIR = "..";
 
-//our user-settings file. (ALWAYS REQUIRED!, change path if you moved it!)
-$USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini");
+//check for users user-settings.ini file and use it if it exists
+//use the default one if it does not
+global $USER_SETTINGS;
+if (file_exists("$INCLUDE_DIR . /scripts/user-settings.ini")) {
+    $USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini");
+}else {
+    echo "\n\nYou **must** copy the user-settings.ini-default file to user-settings.ini and edit it!!\n\n";
+    //$USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini-default");
+}
 
 //kg6wxc's functions. (ALWAYS REQUIRED!, change path if you moved it!)
 require $INCLUDE_DIR . "/scripts/wxc_functions.inc";
@@ -74,13 +87,6 @@ require $INCLUDE_DIR . "/scripts/wxc_functions.inc";
 //the custom include file
 //the "@" just suppresses any errors if the file is not found, the file is optional
 @include $INCLUDE_DIR . "/custom.inc";
-
-//Increase PHP memory limit to 128M (you may need more if you are connected to a "Mega Mesh" :) )
-ini_set('memory_limit', '128M');
-
-/***********************************************************************
- *DO NOT CHANGE ANYTHING BELOW HERE UNLESS YOU KNOW WHAT YOU ARE DOING!!!!
- ************************************************************************/
 
 $script_arg = "";
 if (isset($argv[1])) {

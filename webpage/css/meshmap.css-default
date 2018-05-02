@@ -1,7 +1,22 @@
+/*** background color of the overall page ***/
 body {
     background-color: #dddddd;
 }
-
+/*** This will change the size of the top left corner logo ***/
+#pageLogo {
+	width: 50px;
+	vertical-align: middle;
+}
+/*** This will change the size of the map "container" ***/
+#meshmap {
+	width: 1200px;
+	height: 700px;
+}
+/*** this is the size of the map itself ***/
+#mapid {
+	width: 100%;
+	height: 95%;
+}
 h1 {
     color: navy;
     margin-left: 20px;

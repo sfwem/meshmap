@@ -1,7 +1,7 @@
 <!-- KG6WXC MeshMap README.md file -->
 
 
-<!-- April 2018 -->
+<!-- May 2018 -->
 
 
 <p><img src="https://mapping.kg6wxc.net/meshmap/images/MESHMAP_LOGO.svg" style="float:left; vertical-align: middle;"/><h1 style="float: left; vertical-align: middle;">MeshMap</h1><br/>
@@ -43,9 +43,9 @@ Donations / Beer accepted! :) (paypal possibly coming soon, email: kg6wxc@gmail.
 </ul>
 
 
-<blockquote style="background: #d3d3d3;">In theory, this <em>should</em> run on a Windows system as well.<br/>
+<blockquote style="background: #d3d3d3; margin-right: 30%;">In theory, this <em>should</em> run on a Windows system as well.<br/>
 It does not require anything specific to Linux (<em>Perhaps with the exception of the cron task</em>).<br/>
-There is no reason that it could not be adapted to run from a Windows scheduled task though.<br/>
+There is no reason that part could not be adapted to run from a Windows scheduled task though.<br/>
 PHP is PHP after all.</blockquote>
 
 
@@ -65,7 +65,7 @@ It also takes <em>100&rsquo;s of GB of HD space</em> if you want to map the enti
 A good place to start for more info is: <a href="https://switch2osm.org/serving-tiles/">https://switch2osm.org/serving-tiles/</a><br/>
 If you attempt it, be patient, you <em>will</em> get it wrong more than a few times but in the end you might be surprised. :)</p>
 
-<blockquote style="background: #d3d3d3;">Another option is that some programs, Xastir in particular, will save the map tiles they use.<br/>
+<blockquote style="background: #66cc66; margin-right: 30%;">Tip: Another option is that some programs, Xastir in particular, will save the map tiles they use.<br/>
 You *can* use those tiles as well, but they must be made to be accessible by your webserver.</blockquote>
 
 
@@ -74,10 +74,11 @@ You *can* use those tiles as well, but they must be made to be accessible by you
 <p>You <em>might</em> be able to convince KG6WXC to create local map tiles for you, if the area you want is in the USA, he does not have the available SSD space for the entire world&hellip; yet.<br/>
 If you do ask, be prepared, it literally takes KG6WXC&rsquo;s system about 3-4 days just to render the tiles for a smallish area and it&rsquo;s kind of a PITA!</p>
 
-<blockquote style="background: #d3d3d3;">As an example, KG6WXC once made tiles for the Mesa Az. mesh group.<br/>
+<blockquote style="background: #d3d3d3; margin-right: 30%">As an example, KG6WXC once made tiles for the Mesa Az. mesh group.<br/>
 It was a smallish area around Phoenix Az, out to a zoom of about 8 or something.<br/>
 It ended up at around 3GB of map tiles and took about 4 days of total run time to render on the server...<br/>
-<em>and</em> it had to restart a few times too, due to running out of 8GB of RAM and having to tweak a few things along the way... so it actually took longer than that.<br/>
+<em>and</em> it had to restart a few times too, due to running out of 8GB of RAM and having to tweak a few things along the way...<br/>
+It actually took much longer than the 4 days of actual run time.<br/>
 Building/Using a map tile server is not for the faint of heart!</blockquote>
 
 
@@ -99,27 +100,24 @@ Here is an example of creating a mySQL user and granting access to the node_map 
 <code>CREATE USER 'mesh-map'@'localhost' IDENTIFIED BY 'password';</code><br/>
 <code>GRANT SELECT, DELETE, DROP, INSERT, TRIGGER, UPDATE on node_map.* TO 'mesh-map'@'localhost';</code><br/>
 <code>FLUSH PRIVLEGES;</code></p></blockquote></li>
-<li><p><strong>4: Decompress user-files.tar.gz</strong><br/>
-<em>Example</em>: <code>tar -zxvf user-files.tar.gz</code><br/>
-This will decompress the files for the settings.<br/>
-They are distributed in compressed format so that <em>your</em> files do not get overwritten when the rest of the scripts get updated.<br/>
-(If anyone has a better idea for how to keep the user edited files updated and &ldquo;away&rdquo; from the git repo,<br/>
-yet still in the same directory and allow for not changing the users edits, it&rsquo;d be great to hear about it)</p>
+<li><p><strong>4: Copy scripts/user-settings.ini-default to /scripts/user-settings.ini and edit the user-settings.ini file</strong></p>
 
 <ul>
-<li>The file scripts/user-settings.ini is probably the most important.<br/>
+<li>The file scripts/user-settings.ini is the most important to get right.<br/>
 It is <strong>very important</strong> to make sure your SQL username and password are correct in scripts/user-settings.ini!!</li>
 <li>Also important is, if the system that this is running on cannot resolve &ldquo;localnode.local.mesh&rdquo; you can change that in the user-settings.ini file.</li>
+<li>Once you save to the user-settings.ini file any changes you make will not be overwritten by future updates.<br/>
+The &ldquo;-default&rdquo; files <em>will probably</em> change though and you will need to update your personal files when this happens.</li>
 <li>There are many other things you can change in the ini files. Default Map center position, the header messages, etc.</li>
 <li><em>Please read</em> the comments in the user-settings.ini file for more info about the different settings.</li>
-<li>There is also a &ldquo;custom.inc&rdquo; PHP file that can be used for more site specific overrides if needed.</li>
+<li>There is also a &ldquo;custom.inc-default&rdquo; PHP file that can be used for more site specific overrides if needed.<br/>
+Read that file for info on what it does, it can safely be ignored by most users.</li>
 </ul>
 </li>
 </ul>
 
 
-<blockquote style="background: #FFFF99;">The way the user editable files are distrubuted will change in the near future, for now use this method.<br/>
-I will <em>always</em> strive to not overwrite your site changes when I make updates to certain files.</blockquote>
+<blockquote style="background: #B00000; margin-right: 45%;"><strong>The way the user editable files are distrubuted has changed!.</strong><br/></blockquote>
 
 
 <p></p>
@@ -128,26 +126,26 @@ I will <em>always</em> strive to not overwrite your site changes when I make upd
 <li><strong>4.5: To make sure it is all working at this point is probably a good idea.</strong><br/>
 You should now be able to run get-map-info.php from the scripts directory.<br/>
 I would suggest giving it a test run or two first.<br/>
-Node polling can take lots of time, espessialy on a large network. Be Patient! :)<br/>
+Node polling can take lots of time, especially on a large network. Be Patient! :)<br/>
 Enter the meshmap/scripts directory.<br/>
-  <blockquote style="background: #66CC66;">Tip: if you get a &ldquo;command not found&rdquo; error, you may need to run it like this:<br/> <code>./get-map-info.php &lt;option&gt;</code> </blockquote>
+  <blockquote style="background: #66CC66; margin-right: 35%;">Tip: if you get a &ldquo;command not found&rdquo; error, you may need to run it like this:<br/> <code>./get-map-info.php &lt;option&gt;</code> </blockquote>
 These are options you can send to get-map-info.php:
 
 <blockquote><p><code>--test-mode-no-sql</code><br/>
 Output to console only, <em>do not</em> read/write to the database.<br/>
-  <blockquote style="background: #FFFF99;">This will make sure the scripts can reach your localnode and the rest of the network.<br/>
+  <blockquote style="background: #FFFF99; margin-right: 30%">This will make sure the scripts can reach your localnode and the rest of the network.<br/>
   This will <strong>not</strong> update the database, you won&rsquo;t see anything on the map page yet, it only outputs to the terminal for testing.</blockquote>
 <code>--test-mode-with-sql</code><br/>
 Output to console <em>and</em> read/write to the database.<br/>
-  <blockquote style="background: #FFFF99;">This will ensure everything is setup correctly and get some data into your database!</blockquote>
-  <blockquote style="background: #66CC66;">Tip: <em><strong>Do not</strong></em> ctrl-C out of the script while it is using the database!<br/>
+  <blockquote style="background: #FFFF99; margin-right: 40%;">This will ensure everything is setup correctly and get some data into your database!</blockquote>
+  <blockquote style="background: #66CC66; margin-right: 30%;">Tip: <em><strong>Do not</strong></em> ctrl-C out of the script while it is using the database!<br/>
   Let it finish, even if it seems hung up.<br/>
   You should recieve some error if something is <em>actually</em> wrong.<br/>
   Using ctrl-C to stop the script midway will cause problems in the database, <em>do not</em> do it!</blockquote></p></blockquote></li>
 </ul>
 
 
-<blockquote style="background: #d3d3d3;">If the --test-mode-no-sql is successful, you can go ahead and run the script with --test-mode-with-sql or just without any options.<br/>
+<blockquote style="background: #d3d3d3; margin-right: 30%;">If the --test-mode-no-sql is successful, you can go ahead and run the script with --test-mode-with-sql or just without any options.<br/>
 Run the script without options and there is no on screen output (this is for cron).</blockquote>
 
 
@@ -158,7 +156,7 @@ Run the script without options and there is no on screen output (this is for cro
 Once the file is copied, you need to edit it and make sure the <code>&lt;Alias&gt;</code> and <code>&lt;Directory&gt;</code> directives have the correct paths.<br/>
 After you have made sure the file is correct then run: <code>sudo a2enconf httpd-meshmap</code><br/>
 This is will load the config into Apache and if successful, it will tell you to reload apache, do so.<br/>
-  <blockquote style="background: #d3d3d3;"><em>Other linux distibutions may require you to copy this file into /etc/httpd/extra<br/>
+  <blockquote style="background: #d3d3d3; margin-right: 30%;"><em>Other linux distibutions may require you to copy this file into /etc/httpd/extra<br/>
 and then edit /etc/httpd/httpd.conf and add the line:</em> <code>Include extra/httpd-meshmap.conf</code> <em>somewhere.</em></blockquote></p></li>
 <li><p><strong>6: Load up the page: http://myhostname/meshmap/index.php and you should hopefully see your data.</strong><br/>
 You may or may not see any map tiles, depending on if the system you are using to view the page has access to the internet or not.<br/>
@@ -169,7 +167,7 @@ Copy the cronscript.sh file out of the meshmap directory and place it in the hom
 Then, you <strong>must</strong> edit the cronscript.sh file and make sure the path it uses to get to the scripts directory is correct!<br/>
 After that, create a cron entry with <code>crontab -e</code><br/>
 A cron entry is as easy as this: <code>* * * * * /home/pi/cronscript.sh</code><br/>
-  <blockquote style="background: #d3d3d3;">You <em>can</em> safely run the script every minute in cron like this.<br/>
+  <blockquote style="background: #d3d3d3; margin-right: 30%;">You <em>can</em> safely run the script every minute in cron like this.<br/>
 It won&rsquo;t actually do anything unless the intervals specified in the ini file have expired.</blockquote></p></li>
 </ul>
 
@@ -185,7 +183,7 @@ For now tho, if the ini files change, and you still have the old ones in use, th
 Hopefully in the future this process can be more automated.</p>
 
 <p>If you make changes beyond the user editable files I encourage you to perhaps push the changes upstream, please contact kg6wxc@gmail.com if you wish to do so.<br/>
-    <blockquote style="background: #d3d3d3;">I am making changes all the time, it would be a good idea to run &ldquo;git pull&rdquo; from time to time to find any updates.</blockquote></p>
+    <blockquote style="background: #d3d3d3; margin-right: 30%;">I am making changes all the time, it would be a good idea to run &ldquo;git pull&rdquo; from time to time to find any updates.</blockquote></p>
 
 <h2>Notes on usage of the map pages</h2>
 
@@ -206,12 +204,12 @@ The admin pages also allow for the addition of &ldquo;Non Mesh&rdquo; Markers, f
 
 <p>(In no particular order)<br/>
 - [x] Add new MeshMap Logo.<br/>
-- [ ] Change the user editable files to be distributed with &ldquo;-default&rdquo; added to the extension, no more tar.gz file.<br/>
+- [x] Change the user editable files to be distributed with &ldquo;-default&rdquo; added to the extension, no more tar.gz file.<br/>
 - [ ] Use a cookie instead of _POST for the internet check (No more stupid dialog box on refresh).<br/>
 - [ ] Make &ldquo;Parallel Threads&rdquo; work again in get-map-info script, with limits on how many can be run at once (this will greatly speed up network polling).<br/>
 - [ ] Changes so sbarc.org can have the new version too!<br/>
 - [ ] Change css file for the &ldquo;?&rdquo; slide-out menu.<br/>
-- [ ] Fix a typo in the attribution bar so the pop-up for the links is only for the links number.<br/>
+- [x] Fix a typo in the attribution bar so the pop-up for the links is only for the links number.<br/>
 - [ ] Implement N2MH&rsquo;s &ldquo;Link aging&rdquo; idea(s).<br/>
 - [ ] The &ldquo;Planning&rdquo; Tab.<br/>
 - [ ] Make it so other networks can export their data for use on a &ldquo;Mega Map&rdquo; type page. :)</p>
@@ -224,4 +222,4 @@ The admin pages also allow for the addition of &ldquo;Non Mesh&rdquo; Markers, f
 I can&rsquo;t think of <em>everything</em>!<br/>
 If you find an improvement, typo, or whatever, please, send an email to kg6wxc@gmail.com and we can get you setup with write access if you&rsquo;d like!</p>
 
-<p>This README file last updated: april 2018</p>
+<p>This README file last updated: May 2018</p>

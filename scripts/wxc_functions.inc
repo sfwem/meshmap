@@ -1,8 +1,12 @@
 <?php
+
 /********************************************************
  * KG6WXC's Custom Functions for the MESH mapping system
  * With many many thanks to N2MH and K6GSE for helping
  * find bugs and make many good improvements over what I had before!
+ * @author      Eric Satterlee, KG6WXC with K6GSE
+ * @copyright   Copyright (c) 2018 as Open Source
+ * @license     GPLv3 or later
  *******************************************************/
 
 /******

@@ -4,6 +4,7 @@
  * @category   Mesh
  * @author     Eric Satterlee, KG6WXC with Glen, K6GSE and Mark, N2MH
  * @version    $Id$
+ * @copyright  Copyright (c) 2018 as Open Source
  * @license    GPLv3 or later
  * @abstract   Eric has written a tool called get-map-info which retrieves HAM Mesh network devices,
  *                     their configuration and Linkage information. These details are populated in several SQL tables.
@@ -117,13 +118,34 @@
 * -----------------
 */
 
-$INCLUDE_DIR = "..";
-$USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini");
-global $MESH_SETTINGS;
-$MESH_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/meshmap-settings.ini");
-
 //Increase PHP memory limit to 128M (you may need more if you are connected to a "Mega Mesh" :) )
 ini_set('memory_limit', '128M');
+
+/******
+* You should not need to change much below here
+******/
+
+$INCLUDE_DIR = "..";
+
+//check for users user-settings.ini file and use it if it exists
+//use the default one if it does not
+global $USER_SETTINGS;
+if (file_exists("$INCLUDE_DIR . /scripts/user-settings.ini")) {
+    $USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini");
+}else {
+    echo "You <strong><em>must</em></strong> copy the user-settings.ini-default file to user-settings.ini and edit it!\n";
+    //$USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini-default");
+}
+global $MESH_SETTINGS;
+//check for users user-settings.ini file and use it if it exists
+//use the default one if it does not
+if (file_exists("$INCLUDE_DIR . /scripts/meshmap-settings.ini")) {
+    $MESH_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/meshmap-settings.ini");
+}else {
+    $MESH_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/meshmap-settings.ini-default");
+}
+
+
 
 require $INCLUDE_DIR . "/scripts/wxc_functions.inc";
 require $INCLUDE_DIR . "/scripts/map_functions.inc";
@@ -139,8 +161,8 @@ date_default_timezone_set($USER_SETTINGS['localTimeZone']);
 global $inetAccess;
 global $mesh;
 
-if (isset($_GET['inetAccess']) || isset($_POST['inetAccess'])) {
-    $inetAccess = $_GET['inetAccess'] || $_POST['inetAccess'];
+if (isset($_POST['inetAccess'])) {
+    $inetAccess = $_POST['inetAccess'];
     if ($inetAccess == "1") {
         $mesh = "0";
     }elseif ($inetAccess == "0") {
@@ -253,11 +275,19 @@ echo $page_header . "\n";
 echo "<title>" . $USER_SETTINGS['pageTitle'] . "</title>\n";
 
 /*
+ * check for the users meshmap.css file and use it if it exists...
+ * if not, use the "-default" file (meshmap.css-default)
+ */
+if (file_exists ("./css/meshmap.css")) {
+    echo "<link href='css/meshmap.css' rel='stylesheet'>\n";
+}else {
+    echo "<link href='css/meshmap.css-default' rel='stylesheet'>\n";
+}
+
+/*
  * If the client has internet access load everything from there
  * if not, use the local resources.
  */
-echo "<link href='css/meshmap.css' rel='stylesheet'>\n";
-
 if (!$mesh) {
     echo "<link rel='stylesheet' href='//unpkg.com/leaflet@1.3.1/dist/leaflet.css'>\n";
     echo "<script src='//unpkg.com/leaflet@1.3.1/dist/leaflet.js'></script>\n";
@@ -307,8 +337,8 @@ echo "<body>\n";
 //)
 if (isset($USER_SETTINGS['map_iFrame_Enabled']) && ($USER_SETTINGS['map_iFrame_Enabled']))
 {
-    echo "<div id='meshmap' style='width: 740px; height: 500px;'>\n"; // Closing tag at end of primary routine
-    echo "<div id='mapid' style='width: 100%; height: 95%;'>\n";
+    echo "<div id='meshmap'>\n"; // Closing tag at end of primary routine
+    echo "<div id='mapid'>\n";
     echo "</div>\n";
 }
 else
@@ -317,16 +347,18 @@ else
     if (isset($USER_SETTINGS['pageLogo']))
     {
         echo "<MapTitle>";
-        echo "<img src='" . $USER_SETTINGS['pageLogo'] .
-            "' alt='Map or Club Logo' width='50' style='vertical-align: middle;'>";
+//        echo "<img id='logo' src='" . $USER_SETTINGS['pageLogo'] .
+//        "' alt='Map or Club Logo' width='50' style='vertical-align: middle;'>";
+        echo "<img id='pageLogo' src='" . $USER_SETTINGS['pageLogo'] .
+        "' alt='The Logo'>";
         echo "</MapTitle>\n";
     }
     if (isset($USER_SETTINGS['logoHeaderText']))
     {
         echo "<MapTitle>";
         echo $USER_SETTINGS['logoHeaderText'];
-        echo "<br>";
         echo "</MapTitle>\n";
+        echo "<br>";
     }
     if (isset($USER_SETTINGS['welcomeMessage']))
     {
@@ -335,17 +367,19 @@ else
         //echo "<br>";
         echo "&nbsp;&nbsp;";
         echo "</Welcome_MSG>\n";
+    }
+    if (isset($USER_SETTINGS['otherTopOfMapMsg'])) {
 		echo "<Welcome_MSG2>";
 		echo $USER_SETTINGS['otherTopOfMapMsg'];
-		echo "<br>";
 		echo "</Welcome_MSG2>\n";
+		echo "<br>";
     }
     if (isset($USER_SETTINGS['meshWarning']) && $mesh)
     {
         echo "<Warning_MSG>";
         echo $USER_SETTINGS['meshWarning'];
-        echo "<br>";
         echo "</Warning_MSG>";
+        echo "<br>";
     }
 }
 
