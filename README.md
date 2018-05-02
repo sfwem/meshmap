@@ -114,7 +114,8 @@ Output to console *and* read/write to the database.
 <blockquote style="background: #d3d3d3; margin-right: 30%;">If the --test-mode-no-sql is successful, you can go ahead and run the script with --test-mode-with-sql or just without any options.<br/>
 Run the script without options and there is no on screen output (this is for cron).</blockquote>  
 
-- **5: Copy httpd-meshmap.conf to the apache2 "Conf Available" directory**, `/etc/apache2/conf-available`  
+- **5: Copy http-meshmap.conf-default to the apache2 "Conf Available" directory**, `/etc/apache2/conf-available`  
+Rename the file as httpd-meshmap.conf (or whatever you want to call it really.)  
 Once the file is copied, you need to edit it and make sure the `<Alias>` and `<Directory>` directives have the correct paths.  
 After you have made sure the file is correct then run: `sudo a2enconf httpd-meshmap`  
 This is will load the config into Apache and if successful, it will tell you to reload apache, do so.  
@@ -127,7 +128,7 @@ Even without map tiles, you should still see your data being mapped out.
 
 - **7: The cronscript.sh file is to automatically run the polling script and can be run from cron every minute.**  
 (or at whatever interval you choose)  
-Copy the cronscript.sh file out of the meshmap directory and place it in the home directory of the user running the scripts.  
+Copy the cronscript.sh-default to where ever you like and rename it to just cronscript.sh (or whatever you want).  
 Then, you **must** edit the cronscript.sh file and make sure the path it uses to get to the scripts directory is correct!  
 After that, create a cron entry with `crontab -e`  
 A cron entry is as easy as this: `* * * * * /home/pi/cronscript.sh`  
@@ -138,8 +139,8 @@ It won't actually do anything unless the intervals specified in the ini file hav
 ----------
 Simply run a "git pull" from the meshmap directory and the scripts will be updated from the git repo.  
 The user-settings.inc, meshmap-settings.ini, cronscript.sh, and custom.inc files will *not* be affected by updating.  
-The settings in the ini files *may* still change in future versions.  
-For now tho, if the ini files change, and you still have the old ones in use, things will probably break! Be Warned!  
+The settings in the default ini files *may* still change and have things added or removed in future versions.  
+For now tho, if the default ini files change, and you still have the old ones in use, things will probably break! Be Warned!  
 Hopefully in the future this process can be more automated.  
   
 If you make changes beyond the user editable files I encourage you to perhaps push the changes upstream, please contact kg6wxc@gmail.com if you wish to do so.  

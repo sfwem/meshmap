@@ -152,7 +152,8 @@ Run the script without options and there is no on screen output (this is for cro
 <p></p>
 
 <ul>
-<li><p><strong>5: Copy httpd-meshmap.conf to the apache2 &ldquo;Conf Available&rdquo; directory</strong>, <code>/etc/apache2/conf-available</code><br/>
+<li><p><strong>5: Copy http-meshmap.conf-default to the apache2 &ldquo;Conf Available&rdquo; directory</strong>, <code>/etc/apache2/conf-available</code><br/>
+Rename the file as httpd-meshmap.conf (or whatever you want to call it really.)<br/>
 Once the file is copied, you need to edit it and make sure the <code>&lt;Alias&gt;</code> and <code>&lt;Directory&gt;</code> directives have the correct paths.<br/>
 After you have made sure the file is correct then run: <code>sudo a2enconf httpd-meshmap</code><br/>
 This is will load the config into Apache and if successful, it will tell you to reload apache, do so.<br/>
@@ -163,7 +164,7 @@ You may or may not see any map tiles, depending on if the system you are using t
 Even without map tiles, you should still see your data being mapped out.</p></li>
 <li><p><strong>7: The cronscript.sh file is to automatically run the polling script and can be run from cron every minute.</strong><br/>
 (or at whatever interval you choose)<br/>
-Copy the cronscript.sh file out of the meshmap directory and place it in the home directory of the user running the scripts.<br/>
+Copy the cronscript.sh-default to where ever you like and rename it to just cronscript.sh (or whatever you want).<br/>
 Then, you <strong>must</strong> edit the cronscript.sh file and make sure the path it uses to get to the scripts directory is correct!<br/>
 After that, create a cron entry with <code>crontab -e</code><br/>
 A cron entry is as easy as this: <code>* * * * * /home/pi/cronscript.sh</code><br/>
@@ -178,8 +179,8 @@ It won&rsquo;t actually do anything unless the intervals specified in the ini fi
 
 <p>Simply run a &ldquo;git pull&rdquo; from the meshmap directory and the scripts will be updated from the git repo.<br/>
 The user-settings.inc, meshmap-settings.ini, cronscript.sh, and custom.inc files will <em>not</em> be affected by updating.<br/>
-The settings in the ini files <em>may</em> still change in future versions.<br/>
-For now tho, if the ini files change, and you still have the old ones in use, things will probably break! Be Warned!<br/>
+The settings in the default ini files <em>may</em> still change and have things added or removed in future versions.<br/>
+For now tho, if the default ini files change, and you still have the old ones in use, things will probably break! Be Warned!<br/>
 Hopefully in the future this process can be more automated.</p>
 
 <p>If you make changes beyond the user editable files I encourage you to perhaps push the changes upstream, please contact kg6wxc@gmail.com if you wish to do so.<br/>
