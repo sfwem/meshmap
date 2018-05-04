@@ -410,7 +410,9 @@ echo "</div>\n";
 //just using this for now.
 
 //it is still giving the wrong number WXC -april 2018
-$numNodes = wxc_getMySql("SELECT COUNT(*) as nodesWithLocations FROM node_info where (lat is not null or 0 or '') and (lon is not null or 0 or '')");
+//changing this based on other changes to get-map-info - may 2018
+//$numNodes = wxc_getMySql("SELECT COUNT(*) as nodesWithLocations FROM node_info where (lat is not null or 0 or '') and (lon is not null or 0 or '')");
+$numNodes = wxc_getMySql("SELECT COUNT(*) as nodesWithLocations FROM node_info where (lat != '0') and (lon != '0')");
 $numNodes = $numNodes['nodesWithLocations'];
 $numNodesTotal = count($NodeList);
 
@@ -420,7 +422,9 @@ $numMarkers = count($MarkerList);
 //$numLinks = count($TopoList);	// WXC change: probably the same thing going on here too
 //just using this for now
 //same here, probably still giving the wrong number WXC - april 2018
-$numLinks = wxc_getMySql("SELECT COUNT(*) as linksWithLocations FROM topology WHERE (nodelat is not null or 0 or '' or '0') and (nodelon is not null or 0 or '' or '0') or (linklat is not null or 0 or '' or '0') and (linklon is not null or 0 or '' or '0')");
+//changing this based on other changes to get-map-info - may 2018
+//$numLinks = wxc_getMySql("SELECT COUNT(*) as linksWithLocations FROM topology WHERE (nodelat is not null or 0 or '' or '0') and (nodelon is not null or 0 or '' or '0') or (linklat is not null or 0 or '' or '0') and (linklon is not null or 0 or '' or '0')");
+$numLinks = wxc_getMySql("SELECT COUNT(*) as linksWithLocations FROM topology WHERE (nodelat != '0') and (nodelon != '0') or (linklat != '0') and (linklon != '0')");
 $numLinks = $numLinks['linksWithLocations'];
 $numLinksTotal = count($TopoList);
 

@@ -314,6 +314,19 @@ if ($getNodeInfo) {
 				//$node = $GLOBALS['node'] = $result['node'];
 				$node = $result['node'];
 				
+				//if it's nothing other than the node name, it's some other device
+				//or something else entirely... 
+				//people hack things onto the mesh all the time
+				//
+				//kg6wxc is *not* guilty of such things... :)
+				//
+				//just a few checks for nothing usually catches it.
+                if ($node && $result['lat'] == "" && $result['lon'] == "" && $result['ssid'] == ""
+                 && $result['model'] == "" && $result['firmware_mfg'] == ""
+				 && $result['api_version'] == "") {
+                        continue;
+                }
+				
 				//gather lots of other information from OLSRD about the node being polled (we hopefully can use this later)
 				//this requires a second connection to the node. no way around that.
 				//but only if we have a firmware version >= than 3.16.0 (or "develop-16")
