@@ -336,8 +336,22 @@ if ($getNodeInfo) {
 				//save json data to some variables
 				//probably don't really need to do this, but it is what it is for now...
 				$model = $result['model'];
-				$lat = $result['lat'];
-				$lon = $result['lon'];
+				
+				//this only seems to affect some nodes.
+				//if lat || log is blank, make it "0"
+				//this was sometimes screwing up the SQL writing function
+				//but not always of course.
+				if ($result['lat'] == "") {
+				    $lat = "0";
+				}else {
+				    $lat = $result['lat'];
+				}
+				if ($result['lon'] == "") {
+				    $lon = "0";
+				}else {
+				    $lon = $result['lon'];
+				}
+				
 				$chanbw = $result['chanbw'];
 				$api_version = $result['api_version'];
 				$board_id = $result['board_id'];
@@ -346,7 +360,16 @@ if ($getNodeInfo) {
 				$active_tunnel_count = $result['active_tunnel_count'];
 				$channel = $result['channel'];
 				$firmware_mfg = $result['firmware_mfg'];
-				$grid_square = $result['grid_square'];
+				
+				//this only seems to affect some nodes.
+				//if grid_square is blank, make it NULL
+				//this was sometimes screwing up the SQL writing function
+				//but not always of course.
+				if ($result['grid_square'] == "") {
+				    $grid_square = NULL;
+				}else {
+				    $grid_square = $result['grid_square'];
+				}
 				
 				//W6BI requested this info to be added, so here it is now. :)
 				//current ip/mac address info
