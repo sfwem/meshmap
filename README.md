@@ -10,7 +10,7 @@
 Automated mapping of AREDN Networks.  
 2016-2018 - Eric Satterlee / KG6WXC  
 Addtional Credit to: Mark/N2MH and Glen/K6GSE for their work on this project.  
-Licensed under GPL v3  
+Licensed under GPL v3 and later.  
 Donations / Beer accepted! :) (paypal possibly coming soon, email: kg6wxc@gmail.com in the meantime.)
 
 [Demo Map](https://mapping.kg6wxc.net/meshmap)
@@ -156,13 +156,15 @@ Try to load up: http://(hostname)/meshmap/admin/admin.php in your web browser.
 I've tried to provide instructions on the admin pages themselves.  
 From the admin pages you can "fix" a nodes location, which can be helpful for those users that forget the "-" in front of their longitude. :)  
 The admin pages also allow for the addition of "Non Mesh" Markers, fire stations, police stations, EOC's , etc...  
+  
+You can change the way the page looks by copying webpage/css/meshmap.css-default to webpage/css/meshmap.css.  
 
 ## ToDo List
 ----------
 (In no particular order)  
 - [x] Add new MeshMap Logo.  
 - [x] Change the user editable files to be distributed with "-default" added to the extension, no more tar.gz file.  
-- [ ] Use a cookie instead of _POST for the internet check (No more stupid dialog box on refresh).  
+- [x] Use a cookie instead of _POST for the internet check (No more stupid dialog box on refresh).  
 - [ ] Make "Parallel Threads" work again in get-map-info script, with limits on how many can be run at once (this will greatly speed up network polling).  
 - [ ] Changes so sbarc.org can have the new version too!  
 - [ ] Change css file for the "?" slide-out menu.  

@@ -133,7 +133,7 @@ global $USER_SETTINGS;
 if (file_exists($INCLUDE_DIR . "/scripts/user-settings.ini")) {
     $USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini");
 }else {
-    echo "You <strong><em>must</em></strong> copy the user-settings.ini-default file to user-settings.ini and edit it!\n";
+    exit("You <strong><em>must</em></strong> copy the user-settings.ini-default file to user-settings.ini and edit it!\n");
     //$USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini-default");
 }
 global $MESH_SETTINGS;
@@ -161,6 +161,19 @@ date_default_timezone_set($USER_SETTINGS['localTimeZone']);
 global $inetAccess;
 global $mesh;
 
+if (isset($_COOKIE['meshmapClientInetAccess'])) {
+    $inetAccess = $_COOKIE['meshmapClientInetAccess'];
+    if ($inetAccess == "1") {
+        $mesh = "0";
+    }elseif ($inetAccess == "0") {
+        $mesh = "1";
+    }
+}else {
+    $inetAccess = "0";
+    $mesh = "1";
+}
+
+/*
 if (isset($_POST['inetAccess'])) {
     $inetAccess = $_POST['inetAccess'];
     if ($inetAccess == "1") {
@@ -172,10 +185,10 @@ if (isset($_POST['inetAccess'])) {
     $inetAccess = "0";
     $mesh = "1";
 }
-
+*/
 @include $INCLUDE_DIR . "/custom.inc";
 
-if (!isset($GLOBALS['internet_only'])) {
+//if (!isset($GLOBALS['internet_only'])) {
 function testForInet() {
     $page = <<< EOD
 <!DOCTYPE html>
@@ -184,6 +197,15 @@ function testForInet() {
 <title>meshmap internet check page</title>
 <script src='javascripts/ping.min.js'></script>
 <script>
+var now = new Date();
+//expire in 1 day
+//var cookieExpireTime = new Date(now.getTime() + 1 * 24 * 3600 * 1000);
+//expire in 30 minutes
+var cookieExpireTime = new Date(now.getTime() + (30 * 60 * 1000));
+function setCookie(name, value) {
+        document.cookie = name + "=" + escape(value) + "; expires=" + cookieExpireTime.toGMTString();
+}
+
 function postData(path, params, method) {
     method = method || "post";
     var form = document.createElement("form");
@@ -212,7 +234,9 @@ p.ping("//google.com", function(err, data) {
                 value = 1;
         }
         //window.location.replace("map_display.php?inetAccess="+value);
-        postData('map_display.php', {inetAccess: value});
+        //postData('map_display.php', {inetAccess: value});
+        setCookie("meshmapClientInetAccess", value);
+        window.location.replace("map_display.php");
 });
 </script>
 </head>
@@ -227,9 +251,9 @@ EOD;
     //return;
     exit("<br><br>reloading...");
 }
-}
+//}
 if (!isset($GLOBALS['internet_only'])) {
-    if (!isset($_POST['inetAccess'])) {
+    if (!isset($_COOKIE['meshmapClientInetAccess'])) {
         testForInet();
     }
 }
