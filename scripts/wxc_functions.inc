@@ -507,6 +507,8 @@ function wxc_checkOldNodes() {
 }
 
 //find any services the node knows about
+//this should be no longer called
+//but maybe we'll need it in the future.
 function wxc_findServices($json_data, $type) {
 	if ($type == "services") {
 		$services = array();

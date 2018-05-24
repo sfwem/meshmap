@@ -556,7 +556,7 @@ if ($getNodeInfo) {
 				VALUES('$wifi_mac_address', '$node', '$model', '$firmware_version',
 				'$grid_square', '$ssid', '$chanbw', '$api_version', '$board_id',
 				'$tunnel_installed', '$active_tunnel_count', '$channel',
-				'$firmware_mfg', '$lan_ip', '$wlan_ip', '$sysinfoJson', '$olsrdInfo', NOW())
+				'$firmware_mfg', '$lan_ip', '$wlan_ip', '$sysinfoJson', NOW())
 				ON DUPLICATE KEY UPDATE wifi_mac_address = '$wifi_mac_address', node = '$node', model = '$model', firmware_version = '$firmware_version',
 				grid_square = '$grid_square', ssid = '$ssid', chanbw = '$chanbw', api_version = '$api_version',
 				board_id = '$board_id', tunnel_installed = '$tunnel_installed',
