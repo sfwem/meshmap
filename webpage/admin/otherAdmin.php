@@ -14,7 +14,7 @@ $html = <<< EOD
 <br>
 <br>
 <script>
-var arname=''";
+var arname="";
 function other_loadThePage(div_id, script) {
         if (script == "fixPolling" ) {
                 $.ajax({
@@ -22,7 +22,7 @@ function other_loadThePage(div_id, script) {
                 url: "fixStuckPolling.php",
                 data: "arname="+arname,
                 success: function(msg){
-			  alert('Success!!\nPolling should now resume.');
+			  alert('Polling should now resume.');
 //                        $("#"+div_id).html(msg);
 //                                                $('#nav_link_location').css("background-color", "#dddddd");
 //                                                $('#nav_link_non_mesh').css("background-color", "");
@@ -34,16 +34,12 @@ function other_loadThePage(div_id, script) {
         }
 }
 </script>
-<a href="javascript:onclick=other_loadThePage('admin_content', 'fixPolling');">Fix stuck polling run.</a>
+<a href="javascript:onclick=other_loadThePage('admin_content','fixPolling');">Fix stuck polling run.</a>
 <br>
 (It should reset itself after 3 * node_polling_interval, but you can manually do it here also.)
 EOD;
 
 echo $html . "\n";
 }
-?>
-<?php
 
-?>
-<?php
 ?>
