@@ -19,8 +19,10 @@ Donations / Beer accepted! :) (paypal possibly coming soon, email: kg6wxc@gmail.
 ---------------
 - **Apache webserver**  
 (or equiv)  
-- **PHP**  
-- **PHP mysqli extension**   
+- **PHP5+**  
+- **mysqli PHP extension**   
+- **openssl PHP extension**  
+(One or both of these extensions may need to be enabled in php.ini)  
 - **MySQL/MariaDB**  
 (Other database systems are up to you)
 - **An AREDN Mesh node available over the local network**  
@@ -75,10 +77,11 @@ Building/Using a map tile server is not for the faint of heart!</blockquote>
 *Example*: `sudo mysql < node_map.sql`
 
 - **3: Create a user for the database, you might have to login to the mysql server as root.**  
-Here is an example of creating a mySQL user and granting access to the node_map database:
+Here is an example of creating a mySQL user and granting access to the node_map database:  
+Choose your own password!
 > `sudo mysql`  
 > `CREATE USER 'mesh-map'@'localhost' IDENTIFIED BY 'password';`  
-> `GRANT SELECT, DELETE, DROP, INSERT, TRIGGER, UPDATE on node_map.* TO 'mesh-map'@'localhost';`  
+> `GRANT ALL PRIVILEGES on node_map.* TO 'mesh-map'@'localhost';`  
 > `FLUSH PRIVLEGES;`
 
 - **4: Copy scripts/user-settings.ini-default to /scripts/user-settings.ini and edit the user-settings.ini file**  
@@ -87,7 +90,8 @@ Here is an example of creating a mySQL user and granting access to the node_map 
     * Also important is, if the system that this is running on cannot resolve "localnode.local.mesh" you can change that in the user-settings.ini file.  
     * Once you save to the user-settings.ini file any changes you make will not be overwritten by future updates.  
     The "-default" files *will probably* change though and you will need to update your personal files when this happens.
-    * There are many other things you can change in the ini files. Default Map center position, the header messages, etc.  
+    * There are many other things you can change in the ini files.  
+    The default center position of the map, node expiration intervals, the header messages, logo, etc.  
     * *Please read* the comments in the user-settings.ini file for more info about the different settings.  
     * There is also a "custom.inc-default" PHP file that can be used for more site specific overrides if needed.  
     Read that file for info on what it does, it can safely be ignored by most users.
@@ -152,16 +156,22 @@ http://(hostname)/meshmap/node_report.php will show you all the info in the DB w
 This can be useful to see if all the data is there or to find nodes that have no location set. (or other issues)  
     
 There is an "admin" page, which is still in the works, what is there now does work tho.  
-Try to load up: http://(hostname)/meshmap/admin/admin.php in your web browser.  
+Load up: http://(hostname)/meshmap/admin/admin.php in your web browser.  
+The first time the admin page is loaded it will ask you to create a username and password, do so.  
+This initial user will be a "super-user" and can then add/remove other users.  
 I've tried to provide instructions on the admin pages themselves.  
 From the admin pages you can "fix" a nodes location, which can be helpful for those users that forget the "-" in front of their longitude. :)  
-The admin pages also allow for the addition of "Non Mesh" Markers, fire stations, police stations, EOC's , etc...  
+You can add the "Non Mesh" Markers, fire stations, police stations, EOC's , etc from the admin pages...  
+The admin pages also allow for some maintenance of the database, more feedback is encouraged on this!  
   
-You can change the way the page looks by copying webpage/css/meshmap.css-default to webpage/css/meshmap.css.  
+You can change the way the page looks by copying webpage/css/meshmap-default.css to webpage/css/meshmap.css.  
+The meshmap.css file will be used in place of the -default.css file.  
+(This also applies to other *-default.css files)  
 
 ## ToDo List
 ----------
 (In no particular order)  
+- [x] Finally finish my admin page idea.  
 - [x] Add new MeshMap Logo.  
 - [x] Change the user editable files to be distributed with "-default" added to the extension, no more tar.gz file.  
 - [x] Use a cookie instead of _POST for the internet check (No more stupid dialog box on refresh).  

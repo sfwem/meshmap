@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
--- Host:                         camphost
--- Server version:               10.0.30-MariaDB - MariaDB Server
+-- Host:                         192.168.81.222
+-- Server version:               10.2.14-MariaDB-log - MariaDB Server
 -- Server OS:                    Linux
--- HeidiSQL Version:             9.5.0.5264
+-- HeidiSQL Version:             9.4.0.5125
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -27,27 +27,15 @@ CREATE TABLE IF NOT EXISTS `hosts_ignore` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Hostnames to ignore because they are probably not AREDN nodes.';
 
 -- Data exporting was unselected.
--- Dumping structure for table node_map.mac_ip_name_map
-CREATE TABLE IF NOT EXISTS `mac_ip_name_map` (
-  `mac_address` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ip_address` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `node_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  UNIQUE KEY `hostname` (`node_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Hostnames, IP address, and MAC addresses';
-
--- Data exporting was unselected.
 -- Dumping structure for table node_map.map_info
 CREATE TABLE IF NOT EXISTS `map_info` (
   `id` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `table_or_script_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `table_records_num` int(11) DEFAULT NULL,
-  `table_update_num` int(11) NOT NULL DEFAULT '0',
+  `table_update_num` int(11) NOT NULL DEFAULT 0,
   `table_last_update` datetime DEFAULT NULL,
   `script_last_run` datetime DEFAULT NULL,
-  `currently_running` int(11) DEFAULT '0' COMMENT 'tells us if getNodeInfo is currently running or not',
-  `user` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `passwd` varchar(256) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `last_login` datetime DEFAULT NULL,
+  `currently_running` int(11) DEFAULT 0 COMMENT 'tells us if getNodeInfo is currently running or not',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Keeping track of some things about the map';
 
@@ -67,53 +55,51 @@ CREATE TABLE IF NOT EXISTS `marker_info` (
 -- Data exporting was unselected.
 -- Dumping structure for table node_map.node_info
 CREATE TABLE IF NOT EXISTS `node_info` (
-  `wifi_mac_address` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `node` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `lat` double DEFAULT NULL,
-  `lon` double DEFAULT NULL,
+  `wlan_ip` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `last_seen` datetime DEFAULT NULL,
   `model` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `firmware_version` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `ssid` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `channel` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `chanbw` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `api_version` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `board_id` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `tunnel_installed` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `active_tunnel_count` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `channel` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `grid_square` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `lat` double DEFAULT NULL,
+  `lon` double DEFAULT NULL,
+  `wifi_mac_address` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `api_version` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `board_id` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `firmware_mfg` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `grid_square` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `lan_ip` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `wlan_ip` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sysinfo_json` mediumblob,
-  `olsrinfo_json` mediumblob,
-  `last_seen` datetime DEFAULT NULL,
-  `location_fix` int(11) DEFAULT '0',
+  `sysinfo_json` mediumblob DEFAULT NULL,
+  `location_fix` int(11) DEFAULT 0,
   UNIQUE KEY `node` (`node`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Information about the nodes\r\ntaken from sysinfo.json that is on every node.';
 
 -- Data exporting was unselected.
 -- Dumping structure for table node_map.removed_nodes
 CREATE TABLE IF NOT EXISTS `removed_nodes` (
-  `wifi_mac_address` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `node` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `lat` double DEFAULT NULL,
-  `lon` double DEFAULT NULL,
+  `wlan_ip` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `last_seen` datetime DEFAULT NULL,
   `model` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `firmware_version` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `ssid` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `channel` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `chanbw` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `api_version` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `board_id` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `tunnel_installed` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `active_tunnel_count` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `channel` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `gridsquare` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `lat` double DEFAULT NULL,
+  `lon` double DEFAULT NULL,
+  `wifi_mac_address` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `api_version` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `board_id` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `firmware_mfg` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `grid_square` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `lan_ip` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `wlan_ip` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sysinfo_json` mediumblob,
-  `olsrinfo_json` mediumblob,
-  `last_seen` datetime DEFAULT NULL,
+  `sysinfo_json` mediumblob DEFAULT NULL,
   `time_removed` datetime DEFAULT NULL,
   UNIQUE KEY `node` (`node`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='A place to put old nodes';
@@ -137,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `topology` (
 -- Dumping structure for table node_map.users
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `admin` int(1) DEFAULT '0',
+  `admin` int(1) DEFAULT 0,
   `user` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `passwd` varchar(256) COLLATE utf8_unicode_ci DEFAULT NULL,
   `last_login` datetime DEFAULT NULL,

@@ -85,7 +85,8 @@ function build_NodesAndLinks($NodeList, $TopoList, $MarkerList = null)
                 /*
                 * Find the Services for the node
                 ********************************/
-                $node_ServiceList = load_ServiceList($node_info['olsrinfo_json']);
+			//	$node_ServiceList = load_ServiceList($node_info['olsrinfo_json']);
+				$node_ServiceList = "";
 
                 /*
                 * Build the Nodes Marker

@@ -26,8 +26,10 @@ Donations / Beer accepted! :) (paypal possibly coming soon, email: kg6wxc@gmail.
 <ul>
 <li><strong>Apache webserver</strong><br/>
 (or equiv)</li>
-<li><strong>PHP</strong></li>
-<li><strong>PHP mysqli extension</strong></li>
+<li><strong>PHP5+</strong></li>
+<li><strong>mysqli PHP extension</strong></li>
+<li><strong>openssl PHP extension</strong><br/>
+(One or both of these extensions may need to be enabled in php.ini)</li>
 <li><strong>MySQL/MariaDB</strong><br/>
 (Other database systems are up to you)</li>
 <li><strong>An AREDN Mesh node available over the local network</strong><br/>
@@ -94,11 +96,12 @@ Building/Using a map tile server is not for the faint of heart!</blockquote>
 <li><p><strong>2: Import the SQL file to create the database</strong><br/>
 <em>Example</em>: <code>sudo mysql &lt; node_map.sql</code></p></li>
 <li><p><strong>3: Create a user for the database, you might have to login to the mysql server as root.</strong><br/>
-Here is an example of creating a mySQL user and granting access to the node_map database:</p>
+Here is an example of creating a mySQL user and granting access to the node_map database:<br/>
+Choose your own password!</p>
 
 <blockquote><p><code>sudo mysql</code><br/>
 <code>CREATE USER 'mesh-map'@'localhost' IDENTIFIED BY 'password';</code><br/>
-<code>GRANT SELECT, DELETE, DROP, INSERT, TRIGGER, UPDATE on node_map.* TO 'mesh-map'@'localhost';</code><br/>
+<code>GRANT ALL PRIVILEGES on node_map.* TO 'mesh-map'@'localhost';</code><br/>
 <code>FLUSH PRIVLEGES;</code></p></blockquote></li>
 <li><p><strong>4: Copy scripts/user-settings.ini-default to /scripts/user-settings.ini and edit the user-settings.ini file</strong></p>
 
@@ -108,7 +111,8 @@ It is <strong>very important</strong> to make sure your SQL username and passwor
 <li>Also important is, if the system that this is running on cannot resolve &ldquo;localnode.local.mesh&rdquo; you can change that in the user-settings.ini file.</li>
 <li>Once you save to the user-settings.ini file any changes you make will not be overwritten by future updates.<br/>
 The &ldquo;-default&rdquo; files <em>will probably</em> change though and you will need to update your personal files when this happens.</li>
-<li>There are many other things you can change in the ini files. Default Map center position, the header messages, etc.</li>
+<li>There are many other things you can change in the ini files.<br/>
+The default center position of the map, node expiration intervals, the header messages, logo, etc.</li>
 <li><em>Please read</em> the comments in the user-settings.ini file for more info about the different settings.</li>
 <li>There is also a &ldquo;custom.inc-default&rdquo; PHP file that can be used for more site specific overrides if needed.<br/>
 Read that file for info on what it does, it can safely be ignored by most users.</li>
@@ -194,18 +198,24 @@ Hopefully in the future this process can be more automated.</p>
 This can be useful to see if all the data is there or to find nodes that have no location set. (or other issues)</p>
 
 <p>There is an &ldquo;admin&rdquo; page, which is still in the works, what is there now does work tho.<br/>
-Try to load up: http://(hostname)/meshmap/admin/admin.php in your web browser.<br/>
+Load up: http://(hostname)/meshmap/admin/admin.php in your web browser.<br/>
+The first time the admin page is loaded it will ask you to create a username and password, do so.<br/>
+This initial user will be a &ldquo;super-user&rdquo; and can then add/remove other users.<br/>
 I&rsquo;ve tried to provide instructions on the admin pages themselves.<br/>
 From the admin pages you can &ldquo;fix&rdquo; a nodes location, which can be helpful for those users that forget the &ldquo;-&rdquo; in front of their longitude. :)<br/>
-The admin pages also allow for the addition of &ldquo;Non Mesh&rdquo; Markers, fire stations, police stations, EOC&rsquo;s , etc&hellip;</p>
+You can add the &ldquo;Non Mesh&rdquo; Markers, fire stations, police stations, EOC&rsquo;s , etc from the admin pages&hellip;<br/>
+The admin pages also allow for some maintenance of the database, more feedback is encouraged on this!</p>
 
-<p>You can change the way the page looks by copying webpage/css/meshmap.css-default to webpage/css/meshmap.css.</p>
+<p>You can change the way the page looks by copying webpage/css/meshmap-default.css to webpage/css/meshmap.css.<br/>
+The meshmap.css file will be used in place of the -default.css file.<br/>
+(This also applies to other *-default.css files)</p>
 
 <h2>ToDo List</h2>
 
 <hr />
 
 <p>(In no particular order)<br/>
+- [x] Finally finish my admin page idea.<br/>
 - [x] Add new MeshMap Logo.<br/>
 - [x] Change the user editable files to be distributed with &ldquo;-default&rdquo; added to the extension, no more tar.gz file.<br/>
 - [x] Use a cookie instead of _POST for the internet check (No more stupid dialog box on refresh).<br/>

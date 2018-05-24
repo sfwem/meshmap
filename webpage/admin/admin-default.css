@@ -64,7 +64,7 @@ a.normalTextLink {
 }
 #admin_header {
 	position: relative;
-	height: 4.9em;
+	height: 6.5em;
 	width: 100%;
 	/*testing*/
 	/*background-color: aqua;*/
@@ -160,7 +160,7 @@ a.normalTextLink {
 }
 #admin_status {
 	position: absolute;
-	float: left;
+	float: right;
 	right: 0;
 	top: 0;
 	font-size: .75em;

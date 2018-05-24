@@ -452,7 +452,7 @@ function wxc_checkOldNodes() {
 		$oldNodeQuery = 
 			"INSERT INTO removed_nodes (
 			wifi_mac_address, node, model, firmware_version, lat, lon, ssid, chanbw, api_version, board_id,
-			tunnel_installed, active_tunnel_count, channel, firmware_mfg, lan_ip, wlan_ip, sysinfo_json, olsrinfo_json, last_seen, time_removed)
+			tunnel_installed, active_tunnel_count, channel, firmware_mfg, lan_ip, wlan_ip, sysinfo_json, last_seen, time_removed)
 			VALUES ";
 		$valuesArray = array();
 		foreach ($oldNodes as $row) {
@@ -474,11 +474,11 @@ function wxc_checkOldNodes() {
 			$lan_ip = $row['lan_ip'];
 			$wlan_ip = $row['wlan_ip'];
 			$sysinfo_json = $row['sysinfo_json'];
-			$olsrinfo_json = $row['olsrinfo_json'];
+			//$olsrinfo_json = $row['olsrinfo_json'];
 			$last_seen = $row['last_seen'];
 			
 			$valuesArray[] = "('$wifi_mac_address', '$node', '$model', '$firmware_version', '$lat', '$lon', '$ssid', '$chanbw', '$api_version', '$board_id',
-				'$tunnel_installed', '$active_tunnel_count', '$channel', '$firmware_mfg', '$lan_ip', '$wlan_ip', '$sysinfo_json', '$olsrinfo_json', '$last_seen', NOW())";
+				'$tunnel_installed', '$active_tunnel_count', '$channel', '$firmware_mfg', '$lan_ip', '$wlan_ip', '$sysinfo_json', '$last_seen', NOW())";
 		}
 		
 		if ($valuesArray) {

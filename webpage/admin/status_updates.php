@@ -23,7 +23,7 @@ if (!$sql_connection) {
     $totalNumLinksWithLocations = mysqli_num_rows(mysqli_query($sql_connection, "SELECT node from topology where ((linklat != '0' OR linklat IS NOT NULL) AND (linklon != '0' OR linklon IS NOT NULL)) AND ((nodelat != '0' OR nodelat IS NOT NULL) AND (nodelon != '0' OR nodelon IS NOT NULL));"));
     $totalRemovedNodes = mysqli_num_rows(mysqli_query($sql_connection, "SELECT node from removed_nodes"));
     $totalIgnoredNodes = mysqli_num_rows(mysqli_query($sql_connection, "SELECT ip FROM hosts_ignore"));
-    $lastUpdateNodeInfo = wxc_getMySql("SELECT currently_running, table_last_update FROM map_info WHERE id = 'NODEINFO'");
+    $lastUpdateNodeInfo = wxc_getMySql("SELECT currently_running, table_last_update, script_last_run FROM map_info WHERE id = 'NODEINFO'");
     $lastUpdateLinkInfo = wxc_getMySql("SELECT table_last_update FROM map_info WHERE id = 'LINKINFO'");
     $totalNumNonMeshMarkers = mysqli_num_rows(mysqli_query($sql_connection, "SELECT name from marker_info"));
     mysqli_close($sql_connection);
@@ -63,7 +63,7 @@ echo "<td class=\"admin_sql_status_table_background\">With Locations:</td>\n";
 echo "<td class=\"admin_sql_status_table_background\">$totalNumNodesWithLocations</td>\n";
 echo "<td colspan=\"2\" class=\"admin_sql_status_table_background\">Nodes Last Polled:</td>\n";
 //echo "<td class=\"admin_sql_status_table_background\">&nbsp;</td>\n";
-echo "<td class=\"admin_sql_status_table_background\">" . $lastUpdateNodeInfo['table_last_update'] . "\n";
+echo "<td class=\"admin_sql_status_table_background\">" . $lastUpdateNodeInfo['script_last_run'] . "\n";
 echo "<td class=\"admin_sql_status_table_background\"></td>\n";
 echo "</tr>";
 echo "<tr>";

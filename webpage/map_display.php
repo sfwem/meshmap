@@ -300,12 +300,12 @@ echo "<title>" . $USER_SETTINGS['pageTitle'] . "</title>\n";
 
 /*
  * check for the users meshmap.css file and use it if it exists...
- * if not, use the "-default" file (meshmap.css-default)
+ * if not, use the "-default" file (meshmap-default.css)
  */
 if (file_exists ("./css/meshmap.css")) {
     echo "<link href='css/meshmap.css' rel='stylesheet'>\n";
 }else {
-    echo "<link href='css/meshmap.css-default' rel='stylesheet'>\n";
+    echo "<link href='css/meshmap-default.css' rel='stylesheet'>\n";
 }
 
 /*
@@ -423,7 +423,7 @@ if (isset($GLOBALS['hide_admin'])) {
         //output nothing!!
     }
 }else {
-    echo "<strong><a style=\"float: right;\" href=\"admin/admin.php\">The \"Admin\" type page</a>\n";
+    echo "<strong><a style=\"float: right;\" href=\"admin/admin.php\">Admin</a>\n";
 }
 
 echo "<div id='mapid' style='width: 100%; height: 95%;'>\n";

@@ -53,6 +53,57 @@ date_default_timezone_set($USER_SETTINGS['localTimeZone']);
 * SQL Connections
 *********************/
 wxc_connectToMySQL();
+
+
+//added by kg6wxc may 2018
+/*****START*****/
+$node_removed = 0;
+$node_removed_name = "";
+if (isset($_POST['admin_page']) && isset($_POST['remove_node_from_main_db']) == "remove_node_from_main_db") {
+	$wifi_mac_address = $_POST['wifi_mac_address'];
+	$node = $_POST['name'];
+	$wlan_ip = $_POST['wlan_ip'];
+	
+	$removeIt = wxc_putMySql("delete from node_info where wifi_mac_address = '$wifi_mac_address' and node = '$node' and wlan_ip = '$wlan_ip'");
+	if ($removeIt) {
+		$node_removed = 1;
+		$node_removed_name = $node;
+	}
+}
+$node_remove_js = <<< EOD
+<script>
+$(".remove_node_from_main_db_form").submit(function(event) {
+
+	event.preventDefault();
+
+	var form = $(this),
+		remove_node_from_main_db = form.find("input[type='hidden'][name='remove_node_from_main_db']").val(),
+		wifi_mac_address = form.find("input[type='hidden'][name='wifi_mac_address']").val(),
+		ip = form.find("input[type='hidden'][name='ip']").val(),
+		name = form.find("input[type='hidden'][name='name']").val(),
+		wlan_ip = form.find("input[type='hidden'][name='wlan_ip']").val(),
+		admin_page = form.find("input[type='hidden'][name='admin_page']").val(),
+		url = form.attr("action");
+
+	var posting = $.post(url, {
+						admin_page: admin_page,
+						remove_node_from_main_db: remove_node_from_main_db,
+						wifi_mac_address: wifi_mac_address,
+						ip: ip,
+						name: name,
+						wlan_ip: wlan_ip
+						
+	});
+
+	posting.done(function(data) {
+		$("#admin_content").html(data);
+	});
+});
+</script>
+EOD;
+
+/*****END*****/
+
 $NodeList = load_Nodes();           // Get the Node Data
 
 $STABLE_MESH_VERSION = $USER_SETTINGS['current_stable_fw_version'];
@@ -90,9 +141,10 @@ $page_header = <<< EOD
         } );
 
     </script>
-</head>
 EOD;
 echo $page_header;
+
+echo "</head>\n";
 
 /*
  * Modifications from here down to fit your specific needs
@@ -106,6 +158,12 @@ echo "<div class=\"fw-container\">\n";
 echo "<div class=\"fw-body\">\n";
 echo "<div class=\"content\">\n";
 
+//added kg6wxc may 2018
+/*****START*****/
+if ($node_removed) {
+	echo "<strong><greenText>Succesfully removed " . $node_removed_name . " from the database.</greenText></strong><br>";
+}
+/*****END*****/
 
 echo "<table id=\"meshdata\" class=\"display\" cellspacing=\"0\" width=\"100%\">\n\n"; // Define the Table
 
@@ -156,17 +214,29 @@ if (is_array($NodeList) && !empty($NodeList))
                 $firmware = $Node['firmware_version'];
         }
         echo "<td>" . $firmware . "</td>\n";
-        /*
-        * Find the Services for the node
-        ********************************/
-        echo "<td>";
-        echo load_ServiceList($Node['olsrinfo_json']);
-        echo "</td>\n";
         echo "<td align=\"center\">"
 	. $Node['last_seen']
 	." GMT"
 	."</td>\n";
-
+    //added kg6wxc may 2018
+    /*****START*****/
+	/*
+	 * Remove Button (but only in the admin page)
+	 ********************************/
+	if (isset($_POST['admin_page'])) {
+		echo "<td>";
+		echo "<form class='remove_node_from_main_db_form' action='../node_report.php' method='post'>\n";
+		echo "<input type='hidden' name='remove_node_from_main_db' value='remove_node_from_main_db'>\n";
+		echo "<input type='hidden' name='admin_page' value='admin_page'>\n";
+		echo "<input type='hidden' name='name' value='" . $Node['node'] . "'>\n";
+		echo "<input type='hidden' name='wifi_mac_address' value='" . $Node['wifi_mac_address'] . "'>\n";
+		echo "<input type='hidden' name='wlan_ip' value='" . $Node['wlan_ip'] . "'>\n";
+		echo "<input type='submit' value='Remove'>\n";
+		echo "</form>";
+		echo "</td>\n";
+	}
+	//echo load_ServiceList($Node['olsrinfo_json']);
+    /*****END*****/
         echo "</tr>\n\n";
     }
 }
@@ -181,7 +251,10 @@ echo "KG6WXC/K6GSE/N2MH software provided as open source\n";
 echo "</div>\n";
 echo "</div>\n";
 echo "</div>\n";
-
+if (isset($_POST['admin_page'])) {
+	echo $node_remove_js;
+	echo "\n";
+}
 echo "</body>\n";
 echo "</html>\n";
 
@@ -198,7 +271,7 @@ function display_HeaderTitles()
     echo "<th>model</th>\n";
     echo "<th>mfg</th>\n";
     echo "<th>Version</th>\n";
-    echo "<th>Services</th>\n";
+ //   echo "<th>Services</th>\n";
     echo "<th>Last Seen</th>\n";
     echo "</tr>\n";
 }

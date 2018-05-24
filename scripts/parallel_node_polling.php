@@ -261,31 +261,31 @@ if($sysinfoJson === FALSE) {
 				
 	$sql	=	"INSERT INTO $sql_db_tbl(
 				wifi_mac_address, node, model, firmware_version, lat, lon, grid_square, ssid, chanbw, api_version, board_id,
-				tunnel_installed, active_tunnel_count, channel, firmware_mfg, lan_ip, wlan_ip, sysinfo_json, olsrinfo_json, last_seen)
+				tunnel_installed, active_tunnel_count, channel, firmware_mfg, lan_ip, wlan_ip, sysinfo_json, last_seen)
 				VALUES('$wifi_mac_address', '$node', '$model', '$firmware_version',
 				'$lat', '$lon', '$grid_square', '$ssid', '$chanbw', '$api_version', '$board_id',
 				'$tunnel_installed', '$active_tunnel_count', '$channel',
-				'$firmware_mfg', '$lan_ip', '$wlan_ip', '$sysinfoJson', '$olsrdInfo', NOW())
+				'$firmware_mfg', '$lan_ip', '$wlan_ip', '$sysinfoJson', NOW())
 				ON DUPLICATE KEY UPDATE wifi_mac_address = '$wifi_mac_address', node = '$node', model = '$model', firmware_version = '$firmware_version',
 				lat = '$lat', lon = '$lon', grid_square = '$grid_square', ssid = '$ssid', chanbw = '$chanbw', api_version = '$api_version',
 				board_id = '$board_id', tunnel_installed = '$tunnel_installed',
 				active_tunnel_count = '$active_tunnel_count', channel = '$channel',
 				firmware_mfg = '$firmware_mfg', lan_ip = '$lan_ip', wlan_ip = '$wlan_ip',
-				sysinfo_json = '$sysinfoJson', olsrinfo_json = '$olsrdInfo', last_seen = NOW()";
+				sysinfo_json = '$sysinfoJson', last_seen = NOW()";
 	
 	$sql_no_location_info  =    "INSERT INTO $sql_db_tbl(
 				wifi_mac_address, node, model, firmware_version, grid_square, ssid, chanbw, api_version, board_id,
-				tunnel_installed, active_tunnel_count, channel, firmware_mfg, lan_ip, wlan_ip, sysinfo_json, olsrinfo_json, last_seen)
+				tunnel_installed, active_tunnel_count, channel, firmware_mfg, lan_ip, wlan_ip, sysinfo_json, last_seen)
 				VALUES('$wifi_mac_address', '$node', '$model', '$firmware_version',
 				'$grid_square', '$ssid', '$chanbw', '$api_version', '$board_id',
 				'$tunnel_installed', '$active_tunnel_count', '$channel',
-				'$firmware_mfg', '$lan_ip', '$wlan_ip', '$sysinfoJson', '$olsrdInfo', NOW())
+				'$firmware_mfg', '$lan_ip', '$wlan_ip', '$sysinfoJson', NOW())
 				ON DUPLICATE KEY UPDATE wifi_mac_address = '$wifi_mac_address', node = '$node', model = '$model', firmware_version = '$firmware_version',
 				grid_square = '$grid_square', ssid = '$ssid', chanbw = '$chanbw', api_version = '$api_version',
 				board_id = '$board_id', tunnel_installed = '$tunnel_installed',
 				active_tunnel_count = '$active_tunnel_count', channel = '$channel',
 				firmware_mfg = '$firmware_mfg', lan_ip = '$lan_ip', wlan_ip = '$wlan_ip',
-				sysinfo_json = '$sysinfoJson', olsrinfo_json = '$olsrdInfo', last_seen = NOW()";
+				sysinfo_json = '$sysinfoJson', last_seen = NOW()";
 	
 	$sql_update_when_node_name_has_changed	=	"UPDATE $sql_db_tbl SET
             	node = '$node', model = '$model',
