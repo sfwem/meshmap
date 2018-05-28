@@ -82,7 +82,7 @@ Choose your own password!
 > `sudo mysql`  
 > `CREATE USER 'mesh-map'@'localhost' IDENTIFIED BY 'password';`  
 > `GRANT ALL PRIVILEGES on node_map.* TO 'mesh-map'@'localhost';`  
-> `FLUSH PRIVLEGES;`
+> `FLUSH PRIVILEGES;`
 
 - **4: Copy scripts/user-settings.ini-default to /scripts/user-settings.ini and edit the user-settings.ini file**  
     * The file scripts/user-settings.ini is the most important to get right.  
