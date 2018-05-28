@@ -72,6 +72,7 @@ if (!isset($_SESSION['userLoggedIn'])) {
         	echo "<center><input type='submit' value='Submit'></center>\n";
         	echo "</form>\n";
         	echo "<br>\n";
+        	echo "<p class='center'><a href='../map_display.php'>Back to the Map</a></p>\n";
         	echo "<br>\n";
         	if (isset($_POST['first_login']) && isset($_POST['user']) && isset($_POST['passwd'])) {
         		$user = $_POST['user'];
@@ -95,6 +96,7 @@ if (!isset($_SESSION['userLoggedIn'])) {
 	        echo "<center>Password: <input type='password' name='password' value=''></center><br>\n";
 	        echo "<center>" . "<input type='submit' value='Submit'></center></form>\n";
 	        echo "<br>\n";
+	        echo "<p class='center'><a href='../map_display.php'>Back to the Map</a></p>\n";
 	        echo "</body>\n";
 	        echo "</html>\n";
         }
@@ -140,6 +142,7 @@ if (!isset($_SESSION['userLoggedIn'])) {
         	echo "<center>Password: <input type='password' name='password' value=''></center><br>\n";
         	echo "<center>" . "<input type='submit' value='Submit'></center></form>";
         	echo "<br>";
+        	echo "<p class='center'><a href='../map_display.php'>Back to the Map</a></p>\n";
         	echo "</body>\n";
         	echo "</html>\n";
         	die;
@@ -176,6 +179,7 @@ if (!isset($_SESSION['userLoggedIn'])) {
         	echo "<center>Password: <input type='password' name='password' value=''></center><br>\n";
         	echo "<center>" . "<input type='submit' value='Submit'></center></form>";
         	echo "<br>";
+        	echo "<p class='center'><a href='../map_display.php'>Back to the Map</a></p>\n";
         	echo "</body>\n";
         	echo "</html>\n";
 		}}
@@ -428,6 +432,8 @@ EOD;
 	echo "</span>\n";
 //	echo "<br>\n";
 	echo "Running on " . $_SERVER['HTTP_HOST'] . "\n";
+	echo "<br>\n";
+	echo "<a href='../map_display.php'>Back to the Map</a>\n";
 	
 	// The links at the lower part of the "header"
 	echo "<div class='admin_nav_links' id='admin_nav_links'>\n";
@@ -535,6 +541,7 @@ EOD;
 	echo "</div>\n";
 	
 	echo "</div> <!-- wrapper close -->\n";
+	echo "<a href='../map_display.php'>Back to the Map</a>\n";
 	echo "</body>\n";
 	echo "</html>\n";
 }

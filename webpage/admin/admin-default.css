@@ -26,6 +26,9 @@ a.normalTextLink {
 	/*text-decoration: inherit;*/
 	text-decoration: none;
 }
+.center {
+    text-align: center;
+}
 .linkButton {
 	background: none;
 	color: blue;

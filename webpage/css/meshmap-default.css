@@ -9,13 +9,14 @@ body {
 }
 /*** This will change the size of the map "container" ***/
 #meshmap {
-	width: 1200px;
 	height: 700px;
+	margin: 5px auto;
+	width: 100%;
 }
 /*** this is the size of the map itself ***/
 #mapid {
 	width: 100%;
-	height: 95%;
+	height: 100%;
 }
 h1 {
     color: navy;

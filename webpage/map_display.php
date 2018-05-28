@@ -335,17 +335,6 @@ if (!$mesh) {
 echo "<script src='javascripts/leaflet-hash.js'></script>\n";
 echo "<script src='javascripts/L.Control.SlideMenu.js'></script>\n";
 echo "<link href='css/L.Control.SlideMenu.css' rel='stylesheet'>\n";
-/*
-echo "<link href='css/meshmap.css' rel='stylesheet'>\n";
-echo "<link href='css/leaflet.css' rel='stylesheet'>\n";
-echo "<script src='javascripts/leaflet.js'></script>\n";
-echo "<script src='javascripts/leaflet.polylineoffset.js'></script>\n";
-echo "<script src='javascripts/Leaflet.fullscreen.min.js'></script>\n";
-echo "<link href='css/leaflet.fullscreen.css' rel='stylesheet'>\n";
-echo "<script src='javascripts/leaflet.groupedlayercontrol.min.js'></script>\n";
-echo "<link href='css/leaflet.groupedlayercontrol.min.css' rel='stylesheet'>\n";
-echo "<script src='javascripts/leaflet-hash.js'></script>\n";
-*/
 
 echo "\n";
 echo "</head>\n";
@@ -367,7 +356,7 @@ if (isset($USER_SETTINGS['map_iFrame_Enabled']) && ($USER_SETTINGS['map_iFrame_E
 }
 else
 {
-    echo "<div id='meshmap' style='width: 1200px; height: 700px;'>\n"; // Closing tag at end of primary routine
+    echo "<div id='meshmap'>\n"; // Closing tag at end of primary routine
     if (isset($USER_SETTINGS['pageLogo']))
     {
         echo "<MapTitle>";
@@ -426,7 +415,7 @@ if (isset($GLOBALS['hide_admin'])) {
     echo "<strong><a style=\"float: right;\" href=\"admin/admin.php\">Admin</a>\n";
 }
 
-echo "<div id='mapid' style='width: 100%; height: 95%;'>\n";
+echo "<div id='mapid'>\n";
 echo "</div>\n";
 
 //$numNodes = count($NodeList);	// WXC change: this was giving the wrong number.

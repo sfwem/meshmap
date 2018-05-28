@@ -41,7 +41,7 @@
     
         formatHash: function(map) {
             var center = map.getCenter(),
-                zoom = map.getZoom(),
+                zoom = Math.round(map.getZoom()),
                 precision = Math.max(0, Math.ceil(Math.log(zoom) / Math.LN2));
             
             return "#" + [zoom,
