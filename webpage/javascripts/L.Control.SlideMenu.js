@@ -22,7 +22,7 @@ L.Control.SlideMenu = L.Control.extend({
     onAdd: function(map){
         this._container = L.DomUtil.create('div', 'leaflet-control-slidemenu leaflet-bar leaflet-control');
         var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', this._container);
-        link.title = 'Menu';
+        link.title = 'Info';
         L.DomUtil.create('span', 'fa fa-question', link);
 
         this._menu = L.DomUtil.create('div', 'leaflet-menu', map._container);
@@ -64,11 +64,13 @@ L.Control.SlideMenu = L.Control.extend({
         }
 
         var closeButton = L.DomUtil.create('button', 'leaflet-menu-close-button fa', this._menu);
-
+		
         if(this._isHorizontal){
             if(this._isLeftPosition){
-                closeButton.style.float = 'right';
+				closeButton.style.float = 'right';
+				//closeButton_lower.style.float = 'right';
                 L.DomUtil.addClass(closeButton, 'fa-chevron-left');
+				//L.DomUtil.addClass(closeButton_lower, 'fa-chevron-left');
             }
             else{
                 closeButton.style.float = 'left';
@@ -87,6 +89,9 @@ L.Control.SlideMenu = L.Control.extend({
         }
 
         this._contents = L.DomUtil.create('div', 'leaflet-menu-contents', this._menu);
+		var closeButton_lower = L.DomUtil.create('button', 'leaflet-menu-close-button fa', this._menu);
+		closeButton_lower.style.float = 'right';
+		L.DomUtil.addClass(closeButton_lower, 'fa-chevron-left');
         this._contents.innerHTML = this._innerHTML;
         this._contents.style.clear = 'both';
 
@@ -108,6 +113,11 @@ L.Control.SlideMenu = L.Control.extend({
             }, this)
             .on(closeButton, 'click', L.DomEvent.stopPropagation)
             .on(closeButton, 'click', function(){
+                // Close
+                this._animate(this._menu, 0, frominit, false, ispx, unit);
+            }, this)
+		    .on(closeButton_lower, 'click', L.DomEvent.stopPropagation)
+            .on(closeButton_lower, 'click', function(){
                 // Close
                 this._animate(this._menu, 0, frominit, false, ispx, unit);
             }, this);

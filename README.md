@@ -21,8 +21,10 @@ Donations / Beer accepted! :) (paypal possibly coming soon, email: kg6wxc@gmail.
 (or equiv)  
 - **PHP5+**  
 - **mysqli PHP extension**   
+- **mysqlnd PHP extension**  
 - **openssl PHP extension**  
-(One or both of these extensions may need to be enabled in php.ini)  
+(you may only need mysqlnd, it should be safe to enable both)  
+(One or more of these extensions may need to be enabled in php.ini)  
 - **MySQL/MariaDB**  
 (Other database systems are up to you)
 - **An AREDN Mesh node available over the local network**  
@@ -118,7 +120,7 @@ Output to console *and* read/write to the database.
 <blockquote style="background: #d3d3d3; margin-right: 30%;">If the --test-mode-no-sql is successful, you can go ahead and run the script with --test-mode-with-sql or just without any options.<br/>
 Run the script without options and there is no on screen output (this is for cron).</blockquote>  
 
-- **5: Copy http-meshmap.conf-default to the apache2 "Conf Available" directory**, `/etc/apache2/conf-available`  
+- **5: Copy httpd-meshmap.conf-default to the apache2 "Conf Available" directory**, `/etc/apache2/conf-available`  
 Rename the file as httpd-meshmap.conf (or whatever you want to call it really.)  
 Once the file is copied, you need to edit it and make sure the `<Alias>` and `<Directory>` directives have the correct paths.  
 After you have made sure the file is correct then run: `sudo a2enconf httpd-meshmap`  
