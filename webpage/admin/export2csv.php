@@ -34,6 +34,7 @@ if (!isset($_SESSION['userLoggedIn'])) {
 	            fputcsv($f, array_keys($row));
 	            $first = false;
 	        }
+	        $row['sysinfo_json'] = json_encode(json_decode($row['sysinfo_json']));
 	        fputcsv($f, $row);
 	    } // end while
 	

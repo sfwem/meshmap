@@ -23,8 +23,9 @@ Donations / Beer accepted! :) (paypal possibly coming soon, email: kg6wxc@gmail.
 - **mysqli PHP extension**   
 - **mysqlnd PHP extension**  
 - **openssl PHP extension**  
-(you may only need mysqlnd, it should be safe to enable both)  
+(you may only need mysqlnd, it should be safe to enable both for now)  
 (One or more of these extensions may need to be enabled in php.ini)  
+(if you do not already have mysqlnd, you might need to install it, `apt-get install php[5 or 7]-mysqlnd`)  
 - **MySQL/MariaDB**  
 (Other database systems are up to you)
 - **An AREDN Mesh node available over the local network**  
