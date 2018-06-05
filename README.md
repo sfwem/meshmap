@@ -87,7 +87,7 @@ Choose your own password!
 > `GRANT ALL PRIVILEGES on node_map.* TO 'mesh-map'@'localhost';`  
 > `FLUSH PRIVILEGES;`
 
-- **4: Copy scripts/user-settings.ini-default to /scripts/user-settings.ini and edit the user-settings.ini file**  
+- **4: Copy scripts/user-settings.ini-default to scripts/user-settings.ini and edit the user-settings.ini file**  
     * The file scripts/user-settings.ini is the most important to get right.  
     It is **very important** to make sure your SQL username and password are correct in scripts/user-settings.ini!!
     * Also important is, if the system that this is running on cannot resolve "localnode.local.mesh" you can change that in the user-settings.ini file.  
