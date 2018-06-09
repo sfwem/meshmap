@@ -74,10 +74,10 @@ function wxc_netcat ($host, $port = null, $command = null, $option = null) {
 			
 			if ($option == "ipOnly") {
 				$olsrDotDrawInfo = preg_replace("/ ->.*/", "", $olsrDotDrawInfo);
-				$olsrDotDrawInfo = preg_replace("/ .*/", "", $olsrDotDrawInfo);				//the info gets massaged in the wxc_ function, it returns a list of nodes
-				$olsrDotDrawInfo = explode("\n", $olsrDotDrawInfo);							//and the links for those nodes, the problem is there are multiples
-				$olsrDotDrawInfo = array_unique($olsrDotDrawInfo);							//we only need one IP for each node on the network
-				$olsrDotDrawInfo = implode("\n", $olsrDotDrawInfo);							//that is what this part does, we're now left with a list of IP's, one per line.
+				$olsrDotDrawInfo = preg_replace("/ .*/", "", $olsrDotDrawInfo);	//the info gets massaged in the wxc_ function, it returns a list of nodes
+				$olsrDotDrawInfo = explode("\n", $olsrDotDrawInfo);		//and the links for those nodes, the problem is there are multiples
+				$olsrDotDrawInfo = array_unique($olsrDotDrawInfo);		//we only need one IP for each node on the network
+				$olsrDotDrawInfo = implode("\n", $olsrDotDrawInfo);		//that is what this part does, we're now left with a list of IP's, one per line.
 				
 				return $olsrDotDrawInfo;		//return only the list of IP's
 			}else {
@@ -358,34 +358,43 @@ function wxc_putMySql ($query) {
 	}
 }
 
-
-
-
-//check band and firmware?
-//this is totally not done yet
 /**
 * checkBand
-* Check the channel against the known band assignments
-*
+* 
+* Check the channel number given to us by the node
+* and try to determine the band it is running on.
+* 
 * @param $channel
 *
 * @return string Indicator of the assigned band
 */
 function wxc_checkBand ($channel) {
-		//band channel arrays
+		//band channel number arrays
+		
 		//900Mhz
 		//On 900MHz you dont get "channels", the node lets you choose the center frequency.
 		//there are 4 to choose from: "(907)", "(912)", "(917)", and "(922)".
 		//unfortunatly, it doesn't come across correctly in the json file
 		//all I know is that "(917)" == "4" (for now) (which makes no sense at all, it should be 3 (or 2 actually))
-		$nineHundredMhz					=	array('907', '912', '917', '922', '4');
-		//2.4GHz only -1 and -2
+		$nineHundredMhz = array('907', '912', '917', '922', '4');
+		
+		//2.4GHz
 		// Note: Channel 4 removed from the 2GHz range, to avoid confusion with 900MHz
-		$twoGhz							=	array('-1', '-2', '1', '2', '3', '5', '6', '7', '8', '9', '10', '11');
-		//3GHz 76-99
-		$threeGhz						=	array('76','77','78','79','80','81','82','83','84','85','86','87','88','89','90','91','92','93','94','95','96','97','98','99','3380','3385','3390','3395','3400','3405','3410','3415','3420','3425','3430','3435','3440','3445','3450','3455','3460','3465','3470','3475','3480','3485','3490','3495');
-		//5GHz 177-184
-		$fiveGhz						=	array('133','137','149','157','160','165','168','170','171','172','173','174','175','176','177','178','179','180','181','182','183','184');
+		$twoGhz = array('-1', '-2', '1', '2', '3', '5', '6', '7', '8', '9', '10', '11');
+		
+		//3GHz channel numbers and also sometimes the node shows frequency
+		$threeGhz = array('76','77','78','79','80','81','82','83','84','85','86','87','88',
+					'89','90','91','92','93','94','95','96','97','98','99','3380','3385','3390',
+					'3395','3400','3405','3410','3415','3420','3425','3430','3435','3440','3445',
+					'3450','3455','3460','3465','3470','3475','3480','3485','3490','3495');
+		
+		//5GHz channel numbers
+		$fiveGhz = array('133','134','135','136','137','138','139',
+					'140','141','142','143','144','145','146','147','148','149',
+					'150','151','152','153','154','155','156','157','158','159',
+					'160','161','162','163','164','165','166','167','168','169',
+					'170','171','172','173','174','175','176','177','178','179',
+					'180','181','182','183','184');
 		
 		
 		//K6GSE nice switch statement!
