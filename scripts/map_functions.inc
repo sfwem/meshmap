@@ -54,7 +54,7 @@ function build_NodesAndLinks($NodeList, $TopoList, $MarkerList = null)
     global $useMarkers;
     //icon names: default (green), update firmware (red) and for the different bands
 
-    $markerList = "";
+    $markerList = '';
 
     //then get info from the node info database
     //use it to:
@@ -67,7 +67,7 @@ function build_NodesAndLinks($NodeList, $TopoList, $MarkerList = null)
     //*real* DTD links will be very close together, if not the same,
     //the others, (like what Ventura Mesh uses) will be far apart and therefore probably not a "real" dtd link.
 
-    $display_NodeList = "";
+    $display_NodeList = '';
     if (is_array($NodeList) && !empty($NodeList))
     {
         foreach ($NodeList as $node_info)
@@ -79,14 +79,14 @@ function build_NodesAndLinks($NodeList, $TopoList, $MarkerList = null)
                 /*
                 * find the Linked nodes to list
                 *********************/
-                $node_LinkedList = "";
+                $node_LinkedList = '';
                 $node_LinkedList = load_LinkedTO($node_info, $TopoList);
 
                 /*
                 * Find the Services for the node
                 ********************************/
 			//	$node_ServiceList = load_ServiceList($node_info['olsrinfo_json']);
-				$node_ServiceList = "";
+				$node_ServiceList = '';
 
                 /*
                 * Build the Nodes Marker
@@ -100,7 +100,7 @@ function build_NodesAndLinks($NodeList, $TopoList, $MarkerList = null)
         }
     }
 
-    $display_MarkerList = "";
+    $display_MarkerList = '';
     if (isset($useMarkers) && $useMarkers)
     {
         foreach ($MarkerList as $Marker)
@@ -119,7 +119,7 @@ function build_NodesAndLinks($NodeList, $TopoList, $MarkerList = null)
     /*
     * Create and Display the Link Lines
     ****************************************/
-    $display_LinkList = "";
+    $display_LinkList = '';
     if (isset($useLinks) && $useLinks)
     {
         $display_LinkList = load_LinkList($NodeList, $TopoList);
@@ -154,7 +154,7 @@ function build_NodesAndLinks($NodeList, $TopoList, $MarkerList = null)
 function load_ServiceList($json_data)
 {
     $json_array =  wxc_findServices($json_data, 'services');
-    $serviceList = "";
+    $serviceList = '';
 
     if (is_array($json_array))
     {
@@ -190,7 +190,7 @@ function load_ServiceList($json_data)
 function load_LinkList($NodeList, $TopoList)
 {
     global $MESH_SETTINGS;
-    $linkList = "";
+    $linkList = "\n";
     if (isset($TopoList))
     {
         foreach ($TopoList as $value)
@@ -202,11 +202,11 @@ function load_LinkList($NodeList, $TopoList)
                 $node_lon = $value['nodelon'];
                 $link_lat = $value['linklat'];
                 $link_lon = $value['linklon'];
-                $display_color = "red";
+                $display_color = 'red';
                 $display_weight = 2;
                 $display_opacity = 1;
                 $display_offset = 2;
-                $map_LayerAssigned = "";
+                $map_LayerAssigned = '';
                 $tunnel = 0;
                 $dtd = 0;
                 $moreThanTen = 0;
@@ -241,7 +241,7 @@ function load_LinkList($NodeList, $TopoList)
                             $display_color = $MESH_SETTINGS['Link_Tunnel'];
                             $dtd = 1;
                             $display_opacity = 0.5;
-                            $map_LayerAssigned = "tunnelLinks";
+                            $map_LayerAssigned = 'tunnelLinks';
                         }
                     }
                 }
@@ -304,12 +304,12 @@ function load_LinkList($NodeList, $TopoList)
                 }
                 if ($map_LayerAssigned)
                 {
-                    $linkList .= "L.polyline([[" . $node_lat . "," . $node_lon . "],[" . $link_lat .
-                        "," . $link_lon . "]], {color: '" . $display_color . "', opacity: " . $display_opacity .
-                        ", weight: " . $display_weight . ", offset: " . $display_offset . "})
-						.bindPopup(\"<strong>  $nodeName  </strong> to <strong> $linkName</strong><br>   <strong>Cost</strong>: " .
-                        $value['cost'] . "\")
-						.addTo(" . $map_LayerAssigned . "),\n";
+                    $linkList .= 'L.polyline([[' . $node_lat . ',' . $node_lon . '],[' . $link_lat .
+                        ',' . $link_lon . ']], {color: "' . $display_color . '", opacity: ' . $display_opacity .
+                        ', weight: ' . $display_weight . ', offset: ' . $display_offset . '})
+						.bindPopup("<strong>' .  $nodeName . '</strong> to <strong>' . $linkName . '</strong><br><strong>Cost</strong>: ' .
+                        $value['cost'] . '")
+						.addTo(' . $map_LayerAssigned . '),' . "\n";
 
                 }
             }
@@ -331,7 +331,7 @@ function load_LinkList($NodeList, $TopoList)
  */
 function load_LinkedTO($node_info, $TopoList)
 {
-    $linkedToList = "";
+    $linkedToList = '';
     $linkInfoForStationPopups = array($node_info['node'] => array());
     
     //don't init what is going to be an array as a string!!
@@ -365,15 +365,10 @@ function load_LinkedTO($node_info, $TopoList)
                 if ($value['linkto'] == $node)
                 {              
                     //this will be the cost FROM each linked station back TO the node we are currently looking at in the while loop
-                    //original line (leave for now)
-                    //$linkInfoForStationPopups[$node_info['node']][$value['node']]["costFrom"] = $value['cost'];
-                                        
-                    //the new line
                     //had to create the array correctly! fixed 3-28-2018 - wxc
                     if (isset($linkInfoForStationPopups[$node_info['node']][$value['node']]) && is_array($linkInfoForStationPopups[$node_info['node']][$value['node']])) {
-                        $linkInfoForStationPopups[$node_info['node']][$value['node']]["costFrom"] = $value['cost'];
+                        $linkInfoForStationPopups[$node_info['node']][$value['node']]['costFrom'] = $value['cost'];
                     }else {
-//                      $linkInfoForStationPopups[$node_info['node']][$value['node']] = array('costFrom' => $value['cost'], 'costTo' => "", 'distance' => "", 'bearing' => "");
                         $linkInfoForStationPopups[$node_info['node']][$value['node']] = array('costFrom' => $value['cost']);
                     }
                 }
@@ -383,11 +378,11 @@ function load_LinkedTO($node_info, $TopoList)
                     //this will be the cost TO each linked station FROM the node we are currently looking at in the while loop
                     //distance and bearing added too for goo measure! :)
                     //$linkInfoForStationPopups[$node_info['node']][$value['linkto']] = array_fill_keys($linkedNodesKeyNameArray, "");
-                    $linkInfoForStationPopups[$node_info['node']][$value['linkto']]["costTo"] = $value['cost'];
+                    $linkInfoForStationPopups[$node_info['node']][$value['linkto']]['costTo'] = $value['cost'];
                     //add in the distance to that linked node
-                    $linkInfoForStationPopups[$node_info['node']][$value['linkto']]["distance"] = $value['distance'];
+                    $linkInfoForStationPopups[$node_info['node']][$value['linkto']]['distance'] = $value['distance'];
                     //add in the bearing to that linked node
-                    $linkInfoForStationPopups[$node_info['node']][$value['linkto']]["bearing"] = $value['bearing'];
+                    $linkInfoForStationPopups[$node_info['node']][$value['linkto']]['bearing'] = $value['bearing'];
                 }
             }
         }
@@ -395,7 +390,7 @@ function load_LinkedTO($node_info, $TopoList)
     //now take all that info back out and put into a properly formatted string variable that we'll use later]
     foreach ($linkInfoForStationPopups as $nodeNameLinkArray => $linktoArray)
     {
-        if ($linktoArray > "")
+        if ($linktoArray > '')
         {
             foreach ($linktoArray as $linkedNodeName => $costArray)
             {
@@ -405,11 +400,11 @@ function load_LinkedTO($node_info, $TopoList)
                 }
                 else
                 {
-                    $display_cost = " (" . $costArray['costTo'] . "/" . $costArray['costFrom'] .
-                        ") ";
+                    $display_cost = ' (' . $costArray['costTo'] . '/' . $costArray['costFrom'] .
+                        ') ';
                 }
-                $linkedToList .= $linkedNodeName . $display_cost . $costArray['distance'] . " mi " .
-                    $costArray['bearing'] . "&deg;<br>";
+                $linkedToList .= $linkedNodeName . $display_cost . $costArray['distance'] . ' mi ' .
+                    $costArray['bearing'] . '&deg;<br>';
             }
         }
     }
@@ -436,7 +431,7 @@ function load_LinkedTO($node_info, $TopoList)
  */
 function build_Marker($node_info, $node_ServiceList, $node_LinkedList, $node_FirmwareStatus)
 {
-    $markerList = "";
+    $markerList = '';
     $nodeUrl = "<NodeTitle><a href='http://" . $node_info['node'] . ".local.mesh:8080'>" . $node_info['node'] .
         "</a></NodeTitle>";
 
@@ -444,39 +439,39 @@ function build_Marker($node_info, $node_ServiceList, $node_LinkedList, $node_Fir
     //Then compare it to what we know about each bands channels
     //if we find a match, we assume we're in that band...
 
-    if ($node_info['firmware_version'] == "Linux")
+    if ($node_info['firmware_version'] == 'Linux' || $node_info['firmware_version'] == 'linux')
     { // Linux Devices ( Special for SNOOPY )
-        $icon = "linuxCircle";
-        $band = "<Device_Linux>Linux</Device_Linux>";
+        $icon = 'linuxCircle';
+        $band = '<Device_Linux>Linux</Device_Linux>';
         $AssignedLayer = 'otherStations';
     }
     else
     {
-        switch ((wxc_checkBand($node_info['channel'])))
+        switch ((wxc_checkBand($node_info['channel'], $node_info['board_id'])))
         {
-            case "2GHz": // 2.4GHz devices
-                $icon = "twoRadioCircle";
-                $band = "<Device_24GHz>2.4GHz</Device_24GHz>";
+            case '2GHz': // 2.4GHz devices
+                $icon = 'twoRadioCircle';
+                $band = '<Device_24GHz>2.4GHz</Device_24GHz>';
                 $AssignedLayer = 'twoGHzStations';
                 break;
-            case "3GHz": // 3GHz devices
-                $icon = "threeRadioCircle";
-                $band = "<Device_3GHz>3.4GHz</Device_3GHz>";
+            case '3GHz': // 3GHz devices
+                $icon = 'threeRadioCircle';
+                $band = '<Device_3GHz>3.4GHz</Device_3GHz>';
                 $AssignedLayer = 'threeGHzStations';
                 break;
-            case "5GHz": // 5GHz devices
-                $icon = "fiveRadioCircle";
-                $band = "<Device_5GHz>5.8GHz</Device_5GHz>";
+            case '5GHz': // 5GHz devices
+                $icon = 'fiveRadioCircle';
+                $band = '<Device_5GHz>5.8GHz</Device_5GHz>';
                 $AssignedLayer = 'fiveGHzStations';
                 break;
-            case "900MHz": // Note: Channel values borked for 900Mhz
-                $icon = "nineRadioCircle";
-                $band = "<Device_900MHz>900MHz</Device_900MHz>";
+            case '900MHz': // Note: Channel values borked for 900Mhz
+                $icon = 'nineRadioCircle';
+                $band = '<Device_900MHz>900MHz</Device_900MHz>';
                 $AssignedLayer = 'nineHundredMHzStations';
                 break;
             default: // unknown
-                $icon = "unknownRadioCircle";
-                $band = "<unknown>?</unknown>";
+                $icon = 'unknownRadioCircle';
+                $band = '<unknown>?</unknown>';
                 $AssignedLayer = 'otherStations';
         }
     }
@@ -488,11 +483,11 @@ function build_Marker($node_info, $node_ServiceList, $node_LinkedList, $node_Fir
     switch ($node_FirmwareStatus)
     {
         case 1:
-            $firmware = "<OutOfDate>Firmware: " . $node_info['firmware_version'] . "</OutOfDate>";
+            $firmware = '<OutOfDate>Firmware: ' . $node_info['firmware_version'] . '</OutOfDate>';
             break;
         case 2:
-            $firmware = "<Experimental>Firmware: " . $node_info['firmware_version'] .
-                "</Experimental>";
+            $firmware = '<Experimental>Firmware: ' . $node_info['firmware_version'] .
+                '</Experimental>';
             break;
         default:
             $firmware = $node_info['firmware_version'];
@@ -504,12 +499,12 @@ function build_Marker($node_info, $node_ServiceList, $node_LinkedList, $node_Fir
     */
     if ($node_ServiceList)
     {
-        $node_ServiceList = "<hr><Strong>Services:</Strong>" . $node_ServiceList;
+        $node_ServiceList = '<hr><Strong>Services:</Strong>' . $node_ServiceList;
     }
     if ($node_LinkedList)
     {
         $node_LinkedList =
-            "<hr><Strong>Linked to:<br>Node Name (cost to/from) distance bearing</Strong><br>" . $node_LinkedList;
+            '<hr><Strong>Linked to:<br>Node Name (cost to/from) distance bearing</Strong><br>' . $node_LinkedList;
     }
     $markerList .= "L.marker([" . $node_info['lat'] . "," . $node_info['lon'] . "], {title: '" . $node_info['node'] .
         "', icon: " . $icon . "}).bindPopup(\" " . $nodeUrl . " (" . $band . ")<br>" . $node_info['lat'] .
@@ -704,10 +699,13 @@ function load_Topology($whereClause = null, $orderBy = null)
         // Retrieve the data
         $topology_info_db = mysqli_query($GLOBALS['sql_connection'], $query)
         or die('Could not Select Items from Topology Table: ' . mysqli_error());
+        $num = mysqli_num_rows($topology_info_db);
         // Load the data into an array for ease of handling
-        while ($topology_info = mysqli_fetch_array($topology_info_db, MYSQLI_ASSOC))
+        for ($i = 0; $i <= $num; ++$i)
+        //while ($topology_info = mysqli_fetch_array($topology_info_db, MYSQLI_ASSOC))
         {
-            $TopoList[] = $topology_info;
+            $TopoList[] = mysqli_fetch_array($topology_info_db, MYSQLI_ASSOC);
+            //$TopoList[] = $topology_info;
         }
         $useLinks = true;
     }
@@ -1016,7 +1014,7 @@ function create_MapImage()
 		maxZoom: 18,
 		zoomSnap: 0,
 		zoomDelta: 0.25,
-        layers: [defaultMap, twoGHzStations, threeGHzStations, fiveGHzStations, nineHundredMHzStations, rfLinks, tunnelLinks, dtdLinks, infiniteLinks],
+        layers: [defaultMap, twoGHzStations, threeGHzStations, fiveGHzStations, nineHundredMHzStations, otherStations, rfLinks, tunnelLinks, dtdLinks, infiniteLinks],
         fullscreenControl: true
     });\n\n
 ";
