@@ -1080,7 +1080,9 @@ function instantiate_Map()
     /*
      * Layer Control
      */
-    L.control.groupedLayers(baseLayers, groupedOverlays, {position: 'topleft'}).addTo(map);
+    var layerControls = L.control.groupedLayers(baseLayers, groupedOverlays, {position: 'topleft'}).addTo(map);
+	L.DomEvent.disableClickPropagation(layerControls._container);
+	L.DomEvent.disableScrollPropagation(layerControls._container);
     /*
      * Scale Control
      */

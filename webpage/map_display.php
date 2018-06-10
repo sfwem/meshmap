@@ -412,11 +412,10 @@ if (isset($GLOBALS['hide_admin'])) {
         //output nothing!!
     }
 }else {
-    echo "<strong><a style=\"float: right;\" href=\"admin/admin.php\">Admin</a>\n";
+    echo "<strong><a style=\"float: right;\" href=\"admin/admin.php\">Admin</a></strong>\n";
 }
 
-echo "<div id='mapid'>\n";
-echo "</div>\n";
+echo "<div id='mapid'></div>\n";
 
 //$numNodes = count($NodeList);	// WXC change: this was giving the wrong number.
 //should not count nodes that have no location info, they are not on the map...
