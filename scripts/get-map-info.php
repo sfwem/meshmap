@@ -236,6 +236,9 @@ $no_expire = $USER_SETTINGS['expire_old_nodes'];
 if ($do_sql && $no_expire) {
 	wxc_checkOldNodes();
 }
+if ($do_sql) {
+	wxc_removeIgnoredNodes();
+}
 
 $resolvedHostname = "";
 $nodeLocationFixed = 0;

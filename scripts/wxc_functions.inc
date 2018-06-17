@@ -503,6 +503,8 @@ function wxc_checkOldNodes() {
 			wxc_putMySql($oldNodeQuery);
 		}
 	}
+}
+function wxc_removeIgnoredNodes() {
 	//wxc_getMySql("DELETE FROM node_info WHERE TIMESTAMPDIFF(DAY, node_info.last_seen, NOW()) > 30");
 	//return mysqli_fetch_all($theQuery);
 	
