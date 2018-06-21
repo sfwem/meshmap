@@ -179,7 +179,7 @@ The meshmap.css file will be used in place of the -default.css file.
 - [x] Change the user editable files to be distributed with "-default" added to the extension, no more tar.gz file.  
 - [x] Use a cookie instead of _POST for the internet check (No more stupid dialog box on refresh).  
 - [ ] Make "Parallel Threads" work again in get-map-info script, with limits on how many can be run at once (this will greatly speed up network polling).  
-- [ ] Changes so sbarc.org can have the new version too!  
+- [x] Changes so sbarc.org can have the new version too!  
 - [ ] Change css file for the "?" slide-out menu.  
 - [x] Fix a typo in the attribution bar so the pop-up for the links is only for the links number.  
 - [ ] Implement N2MH's "Link aging" idea(s).  

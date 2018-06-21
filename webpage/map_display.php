@@ -348,33 +348,27 @@ echo "<body>\n";
 //GSE: [Removed]  if ($_SERVER['HTTP_HOST'] == $USER_SETTINGS['meshServerHostName'] || $_SERVER['HTTP_HOST'] ==
 //    "kg6wxc-host.local.mesh"
 //)
-if (isset($USER_SETTINGS['map_iFrame_Enabled']) && ($USER_SETTINGS['map_iFrame_Enabled']))
-{
+if (isset($USER_SETTINGS['map_iFrame_Enabled']) && ($USER_SETTINGS['map_iFrame_Enabled'])) {
     echo "<div id='meshmap'>\n"; // Closing tag at end of primary routine
-    echo "<div id='mapid'>\n";
-    echo "</div>\n";
-}
-else
-{
+    if(isset($GLOBALS['map_div_embedded'])) {
+    	echo $GLOBALS['map_div_embedded'];
+    }else {
+    	echo "<div id='mapid'></div>\n";
+    }
+}else {
     echo "<div id='meshmap'>\n"; // Closing tag at end of primary routine
-    if (isset($USER_SETTINGS['pageLogo']))
-    {
+    if (isset($USER_SETTINGS['pageLogo'])) {
         echo "<MapTitle>";
-//        echo "<img id='logo' src='" . $USER_SETTINGS['pageLogo'] .
-//        "' alt='Map or Club Logo' width='50' style='vertical-align: middle;'>";
-        echo "<img id='pageLogo' src='" . $USER_SETTINGS['pageLogo'] .
-        "' alt='The Logo'>";
+        echo "<img id='pageLogo' src='" . $USER_SETTINGS['pageLogo'] . "' alt='The Logo'>";
         echo "</MapTitle>\n";
     }
-    if (isset($USER_SETTINGS['logoHeaderText']))
-    {
+    if (isset($USER_SETTINGS['logoHeaderText'])) {
         echo "<MapTitle>";
         echo $USER_SETTINGS['logoHeaderText'];
         echo "</MapTitle>\n";
         echo "<br>";
     }
-    if (isset($USER_SETTINGS['welcomeMessage']))
-    {
+    if (isset($USER_SETTINGS['welcomeMessage'])) {
         echo "<Welcome_MSG>";
         echo $USER_SETTINGS['welcomeMessage'];
         //echo "<br>";
@@ -387,8 +381,7 @@ else
 		echo "</Welcome_MSG2>\n";
 		echo "<br>";
     }
-    if (isset($USER_SETTINGS['meshWarning']) && $mesh)
-    {
+    if (isset($USER_SETTINGS['meshWarning']) && $mesh) {
         echo "<Warning_MSG>";
         echo $USER_SETTINGS['meshWarning'];
         echo "</Warning_MSG>";
@@ -396,17 +389,6 @@ else
     }
 }
 
-/*
-if (isset($GLOBALS['no_req_msg'])) {
-    if ($GLOBALS['no_req_msg'] == "1") {
-        //output nothing!!
-    }
-}else {
-    echo "<strong><a style=\"color: inherit;text-decoration: none;\" href=\"\" title=\"" .
-    $GLOBALS['USER_SETTINGS']['where_is_my_node'] . "\">Where the heck is my node??</a>\n";
-        
-}
-*/
 if (isset($GLOBALS['hide_admin'])) {
     if ($GLOBALS['hide_admin'] == "1") {
         //output nothing!!
@@ -415,7 +397,9 @@ if (isset($GLOBALS['hide_admin'])) {
     echo "<strong><a style=\"float: right;\" href=\"admin/admin.php\">Admin</a></strong>\n";
 }
 
-echo "<div id='mapid'></div>\n";
+if (isset($USER_SETTINGS['map_iFrame_Enabled']) && !($USER_SETTINGS['map_iFrame_Enabled'])) {
+	echo "<div id='mapid'></div>\n";
+}
 
 //$numNodes = count($NodeList);	// WXC change: this was giving the wrong number.
 //should not count nodes that have no location info, they are not on the map...

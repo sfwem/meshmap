@@ -1048,7 +1048,12 @@ function show_MapMarkerDetails($numNodes, $numLinks, $numMarkers, $numNodesTotal
     	$numLinksTotal . " Total links in the database." . '\n' . "Nodes without Location info cannot have links shown.\">" . 
     	$numLinks . "</a> links " . "&nbsp;|&nbsp;Data Last Acquired @ " . $filetime . "</strong>';\n";
 
-    $Content .= "WXCAttribution = 'Map originally created by <a href=mailto:kg6wxc@gmail.com>KG6WXC</a> Oct 2016&nbsp;with N2MH and K6GSE contributions&nbsp;|&nbsp;';\n";
+    $Content .= "WXCAttribution = '<a href=mailto:kg6wxc@gmail.com title=\'" .
+        "MeshMap version 2.5" . '\n\n' .
+    	"Map originally created by:" . '\n' .
+    	"KG6WXC in Oct 2016" .'\n' .
+		"With later contributions from:" . '\n' .
+		"N2MH and K6GSE\'>KG6WXC</a>&nbsp;|&nbsp;';\n";
 
     $Content .= "MapAttribution = '<a href=http://leafletjs.com title=\'" .
         "Map data &copy; by OpenStreetMap (http://openstreetmap.org) with contributions from:" . '\n' .
