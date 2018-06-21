@@ -349,10 +349,11 @@ echo "<body>\n";
 //    "kg6wxc-host.local.mesh"
 //)
 if (isset($USER_SETTINGS['map_iFrame_Enabled']) && ($USER_SETTINGS['map_iFrame_Enabled'])) {
-    echo "<div id='meshmap'>\n"; // Closing tag at end of primary routine
     if(isset($GLOBALS['map_div_embedded'])) {
+    	echo "<div id='meshmap' style='margin: 0px;'>\n"; // Closing tag at end of primary routine
     	echo $GLOBALS['map_div_embedded'];
     }else {
+    	echo "<div id='meshmap'>\n"; // Closing tag at end of primary routine
     	echo "<div id='mapid'></div>\n";
     }
 }else {
