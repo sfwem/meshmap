@@ -23,7 +23,8 @@ L.Control.SlideMenu = L.Control.extend({
         this._container = L.DomUtil.create('div', 'leaflet-control-slidemenu leaflet-bar leaflet-control');
         var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', this._container);
         link.title = 'Info';
-        L.DomUtil.create('span', 'fa fa-question', link);
+        var infoIcon = L.DomUtil.create('span', 'fa fa-question', link);
+        infoIcon.style.fontSize = '15px';
 
         this._menu = L.DomUtil.create('div', 'leaflet-menu', map._container);
 

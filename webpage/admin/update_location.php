@@ -17,10 +17,11 @@ if (!isset($_SESSION['userLoggedIn'])) {
 	@include $INCLUDE_DIR . "/custom.inc";
 	
 	$sql_connection = wxc_connectToMySQL();
-		
+	
 	$query =    "UPDATE " . $USER_SETTINGS['sql_db_tbl'] .
-	            " SET " . $_POST['column'] . " = '" . $_POST['editval'] .
-	            "', location_fix = 1 WHERE node = '" . $_POST['node'] . "'";
+	" SET " . $_POST['column'] . " = '" . strip_tags($_POST['editval']) .
+	"', location_fix = 1 WHERE node = '" . $_POST['node'] . "'";
+		
 	if ($_POST['column'] == "location_fix") {
 	    $_POST['editval'] = strtolower($_POST['editval']);
 	    if ($_POST['editval'] == "yes<br>" || $_POST['editval'] == "yes") {
@@ -30,7 +31,7 @@ if (!isset($_SESSION['userLoggedIn'])) {
 	         $_POST['editval'] = 0;
 	     }
 	     $query =   "UPDATE " . $USER_SETTINGS['sql_db_tbl'] .
-	                " SET " . $_POST['column'] . " = '" . $_POST['editval'] .
+	                " SET " . $_POST['column'] . " = '" . strip_tags($_POST['editval']) .
 	                "' WHERE node = '" . $_POST['node'] . "'";
 	    $result = wxc_putMySql($query);
 	}else {

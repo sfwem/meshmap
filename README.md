@@ -26,14 +26,17 @@ Donations / Beer accepted! :) (paypal possibly coming soon, email: kg6wxc@gmail.
 (you may only need mysqlnd, it should be safe to enable both for now)  
 (One or more of these extensions may need to be enabled in php.ini)  
 (if you do not already have mysqlnd, you might need to install it, `apt-get install php[5 or 7]-mysqlnd`)  
+(<em>the requirement for the mysqlnd extension will be removed in the near future</em>)  
 - **MySQL/MariaDB**  
-(Other database systems are up to you)
+(Other database systems are up to you)  
 - **An AREDN Mesh node available over the local network**  
 (Preferably connected to an AREDN network...)  
 - **Map Tiles**  
 (Either in a static directory or available via some tile server...)  
 - **RPi3 or better**  
-(The DB access can be pretty slow on an RPi1, you can move the DB to another system though...)
+(The DB access can be pretty slow on an RPi1, you can move the DB to another system though...)  
+(If your local mesh network grows to become very large, with tunnels opened to the entire planet,<br/>
+you might find even an RPi3+ to become inadequate, it'll still work, it just might be slow)  
 - **Patience**  
 (Perhaps a lot!)
 - **Familiarity with Linux/Apache/SQL**  
@@ -41,7 +44,7 @@ Donations / Beer accepted! :) (paypal possibly coming soon, email: kg6wxc@gmail.
 
 <blockquote style="background: #d3d3d3; margin-right: 30%;">In theory, this <em>should</em> run on a Windows system as well.<br/>
 It does not require anything specific to Linux (<em>Perhaps with the exception of the cron task</em>).<br/>
-There is no reason that part could not be adapted to run from a Windows scheduled task though.<br/>
+There is no reason that cronjob could not be adapted to run from a Windows scheduled task though.<br/>
 PHP is PHP after all.</blockquote>  
 
 ### Map Tile Server info
@@ -88,8 +91,9 @@ Choose your own password!
 > `FLUSH PRIVILEGES;`
 
 - **4: Copy scripts/user-settings.ini-default to scripts/user-settings.ini and edit the user-settings.ini file**  
+    * You **must** do this or the **<em>entire system</em>** will refuse to run!  
     * The file scripts/user-settings.ini is the most important to get right.  
-    It is **very important** to make sure your SQL username and password are correct in scripts/user-settings.ini!!
+    It is **very important** to make sure your SQL username and password are correct in scripts/user-settings.ini!!  
     * Also important is, if the system that this is running on cannot resolve "localnode.local.mesh" you can change that in the user-settings.ini file.  
     * Once you save to the user-settings.ini file any changes you make will not be overwritten by future updates.  
     The "-default" files *will probably* change though and you will need to update your personal files when this happens.
@@ -168,20 +172,23 @@ You can add the "Non Mesh" Markers, fire stations, police stations, EOC's , etc 
 The admin pages also allow for some maintenance of the database, more feedback is encouraged on this!  
   
 You can change the way the page looks by copying webpage/css/meshmap-default.css to webpage/css/meshmap.css.  
-The meshmap.css file will be used in place of the -default.css file.  
-(This also applies to other *-default.css files)  
+The meshmap.css file will override the -default.css file.  
+(This also applies to other *-default.css files, there are a few, please look at them if you wish to customize the layout of the map)  
 
 ## ToDo List
 ----------
 (In no particular order)  
-- [x] Finally finish my admin page idea.  
+- [x] Finally finish my admin page idea (mostly).  
 - [x] Add new MeshMap Logo.  
-- [x] Change the user editable files to be distributed with "-default" added to the extension, no more tar.gz file.  
-- [x] Use a cookie instead of _POST for the internet check (No more stupid dialog box on refresh).  
-- [ ] Make "Parallel Threads" work again in get-map-info script, with limits on how many can be run at once (this will greatly speed up network polling).  
-- [x] Changes so sbarc.org can have the new version too!  
+- [x] User css files will override the defaults.  
+- [x] Polling script checks the DB before it runs and makes changes if needed.  
+- [ ] Make "Parallel Threads" work again in get-map-info script, with limits on how many can be run at once.  
+    (this will greatly speed up network polling)  
+- [x] Catch more nodes information now, like 3.15.1.0b04 and hopefully some other pesky ones!  
+    (this will probably cause some warnings during node polling, but it is getting the info it needs)  
+    (also helps clean up the database and was a nice side effect of that)  
 - [ ] Change css file for the "?" slide-out menu.  
-- [x] Fix a typo in the attribution bar so the pop-up for the links is only for the links number.  
+- [x] Make the numbers for stations and links in the attribution bar a bit more accurate I hope.  
 - [ ] Implement N2MH's "Link aging" idea(s).  
 - [ ] The "Planning" Tab.  
 - [ ] Make it so other networks can export their data for use on a "Mega Map" type page. :)
@@ -192,4 +199,4 @@ The meshmap.css file will be used in place of the -default.css file.
 I can't think of *everything*!  
 If you find an improvement, typo, or whatever, please, send an email to kg6wxc@gmail.com and we can get you setup with write access if you'd like!  
 
-This README file last updated: May 2018
+This README file last updated: July 2018

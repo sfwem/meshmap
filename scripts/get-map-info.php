@@ -72,13 +72,12 @@ ini_set('memory_limit', '128M');
 $INCLUDE_DIR = "..";
 
 //check for users user-settings.ini file and use it if it exists
-//use the default one if it does not
+//inform the user and exit if the file does not exist
 global $USER_SETTINGS;
 if (file_exists($INCLUDE_DIR . "/scripts/user-settings.ini")) {
     $USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini");
 }else {
-    echo "\n\nYou **must** copy the user-settings.ini-default file to user-settings.ini and edit it!!\n\n";
-    //$USER_SETTINGS = parse_ini_file($INCLUDE_DIR . "/scripts/user-settings.ini-default");
+    exit("\n\nYou **must** copy the user-settings.ini-default file to user-settings.ini and edit it!!\n\n");
 }
 
 //kg6wxc's functions. (ALWAYS REQUIRED!, change path if you moved it!)
@@ -148,13 +147,17 @@ wxc_checkConfigs();
 date_default_timezone_set($USER_SETTINGS['localTimeZone']);
 $currentTime = wxc_getCurrentDateTime();
 
+//what do we want to use in the sql server
 $sql_db_tbl = $USER_SETTINGS['sql_db_tbl'];
 $sql_db_tbl_node = $USER_SETTINGS['sql_db_tbl_node'];
 $sql_db_tbl_topo = $USER_SETTINGS['sql_db_tbl_topo'];
 
 if ($do_sql) {
 	//an sql connection that we can reuse...
-	$sql_connection	=	wxc_connectToMySQL();
+	//$sql_connection	=	wxc_connectToMySQL();
+	wxc_connectToMySQL();
+	//check for new or changed database items (tables, columns,etc)
+	wxc_checkDB();
 }else {
 	if ($TEST_MODE_NO_SQL) {
 		wxc_echoWithColor("SQL Server access disabled!", "red");
@@ -162,34 +165,19 @@ if ($do_sql) {
 		//echo "\033[31mSQL Server access disabled!\033[0m\n\n";
 	}	
 }
-//check if we are ready to run
-//(not quite done yet)
-//wxc_checkConfigs();
+
+
+//if ($do_sql) {
+//	wxc_checkDB();
+//}
+
 
 //This controls when certain parts of the script run.
 //We check the DB for the time we last checked and only run if we need to.
-//intervals are now controled via the ini file now.
+//intervals are now controled via the ini file.
 //thanks K6GSE!
 if ($do_sql) {
-	//if $do_sql is set to 1, check when we last got link info, if it was 5 minutes or more set the variable to 1
-	$lastRunGetLinkInfo = wxc_scriptGetLastDateTime("LINKINFO", "topology");
-	if($lastRunGetLinkInfo) {
-		if ($USER_SETTINGS['link_update_interval'] > 0) {
-			$intervalLINK = date_diff($lastRunGetLinkInfo, $currentTime);
-			//if ($intervalLINK->i >= 5) {
-			if ($intervalLINK->i >= intval($USER_SETTINGS['link_update_interval'])) {
-				if ($TEST_MODE_WITH_SQL) {
-					echo "It has been " . $USER_SETTINGS['link_update_interval'] . " or more minutes since this script got the link info\n";
-					echo "Setting getLinkInfo to TRUE.\n";
-				}
-				$getLinkInfo = 1;
-			}
-		}
-	}else {
-		//probably never run before, let's get some data!
-		$getLinkInfo = 1;
-		}
-		//if $do_sql is set to 1, check when we last polled all the known nodes, if it was 1 hour or more set the variable to 1
+	//if $do_sql is set to 1, check when we last polled all the known nodes, if it was more than the interval set the variable to 1
 	$lastRunGetNodeInfo = wxc_scriptGetLastDateTime("NODEINFO", "node_info");
 	if ($lastRunGetNodeInfo) {
 		if ($USER_SETTINGS['node_polling_interval'] > 0) {
@@ -197,29 +185,48 @@ if ($do_sql) {
 			$intervalNodeInMinutes = $intervalNODE->days * 24 * 60;
 			$intervalNodeInMinutes += $intervalNODE->h * 60;
 			$intervalNodeInMinutes += $intervalNODE->i;
-			//if ($intervalNODE->h >= 1) {
-			//if ($intervalNODE->i >= intval($USER_SETTINGS['node_polling_interval'])) {
 			if ($intervalNodeInMinutes >= intval($USER_SETTINGS['node_polling_interval'])) {
 				if ($TEST_MODE_WITH_SQL) {
 					echo "It has been " . $USER_SETTINGS['node_polling_interval'] . " or more minutes since this script polled all the nodes\n";
-					echo "Setting getNodeInfo to TRUE.\n";
+					echo "Set to poll nodes.\n";
 				}
 				$getNodeInfo = 1;
 			}
 		}
 	}else {
 		//probably never run before, lets get some data!!
+		echo "Set to poll nodes.\n";
 		$getNodeInfo = 1;
+	}
+	
+	//if $do_sql is set to 1, check when we last got link info, if it was more than the interval set the variable to 1
+	$lastRunGetLinkInfo = wxc_scriptGetLastDateTime("LINKINFO", "topology");
+	if($lastRunGetLinkInfo) {
+		if ($USER_SETTINGS['link_update_interval'] > 0) {
+			$intervalLINK = date_diff($lastRunGetLinkInfo, $currentTime);
+			if ($intervalLINK->i >= intval($USER_SETTINGS['link_update_interval'])) {
+				if ($TEST_MODE_WITH_SQL) {
+					echo "It has been " . $USER_SETTINGS['link_update_interval'] . " or more minutes since this script got the link info\n";
+					echo "Set to get network linking info.\n\n";
+				}
+				$getLinkInfo = 1;
+			}
+		}
+	}else {
+		//probably never run before, let's get some data!
+		echo "Set to get network linking info.\n\n";
+		$getLinkInfo = 1;
 	}
 }
 //check the database to see if we are already polling nodes
+//this trys to prevent 2 polling runs at once
+//it does nothing in "--test-mode-no-sql"
 if ($do_sql) {
 	$currently_polling_nodes = wxc_getMySql("SELECT script_last_run, currently_running from map_info WHERE id = 'NODEINFO'");
 	if (is_null($currently_polling_nodes['currently_running'])) {
 		$currently_polling_nodes['currently_running'] = 0;
 		$getNodeInfo = 1;
 	}elseif ($currently_polling_nodes['currently_running'] == 1) {
-		//if ($currently_polling_nodes['script_last_run'])
 		$getNodeInfo = 0;
 	}
 	//hopefully catch a stalled polling run after 3 * node_polling_interval has expired.
@@ -227,13 +234,14 @@ if ($do_sql) {
 	//to unset the "currently_running" bit in the DB,
 	//this *should* catch that and and just run the node polling again
 	if ($currently_polling_nodes['currently_running'] == 1 && $intervalNodeInMinutes >= intval($USER_SETTINGS['node_polling_interval']) * 3) {
-	    $getNodeInfo = 1;
+	    $currently_polling_nodes['currently_running'] = 0;
+		$getNodeInfo = 1;
 	}
 }
 
 //check for old outdated node info (intervals will be set in the ini file)
-$no_expire = $USER_SETTINGS['expire_old_nodes'];
-if ($do_sql && $no_expire) {
+$do_expire = $USER_SETTINGS['expire_old_nodes'];
+if ($do_sql && $do_expire) {
 	wxc_checkOldNodes();
 }
 if ($do_sql) {
@@ -253,10 +261,12 @@ if ($getNodeInfo) {
 	if ($do_sql && $currently_polling_nodes['currently_running'] == 0) {
 		wxc_putMySql("INSERT INTO map_info (id, table_or_script_name, script_last_run, currently_running) VALUES ('NODEINFO', 'node_info', NOW(), '1') ON DUPLICATE KEY UPDATE table_or_script_name = 'node_info', script_last_run = NOW(), currently_running = '1'");
 	}
-	$meshNodes = wxc_netcat($USER_SETTINGS['localnode'], "2004", null, "ipOnly"); //get a new list of IP's
+	//get a new list of IP's to poll
+	$meshNodes = wxc_netcat($USER_SETTINGS['localnode'], "2004", null, "ipOnly");
 	if ($meshNodes) {
-		/* TESTING IDEA */
 		
+		/* TESTING IDEA */
+		/*
 		$ipAddrArray = explode("\n", $meshNodes);
 		$ipAddrArrayChunks = array_chunk($ipAddrArray, $USER_SETTINGS['numParallelThreads']);
 		foreach($ipAddrArrayChunks as $chunk => $ipList) {
@@ -267,14 +277,16 @@ if ($getNodeInfo) {
 		foreach($ipAddrArray as $ipAddr) {
 			//echo "";
 		}
-		
+		*/
 		/* END TESTING */
+		
+		
 		foreach (preg_split("/((\r?\n)|(\r\r?))/", $meshNodes) as $line) {
 		list ($ipAddr) = explode("\n", $line);
 		
 		//check for nodes that we know will not have the info we are going to request and skip them
 		if ($do_sql) {
-			if (wxc_getMySql("SELECT ip, reason FROM hosts_ignore WHERE ip = '$ipAddr'")) {
+			if (wxc_getMySql("SELECT ip FROM hosts_ignore WHERE ip = '$ipAddr'")) {
 				continue;
 			}
 		}
@@ -285,24 +297,23 @@ if ($getNodeInfo) {
 			//for($count = 1; $count <= 20; $count++) {
 			//	$ipAddrList .= $ipAddr . "\n";
 			//}
-			$parallel_pids = array();
+//			$parallel_pids = array();
 			//$parallel_pids[] = trim(shell_exec("php $INCLUDE_DIR/scripts/parallel_node_polling.php $ipAddr $do_sql 0 > /dev/null 2>/dev/null & echo $!"));
-			$parallel_pids[] = trim(shell_exec("php $INCLUDE_DIR/scripts/parallel_node_polling.php $ipAddr $do_sql 0 > /dev/null 2>/dev/null & echo $!"));
+//			$parallel_pids[] = trim(shell_exec("php $INCLUDE_DIR/scripts/parallel_node_polling.php $ipAddr $do_sql 0 > /dev/null 2>/dev/null & echo $!"));
 			//$parallel_pids[] = shell_exec("php $INCLUDE_DIR/scripts/parallel_node_polling.php $ipAddr $do_sql 0 > /dev/null & echo $!");
 			
 		      //var_dump($parallel_pids);
 			 
 		}else {
 			//get the sysinfo.json file from the node being polled.
-			$sysinfoJson = @file_get_contents("http://$ipAddr:8080/cgi-bin/sysinfo.json"); //get the .json file
+			$sysinfoJson = @file_get_contents("http://$ipAddr:8080/cgi-bin/sysinfo.json?services_local=1"); //get the .json file
 			$jsonFetchSuccess = 1;
 			//check if we got anything back, if not, try to tell why.
 			if($sysinfoJson === FALSE) {
 				$jsonFetchSuccess = 0;
 				$error = error_get_last();
 				wxc_checkErrorMessage($error, $nodeName);
-				
-				//just skip the next IP
+				//just skip to the next IP since there was an error
 				continue;
 			}else {
 				//node is there, get all the info we can
@@ -310,7 +321,7 @@ if ($getNodeInfo) {
 				$result = json_decode($sysinfoJson,true);
 				
 				//if there's nothing really there just skip to the next IP
-				if (!$result) {
+				if (!$result || empty($result)) {
 					continue;
 				}
 				//first let's see what node we are dealing with
@@ -324,46 +335,28 @@ if ($getNodeInfo) {
 				//kg6wxc is *not* guilty of such things... :)
 				//
 				//just a few checks for nothing usually catches it.
-                if ($node && $result['lat'] == "" && $result['lon'] == "" && $result['ssid'] == ""
+                if ($result['node'] && $result['lat'] == "" && $result['lon'] == "" && $result['ssid'] == ""
                  && $result['model'] == "" && $result['firmware_mfg'] == ""
 				 && $result['api_version'] == "") {
                         continue;
                 }
 				
-				//gather lots of other information from OLSRD about the node being polled (we hopefully can use this later)
-				//this requires a second connection to the node. no way around that.
-				//but only if we have a firmware version >= than 3.16.0 (or "develop-16")
-				$firmware_version = $result['firmware_version'];
-				$olsrdInfo = 0;
-
-				//changed again to exclude some nodes 10-21-2017
-				/************
-				 * REMOVED due to issues
-				 * DO NOT UNCOMMENT FOR NOW
-				 ************/
-				//if (version_compare($result['firmware_version'], "3.16.0.0", ">") || strpos($result['firmware_version'], "evelop-16") || $result['firmware_version'] === "linux" || $result['firmware_version'] === "Linux") {
-				//    $olsrdInfo = wxc_netcat("$ipAddr");
-				//	$noPort9090 = 1;
-				//}
-								
-				//maybe in the future we'll be able to get this info remotely too and use it for something
-				//$olsrdDotDrawInfo = wxc_netcat("$nodeName.local.mesh","2004", null, null);	//save the polled nodes local dot_draw info (never know we may want it for something)
-				
 				//save json data to some variables
 				//probably don't really need to do this, but it is what it is for now...
-				$model = $result['model'];
+                $firmware_version = $result['firmware_version'];
+                $model = $result['model'];
 				
 				//this only seems to affect some nodes.
-				//if lat || log is blank, make it "0"
+				//if lat || lon is blank, make it "0"
 				//this was sometimes screwing up the SQL writing function
 				//but not always of course.
 				if ($result['lat'] == "") {
-				    $lat = "0";
+				    $lat = 0.0;
 				}else {
 				    $lat = $result['lat'];
 				}
 				if ($result['lon'] == "") {
-				    $lon = "0";
+				    $lon = 0.0;
 				}else {
 				    $lon = $result['lon'];
 				}
@@ -377,12 +370,28 @@ if ($getNodeInfo) {
 				$channel = $result['channel'];
 				$firmware_mfg = $result['firmware_mfg'];
 				
+				//had to screen scrape the status page for this info before (or use the evil port 9090!)
+				//now it is here! :)
+				$uptime = "NotAvailable";
+				$loadavg = "NotAvailable";
+				if (version_compare($api_version, "1.2", ">=")) {
+					$uptime = $result['sysinfo']['uptime'];
+					$loadavg = serialize($result['sysinfo']['loads']); // <-- this is an array that has been serialized!!
+				}
+				
+				//local service listing are now in the json file!!  yay!
+				//this required evil port 9090 before
+				$services = "NotAvailable";
+				if (version_compare($api_version, "1.3", ">=")) {
+					$services = serialize($result['services_local']); // <-- this is an array that has been serialized!
+				}
+				
 				//this only seems to affect some nodes.
-				//if grid_square is blank, make it NULL
+				//if grid_square is blank, make it "none"
 				//this was sometimes screwing up the SQL writing function
 				//but not always of course.
 				if ($result['grid_square'] == "") {
-				    $grid_square = NULL;
+				    $grid_square = "none";
 				}else {
 				    $grid_square = $result['grid_square'];
 				}
@@ -390,31 +399,53 @@ if ($getNodeInfo) {
 				//W6BI requested this info to be added, so here it is now. :)
 				//current ip/mac address info
 				if ($result['interfaces']) {
-					foreach($result['interfaces'] as $interface) {
+					foreach($result['interfaces'] as $interface => $infInfo) {
 						$eth = "eth0";
 						if ($result['model'] == "Ubiquiti Nanostation M XW" || $result['model'] == "AirRouter " || $result['model'] == "NanoStation M5 XW ") {
 							//"AirRouter " model name bug caught and fixed by Mark, N2MH 13 March 2017.
 							$eth = "eth0.0";
 						}
-						if ($interface['name'] == $eth) { // error with KK9DS on $name (undefined index)
-							$lan_ip = $interface['ip']; //error with ke6upi here on $ip (undefinded index)
+						//
+						// This should catch some of those pesky ones
+						// what a fricken nightmare... jeez
+						//
+						if ($result['api_version'] == "1.0" && $infInfo['name'] == $eth && $interface !== $eth) {
+							$lan_ip = $infInfo['ip'];
 						}
-						if ($interface['name'] == "wlan0") {
-							$wlan_ip = $interface['ip'];
-							$wifi_mac_address = $interface['mac']; //added to fix MAC address issue, caught by Mark, N2MH 14 March 2017.
+						//elseif ($result['api_version'] == "1.0" && $infInfo['name'] == "eth0.0") {
+						//	$lan_ip = $infInfo['ip'];
+						//}
+						elseif ($result['api_version'] == "1.0" && $infInfo['name'] == "wlan0" && $interface !== "wlan0") {
+							$wlan_ip = $infInfo['ip'];
+							$wifi_mac_address = $infInfo['mac'];
+						}elseif ($result['api_version'] == "1.0" && $interface == $eth) {
+							$lan_ip = $infInfo['ip'];
+						}
+						//elseif ($result['api_version'] == "1.0" && $interface == "eth0.0") {
+						//	$lan_ip = $infInfo['ip'];
+						//}
+						elseif ($result['api_version'] == "1.0" && $interface == "wlan0") {
+							$wlan_ip = $infInfo['ip'];
+							$wifi_mac_address = $infInfo['mac'];
+						}elseif (version_compare($result['api_version'], "1.0", ">")) {
+							if ($infInfo['name'] == $eth) { // error with KK9DS on $name (undefined index)
+								if (isset($infInfo['ip'])) {
+									if ($infInfo['ip'] == "none") {
+										$lan_ip = "NotAvailable";
+									}else {
+										$lan_ip = $infInfo['ip']; //error with ke6upi here on $ip (undefinded index)
+									}
+								}elseif (!isset($infInfo['ip'])) {
+									$lan_ip = "NotAvailable";
+								}
+							}
+							if ($infInfo['name'] == "wlan0") {
+								$wlan_ip = $infInfo['ip'];
+								$wifi_mac_address = $infInfo['mac']; //added to fix MAC address issue, caught by Mark, N2MH 14 March 2017.
+							}
 						}
 					}
 				}
-//**change node locations via admin page now!!**
-// 				if ($wxc_custom) {
-// 					if($do_sql) {
-// 						$nodesToFixLocations = fixLocations($node, $lat, $lon);
-// 						list ($node, $lat, $lon) = explode(" ", $nodesToFixLocations);
-// 						$node = $node;
-// 						$lat = $lat;
-// 						$lon = $lon;
-// 					}
-// 				}
 				
 				if ($testNodePolling) {
 					echo "Name: "; wxc_echoWithColor($result['node'], "purple"); echo "\n";
@@ -440,7 +471,14 @@ if ($getNodeInfo) {
 						//echo "Firmware Version: " . $firmware_version . "\n";
 						echo "Firmware: \033[32m" . $result['firmware_mfg'] . " " . $result['firmware_version'] . "\033[0m\n";
 					}
-					echo "LAN ip: " . $lan_ip . " WLAN ip: " . $wlan_ip . "\n";
+					
+					echo "LAN ip: ";
+					if ($lan_ip == "NotAvailable") {
+						wxc_echoWithColor($lan_ip, "orange");
+					}else {
+						echo $lan_ip;
+					}
+					echo " WLAN ip: " . $wlan_ip . "\n";
 					
 					if (($result['lat']) && ($result['lon'])) {
 						echo "Location: \033[32m" . $result['lat'] . ", " . $result['lon']. "\033[0m\n";
@@ -450,24 +488,21 @@ if ($getNodeInfo) {
 					}else {
 						echo "\033[31mNo Location Info Set!\033[0m\n";
 					    //K6GSE's solution to deal with non-null values in the DB
-						$lat = 0.00;
-						$lon = 0.00;
+						$lat = 0.0;
+						$lon = 0.0;
 						//end
 					}
 					
-					if ($sysinfoJson && $olsrdInfo) {
-						echo "\033[32mSaved OLSRd info and sysinfo.json\033[0m\n";
-					}elseif ($sysinfoJson && !$olsrdInfo) {
-						echo "\033[33mOnly saved sysinfo.json\033[0m\n";
-						if ($olsrdInfo != 0) {
-							echo $GLOBALS['errorMessageFrom_wxc_netcat_function'] . "\n";
-						}else {
-							echo "Did not try to fetch full OLSRd data...\n" .
-							"\033[33mFirmware version less than 3.16 does not allow for remote OLSRd info gathering.\033[0m\n";
-						}
+					if ($uptime !== "NotAvailable") {
+						echo "Uptime: \033[32m" . $uptime . "\033[0m\n";
 					}else {
-						echo "\033[31mGOT NOTHING FROM THE NODE!!!!\033[0m";					
+						echo "Uptime: \033[33m" . $uptime . "\033[0m\n";
 					}
+					//if (!empty($sysinfoJson) || $sysinfoJson !== NULL) {
+					//	echo "\033[32mSaved sysinfo.json\033[0m\n";
+					//}else {
+					//						
+					//}
 					echo "\n";
 				}
 				
@@ -482,6 +517,8 @@ if ($getNodeInfo) {
 					//our queries
 				
 				//this is saved in case it's actually needed later
+				//should be handled by the SQL server now
+				/*
 				$sql_update_when_mac_addr_has_changed	=	"UPDATE $sql_db_tbl SET
             	wifi_mac_address=$wifi_mac_address,model=$model,
             	firmware_version=$firmware_version,
@@ -492,6 +529,7 @@ if ($getNodeInfo) {
             	channel=$channel,firmware_mfg=$firmware_mfg,
             	lan_ip=$lan_ip,wlan_ip=$wlan_ip,last_seen=NOW()
             	WHERE node=$node";
+				*/
 				
 				/* testing trying to make things more readable and
 				 * not use extra variables...
@@ -541,31 +579,31 @@ if ($getNodeInfo) {
 				
 				$sql	=	"INSERT INTO $sql_db_tbl(
 				wifi_mac_address, node, model, firmware_version, lat, lon, grid_square, ssid, chanbw, api_version, board_id,
-				tunnel_installed, active_tunnel_count, channel, firmware_mfg, lan_ip, wlan_ip, sysinfo_json, last_seen)
+				tunnel_installed, active_tunnel_count, channel, firmware_mfg, lan_ip, wlan_ip, uptime, loadavg, services, last_seen)
 				VALUES('$wifi_mac_address', '$node', '$model', '$firmware_version',
 				'$lat', '$lon', '$grid_square', '$ssid', '$chanbw', '$api_version', '$board_id',
 				'$tunnel_installed', '$active_tunnel_count', '$channel',
-				'$firmware_mfg', '$lan_ip', '$wlan_ip', '$sysinfoJson', NOW())
+				'$firmware_mfg', '$lan_ip', '$wlan_ip', '$uptime', '$loadavg', '$services', NOW())
 				ON DUPLICATE KEY UPDATE wifi_mac_address = '$wifi_mac_address', node = '$node', model = '$model', firmware_version = '$firmware_version',
 				lat = '$lat', lon = '$lon', grid_square = '$grid_square', ssid = '$ssid', chanbw = '$chanbw', api_version = '$api_version',
 				board_id = '$board_id', tunnel_installed = '$tunnel_installed',
 				active_tunnel_count = '$active_tunnel_count', channel = '$channel',
 				firmware_mfg = '$firmware_mfg', lan_ip = '$lan_ip', wlan_ip = '$wlan_ip',
-				sysinfo_json = '$sysinfoJson', last_seen = NOW()";
+				uptime = '$uptime', loadavg = '$loadavg', services = '$services', last_seen = NOW()";
 				
 				$sql_no_location_info  =    "INSERT INTO $sql_db_tbl(
 				wifi_mac_address, node, model, firmware_version, grid_square, ssid, chanbw, api_version, board_id,
-				tunnel_installed, active_tunnel_count, channel, firmware_mfg, lan_ip, wlan_ip, sysinfo_json, last_seen)
+				tunnel_installed, active_tunnel_count, channel, firmware_mfg, lan_ip, wlan_ip, uptime, loadavg, services, last_seen)
 				VALUES('$wifi_mac_address', '$node', '$model', '$firmware_version',
 				'$grid_square', '$ssid', '$chanbw', '$api_version', '$board_id',
 				'$tunnel_installed', '$active_tunnel_count', '$channel',
-				'$firmware_mfg', '$lan_ip', '$wlan_ip', '$sysinfoJson', NOW())
+				'$firmware_mfg', '$lan_ip', '$wlan_ip', '$uptime', '$loadavg', '$services', NOW())
 				ON DUPLICATE KEY UPDATE wifi_mac_address = '$wifi_mac_address', node = '$node', model = '$model', firmware_version = '$firmware_version',
 				grid_square = '$grid_square', ssid = '$ssid', chanbw = '$chanbw', api_version = '$api_version',
 				board_id = '$board_id', tunnel_installed = '$tunnel_installed',
 				active_tunnel_count = '$active_tunnel_count', channel = '$channel',
 				firmware_mfg = '$firmware_mfg', lan_ip = '$lan_ip', wlan_ip = '$wlan_ip',
-				sysinfo_json = '$sysinfoJson', last_seen = NOW()";
+				uptime = '$uptime', loadavg = '$loadavg', services = '$services', last_seen = NOW()";
 				
 				$sql_update_when_node_name_has_changed	=	"UPDATE $sql_db_tbl SET
             	node = '$node', model = '$model',
@@ -575,7 +613,8 @@ if ($getNodeInfo) {
             	tunnel_installed = '$tunnel_installed',
             	active_tunnel_count = '$active_tunnel_count',
             	channel = '$channel', firmware_mfg = '$firmware_mfg',
-            	lan_ip = '$lan_ip', wlan_ip = '$wlan_ip', last_seen=NOW()
+            	lan_ip = '$lan_ip', wlan_ip = '$wlan_ip',
+				uptime = '$uptime', loadavg = '$loadavg', services = '$services', last_seen=NOW()
             	WHERE wifi_mac_address = '$wifi_mac_address'";
 				
 				$sql_update_when_node_name_has_changed_no_location_info	=	"UPDATE $sql_db_tbl SET
@@ -586,7 +625,8 @@ if ($getNodeInfo) {
             	tunnel_installed = '$tunnel_installed',
             	active_tunnel_count = '$active_tunnel_count',
             	channel = '$channel', firmware_mfg = '$firmware_mfg',
-            	lan_ip = '$lan_ip', wlan_ip = '$wlan_ip', last_seen=NOW()
+            	lan_ip = '$lan_ip', wlan_ip = '$wlan_ip',
+				uptime = '$uptime', loadavg = '$loadavg', services = '$services', last_seen=NOW()
             	WHERE wifi_mac_address = '$wifi_mac_address'";
 				
 				//find the currently stored name and mac address of the node we are looking at
@@ -651,8 +691,11 @@ if ($getNodeInfo) {
 					$firmware_mfg = NULL;
 					$lan_ip = NULL;
 					$wlan_ip = NULL;
+					$uptime = NULL;
+					$loadavg = NULL;
+					$services = NULL;
 					$sysinfoJson = NULL;
-					$olsrdInfo = NULL;
+					//$olsrdInfo = NULL;
 				}
 			}
 		}

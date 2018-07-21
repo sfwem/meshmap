@@ -6,7 +6,7 @@
  * @version    $Id$
  * @copyright  Copyright (c) 2018 as Open Source
  * @license    GPLv3 or later
- * @abstract   Eric has written a tool called get-map-info which retrieves HAM Mesh network devices,
+ * @abstract   Eric has written a tool called get-map-info which retrieves AREDNmesh network devices,
  *                     their configuration and Linkage information. These details are populated in several SQL tables.
  *                     The map.php routine extracts the DB details and creates a dynamic map of those nodes and links.
  *
@@ -20,7 +20,6 @@
  *             OpenTopoMap https://opentopomap.org
  *
  **************************************************************************/
-
 /* Current version notes
  * 
  * March 2018
@@ -47,7 +46,6 @@
  * GSE: Added Popup to Link lines.
  * GSE: Added another popup for those nodes with an non-standard firmware version. ( Visiable when layer is active )
 **/
-
 /******
 * This file is part of the Mesh Mapping System.
 * The Mesh Mapping System is free software: you can redistribute it and/or modify
@@ -63,7 +61,6 @@
 * You should have received a copy of the GNU General Public License   
 * along with The Mesh Mapping System.  If not, see <http://www.gnu.org/licenses/>.
 ******/
-
 /* Historical Notes ( colapsed )
 * early march 2017
 * -----------------
@@ -80,24 +77,24 @@
 * -----------------
 * changed to use only free (as in beer) maps
 * OSM, openTopo, Stamen maps, etc.
-
+*
 * early jan 2017
 * -----------------
 * migrated to use mysqli
 * also added the mapbox "topographic" maps (which suck)
-
+*
 * mid dec 2016
 * -----------------
 * yet another update (due to request)
 * added distance and bearing info to the linked node listing in the station popup
-
+*
 * more updates dec 2016
 * -----------------
 * added lat, lon to the popup info
 * added channel and bandwidth info to the station popups
 * out of date (and maybe beta) firmware now shows up as red text in the station popups
 * changed the bottom "attributions" section a bit, formatted it differently and added in the number of stations and links shown. :)
-
+*
 * v.03 early December 2016
 * -----------------
 * added fullscreen control.(mid november 2016).
@@ -117,13 +114,17 @@
 *  v.01 inital map Oct 2016
 * -----------------
 */
-
 //Increase PHP memory limit to 128M (you may need more if you are connected to a "Mega Mesh" :) )
 ini_set('memory_limit', '128M');
 
 /******
 * You should not need to change much below here
 ******/
+
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
+
 
 $INCLUDE_DIR = "..";
 
@@ -284,28 +285,42 @@ global $STABLE_MESH_VERSION;
 $STABLE_MESH_VERSION = $USER_SETTINGS['current_stable_fw_version'];
 
 
-$page_header = <<< EOD
-<!DOCTYPE html>
-<!-- AREDN mesh network dynamic map -->
-<!-- Created by KG6WXC with help from N2MH and K6GSE -->
-<html lang='en' xmlns='http://www.w3.org/1999/xhtml'>
-<head>
-<meta http-equiv='Pragma' content='no-cache'>
-<meta http-equiv='Expires' content='-1'>
-<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
-EOD;
+//$page_header = <<< EOD
+echo '<!DOCTYPE html>' . "\n";
+echo '<!-- AREDNmesh dynamic network map -->' . "\n";
+echo '<!-- Created by KG6WXC 2016-2018 with contributions and ideas from N2MH and K6GSE and others. -->' . "\n";
+echo '<html lang="en" xmlns="http://www.w3.org/1999/xhtml">' . "\n";
+echo '<head>' . "\n";
+echo '<meta http-equiv="Pragma" content="no-cache">' . "\n";
+echo '<meta http-equiv="Expires" content="-1">' . "\n";
+echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' . "\n";
+//EOD;
 
-echo $page_header . "\n";
+//echo $page_header . "\n";
 echo "<title>" . $USER_SETTINGS['pageTitle'] . "</title>\n";
 
 /*
- * check for the users meshmap.css file and use it if it exists...
- * if not, use the "-default" file (meshmap-default.css)
+ * check for the users custom.css files and use them if exists...
+ * load the "-default" files first (meshmap-default.css)
+ * and the user files second, that way changes in the users file(s)
+ * will override the default ones (if I understand CSS correctly)
  */
+echo "<link href='css/meshmap-default.css' rel='stylesheet'>\n";
 if (file_exists ("./css/meshmap.css")) {
     echo "<link href='css/meshmap.css' rel='stylesheet'>\n";
-}else {
-    echo "<link href='css/meshmap-default.css' rel='stylesheet'>\n";
+}
+
+//same thing but for legend.css (which controls the map legend)
+echo "<link href='css/map-legend-default.css' rel='stylesheet'>\n";
+if (file_exists ("./css/map-legend.css")) {
+	echo "<link href='css/map-legend.css' rel='stylesheet'>\n";
+}
+
+//same thing, but for some custom controls
+//these can be used to move the main buttons (on the left) around on the map
+echo "<link href='css/leaflet-custom-control-vertical-center-default.css' rel='stylesheet'>\n";
+if (file_exists ("./css/leaflet-custom-control-vertical-center.css")) {
+	echo "<link href='css/leaflet-custom-control-vertical-center.css' rel='stylesheet'>\n";
 }
 
 /*
@@ -335,6 +350,8 @@ if (!$mesh) {
 echo "<script src='javascripts/leaflet-hash.js'></script>\n";
 echo "<script src='javascripts/L.Control.SlideMenu.js'></script>\n";
 echo "<link href='css/L.Control.SlideMenu.css' rel='stylesheet'>\n";
+echo "<script src='javascripts/leaflet-ruler.js'></script>\n";
+echo "<link rel='stylesheet' type='text/css' href='css/leaflet-ruler.css'>\n";
 
 echo "\n";
 echo "</head>\n";
@@ -359,33 +376,34 @@ if (isset($USER_SETTINGS['map_iFrame_Enabled']) && ($USER_SETTINGS['map_iFrame_E
 }else {
     echo "<div id='meshmap'>\n"; // Closing tag at end of primary routine
     if (isset($USER_SETTINGS['pageLogo'])) {
-        echo "<MapTitle>";
-        echo "<img id='pageLogo' src='" . $USER_SETTINGS['pageLogo'] . "' alt='The Logo'>";
-        echo "</MapTitle>\n";
+        //echo "<MapTitle>";
+        echo "<img class='maptitle' id='pageLogo' src='" . $USER_SETTINGS['pageLogo'] . "' alt='The Logo'>";
+        //echo "</MapTitle>\n";
     }
     if (isset($USER_SETTINGS['logoHeaderText'])) {
-        echo "<MapTitle>";
-        echo $USER_SETTINGS['logoHeaderText'];
-        echo "</MapTitle>\n";
+        //echo "<MapTitle>";
+        echo '<p class="maptitle">' . $USER_SETTINGS['logoHeaderText'] . '</p>';
+        //echo "</MapTitle>\n";
         echo "<br>";
     }
     if (isset($USER_SETTINGS['welcomeMessage'])) {
-        echo "<Welcome_MSG>";
-        echo $USER_SETTINGS['welcomeMessage'];
+        //echo "<Welcome_MSG>";
+        echo '<p class="welcomeMsg">' . $USER_SETTINGS['welcomeMessage'] . '</p>';
         //echo "<br>";
         echo "&nbsp;&nbsp;";
-        echo "</Welcome_MSG>\n";
+        //echo "</Welcome_MSG>\n";
     }
     if (isset($USER_SETTINGS['otherTopOfMapMsg'])) {
-		echo "<Welcome_MSG2>";
-		echo $USER_SETTINGS['otherTopOfMapMsg'];
-		echo "</Welcome_MSG2>\n";
+		//echo "<Welcome_MSG2>";
+		echo '<p class="welcomeMsg2">' . $USER_SETTINGS['otherTopOfMapMsg'] . '</p>';
+		//echo "</Welcome_MSG2>\n";
 		echo "<br>";
     }
-    if (isset($USER_SETTINGS['meshWarning']) && $mesh) {
-        echo "<Warning_MSG>";
-        echo $USER_SETTINGS['meshWarning'];
-        echo "</Warning_MSG>";
+    //if (isset($USER_SETTINGS['meshWarning']) && $mesh) {
+    if (isset($USER_SETTINGS['meshWarning'])) {
+        //echo "<Warning_MSG>";
+        echo '<p class="warningMsg">' . $USER_SETTINGS['meshWarning'] . '</p>';
+        //echo "</Warning_MSG>";
         echo "<br>";
     }
 }
@@ -395,7 +413,8 @@ if (isset($GLOBALS['hide_admin'])) {
         //output nothing!!
     }
 }else {
-    echo "<strong><a style=\"float: right;\" href=\"admin/admin.php\">Admin</a></strong>\n";
+	//do not need anymore?
+    //echo "<strong><a style=\"float: right;\" href=\"admin/admin.php\">Admin</a></strong>\n";
 }
 
 if (isset($USER_SETTINGS['map_iFrame_Enabled']) && !($USER_SETTINGS['map_iFrame_Enabled'])) {
@@ -420,8 +439,8 @@ $numMarkers = count($MarkerList);
 //just using this for now
 //same here, probably still giving the wrong number WXC - april 2018
 //changing this based on other changes to get-map-info - may 2018
-//$numLinks = wxc_getMySql("SELECT COUNT(*) as linksWithLocations FROM topology WHERE (nodelat is not null or 0 or '' or '0') and (nodelon is not null or 0 or '' or '0') or (linklat is not null or 0 or '' or '0') and (linklon is not null or 0 or '' or '0')");
-$numLinks = wxc_getMySql("SELECT COUNT(*) as linksWithLocations FROM topology WHERE (nodelat != '0') and (nodelon != '0') or (linklat != '0') and (linklon != '0')");
+$numLinks = wxc_getMySql("SELECT COUNT(*) as linksWithLocations FROM topology WHERE (nodelat != '0' or NULL or 0) and (nodelon != '0' or NULL or 0) or (linklat != '0' or NULL or 0) and (linklon != '0' or NULL or 0)");
+//$numLinks = wxc_getMySql("SELECT COUNT(*) as linksWithLocations FROM topology WHERE (nodelat != '0' or NULL) and (nodelon != '0' or NULL) or (linklat != '0' or NULL) and (linklon != '0' or NULL)");
 $numLinks = $numLinks['linksWithLocations'];
 $numLinksTotal = count($TopoList);
 
@@ -457,8 +476,24 @@ $Content .= instantiate_Map();
 //}
 
 $Content .= "</script>\n";
-$Content .= "</div>\n"; // Closing tag
 
+$Content .= '<script>' . "\n" .
+		'var ldgHidden = document.getElementsByClassName("legendHidden");' . "\n" .
+		'ldgHidden[0].style.display = "none";' . "\n" .
+		'function hideLegend() {' . "\n" .
+			'var lgd = document.getElementsByClassName("legend");' . "\n" .
+			'var lgdHidden = document.getElementsByClassName("legendHidden");' . "\n" .
+			'if (lgd[0].style.display === "" || lgd[0].style.display === "block") {' . "\n" .
+				'lgd[0].style.display = "none";' . "\n" .
+				'lgdHidden[0].style.display = "block";' . "\n" .
+			'}else {' . "\n" .
+				'lgd[0].style.display = "block";' . "\n" .
+				'lgdHidden[0].style.display = "none";' . "\n" .
+			'}' . "\n" .
+		'}' . "\n" .
+	'</script>' . "\n";
+
+$Content .= "</div>\n"; // Closing tag
 
 // Display Page
 echo $Content;
@@ -473,6 +508,7 @@ echo $Content;
 //}
 
 //echo "</div>\n"; // End division meshmap
+
 echo "</body>\n";
 echo "</html>\n";
 /*

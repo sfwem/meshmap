@@ -172,4 +172,31 @@ MAP_DETAILS {
     font-size: 125%;
 }
 
-
+/*NEW ADDITIONS*/
+.maptitle {
+    color: Black;
+    font-weight:bold;
+    font-size: 200%;
+    vertical-align: middle;
+    display: inline;
+}
+.welcomeMsg {
+    /* color: Blue; */
+    font-weight:bold;
+    font-size: 150%;
+    text-align: center;
+    display: inline;
+}
+.welcomeMsg2 {
+	color: Black;
+	font-weight: bold;
+	text-align: center;
+	display: inline;
+}
+.warningMsg {
+    color: Red;
+    font-weight:bold;
+    font-size: 150%;
+    text-align: center;
+    display: inline;
+}

@@ -86,7 +86,8 @@ function build_NodesAndLinks($NodeList, $TopoList, $MarkerList = null)
                 * Find the Services for the node
                 ********************************/
 			//	$node_ServiceList = load_ServiceList($node_info['olsrinfo_json']);
-				$node_ServiceList = '';
+			//	$node_ServiceList = '';
+                $node_ServiceList = load_ServiceList($node_info['services']);
 
                 /*
                 * Build the Nodes Marker
@@ -151,14 +152,14 @@ function build_NodesAndLinks($NodeList, $TopoList, $MarkerList = null)
  *
  * @return string List of Services to Display
  */
-function load_ServiceList($json_data)
+function load_ServiceList($serviceList)
 {
-    $json_array =  wxc_findServices($json_data, 'services');
+    $localServiceArray =  wxc_listServices($serviceList);
     $serviceList = '';
 
-    if (is_array($json_array))
+    if (is_array($localServiceArray))
     {
-        foreach ($json_array as $key => $value)
+    	foreach ($localServiceArray as $key => $value)
         {
             //WXC 6-30-2017: removed links for services that have no link
             if ($value == NULL) {
@@ -259,7 +260,8 @@ function load_LinkList($NodeList, $TopoList)
                 {
                     $display_color = $MESH_SETTINGS['DTD_Link_Plus'];
                     $dtd = 1;
-                    $display_opacity = 0.4;
+                    $display_opacity = 0.3;
+                    $display_weight = 0.3;
                     $map_LayerAssigned = 'dtdLinks';
                 }
                 //find the "infinite cost" links (they show as "INFINITE" in the olsr files the other script changes that to 99.99)
@@ -387,24 +389,22 @@ function load_LinkedTO($node_info, $TopoList)
             }
         }
     }
-    //now take all that info back out and put into a properly formatted string variable that we'll use later]
-    foreach ($linkInfoForStationPopups as $nodeNameLinkArray => $linktoArray)
-    {
-        if ($linktoArray > '')
-        {
-            foreach ($linktoArray as $linkedNodeName => $costArray)
-            {
-                if (($costArray['costTo'] == 0.1) && ($costArray['costFrom'] == 0.1))
-                {
-                    $display_cost = ' <Link_DTD>(DTD)</Link_DTD> ';
-                }
-                else
-                {
-                    $display_cost = ' (' . $costArray['costTo'] . '/' . $costArray['costFrom'] .
-                        ') ';
-                }
-                $linkedToList .= $linkedNodeName . $display_cost . $costArray['distance'] . ' mi ' .
-                    $costArray['bearing'] . '&deg;<br>';
+    //now take all that info back out and put into a properly formatted string variable that we'll use later
+    //this part of the function reformatted by kg6wxc.
+    foreach ($linkInfoForStationPopups as $nodeNameLinkArray => $linktoArray) {
+        if (!empty($linktoArray)) {
+            foreach ($linktoArray as $linkedNodeName => $costArray) {
+            	if (!empty($costArray)) {
+            		if (!empty($costArray['costTo']) && !empty($costArray['costFrom'])) {
+		                //if ((isset($costArray['costTo']) == 0.1) && (isset($costArray['costFrom']) == 0.1)) {
+            			if ($costArray['costTo'] == "0.1" && $costArray['costFrom'] == "0.1") {
+		                    $display_cost = ' <Link_DTD>(DTD)</Link_DTD> ';
+		                }else {
+		                    $display_cost = ' (' . $costArray['costTo'] . '/' . $costArray['costFrom'] . ') ';
+		                }
+		                $linkedToList .= $linkedNodeName . $display_cost . $costArray['distance'] . ' mi ' . $costArray['bearing'] . '&deg;<br>';
+            		}
+            	}
             }
         }
     }
@@ -510,8 +510,14 @@ function build_Marker($node_info, $node_ServiceList, $node_LinkedList, $node_Fir
         "', icon: " . $icon . "}).bindPopup(\" " . $nodeUrl . " (" . $band . ")<br>" . $node_info['lat'] .
         ", " . $node_info['lon'] . "<br>SSID: " . $node_info['ssid'] . "<br>Channel: " . $node_info['channel'] .
         ", Bandwidth: " . $node_info['chanbw'] . "<br>" . $node_info['model'] . "<br>" . $firmware .
-        "<br>Last Polled: " . $node_info['last_seen'] .
-        $node_ServiceList . $node_LinkedList . "\").addTo(" . $AssignedLayer . ") ,\n"; // Close out this node
+        "<br>Last Polled: " . $node_info['last_seen'] . '<br>' . "Uptime: " . $node_info['uptime'] . '<br>';
+    //dot
+    if ($node_info['loadavg'] !== "NotAvailable") {
+    	$loadavgs = unserialize($node_info['loadavg']);
+    	//var_dump($loadavgs);
+    	$markerList .= 'LoadAvg: 1 min ' . $loadavgs[0] . ', 5 min ' . $loadavgs[1] . ', 15 min ' . $loadavgs[2] . "<br>";
+    }
+    $markerList .= $node_ServiceList . $node_LinkedList . "\").addTo(" . $AssignedLayer . ") ,\n"; // Close out this node
     /*
     * If Upgrade Suggested add Node to that layer
     */
@@ -983,12 +989,41 @@ function create_MapLegend()
 {
     //legend overlay
     $Content = <<< EOD
+	var legendHidden = L.control({position: 'topright'});
+	legendHidden.onAdd = function(map) {
+		var div = L.DomUtil.create('div', 'info legendHidden', L.DomUtil.get('map'));
+		div.innerHTML += '<button id="legendLinkButtonHidden" onclick="hideLegend()">Map Legend</button>';
+		return div;
+	};
     var legend = L.control({position: 'topright'});
     legend.onAdd = function (map) {
         var div = L.DomUtil.create('div', 'info legend', L.DomUtil.get('map'));
         div.innerHTML +=
-            '<img src="images/mapLegend/LinkCostLegend.jpg" alt="legend" width="175" height="25"><br>' +
-            '<img src="images/mapLegend/DTDLinkLegend.jpg" alt="legend" width="75" height="60" align="right">';
+        '<div id="legend">' +
+                '<div id="legendGradientRectangle">1.000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Link Cost&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10.000</div>' +
+                '<div id="legendDTDLink">DTD</div>' +
+                '<div id="legendOtherWireless">RF DTD</div>' +
+                '<div id="legendTunnelLink">Tunnel</div>' +
+                '<div id="legendInfinite">Infinite</div>' +
+				'<div id="legendUnknownOther">' +
+						'<img class="legendBandIcon" src="images/mapMarkers/greyRadioCircle-icon.png">Unknown' +
+				'</div>' +
+                '<div id="legend900MHz">' +
+                        '<img class="legendBandIcon" src="images/mapMarkers/magentaRadioCircle-icon.png">900MHz' +
+                '</div>' +
+                '<div id="legend2GHz">' +
+                        '<img class="legendBandIcon" src="images/mapMarkers/purpleRadioCircle-icon.png">2GHz' +
+                '</div>' +
+                '<div id="legend3GHz">' +
+                        '<img class="legendBandIcon" src="images/mapMarkers/blueRadioCircle-icon.png">3GHz' +
+                '</div>' +
+                '<div id="legend5GHz">' +
+                        '<img class="legendBandIcon" src="images/mapMarkers/goldRadioCircle-icon.png">5GHz' +
+                '</div>' +
+				'<div id="legendHide"><button id="legendLinkButton" onclick="hideLegend()">Hide</button></div>' +
+        '</div>';
+//            '<img src="images/mapLegend/LinkCostLegend.jpg" alt="legend" width="175" height="25"><br>' +
+//            '<img src="images/mapLegend/DTDLinkLegend.jpg" alt="legend" width="75" height="60" align="right">';
         return div;
     };\n\n
 EOD;
@@ -1006,17 +1041,39 @@ function create_MapImage()
     //init the map with size, zoom level, center co-ords, etc...
     //http://leafletjs.com/reference-1.0.3.html#control-zoom
     $Content = "
-    var map = L.map('mapid', {
-		//attributionControl: false,
-        center: [" . $USER_SETTINGS['map_center_coordinates'] . "],
-        zoom: [" . $USER_SETTINGS['map_initial_zoom_level'] . "],            
-        minZoom: 0,
-		maxZoom: 18,
-		zoomSnap: 0,
-		zoomDelta: 0.25,
-        layers: [defaultMap, twoGHzStations, threeGHzStations, fiveGHzStations, nineHundredMHzStations, otherStations, rfLinks, tunnelLinks, dtdLinks, infiniteLinks],
-        fullscreenControl: true
-    });\n\n
+	if (typeof rfLinks === 'undefined' || rfLinks === null) {
+		var map = L.map('mapid', {
+			//attributionControl: false,
+	        center: [" . $USER_SETTINGS['map_center_coordinates'] . "],
+	        zoom: [" . $USER_SETTINGS['map_initial_zoom_level'] . "],            
+	        minZoom: 0,
+			maxZoom: 18,
+			//zoomSnap: 0,
+			zoomSnap: 1,
+			//zoomDelta: 0.25,
+			zoomDelta: 1,
+	        //layers: [defaultMap, twoGHzStations, threeGHzStations, fiveGHzStations, nineHundredMHzStations, otherStations, rfLinks, tunnelLinks, dtdLinks, infiniteLinks],
+	        layers: [defaultMap, twoGHzStations, threeGHzStations, fiveGHzStations, nineHundredMHzStations, otherStations],
+			//layers: [defaultMap],
+			fullscreenControl: true
+    	});\n\n
+	}else {
+	    var map = L.map('mapid', {
+			//attributionControl: false,
+	        center: [" . $USER_SETTINGS['map_center_coordinates'] . "],
+	        zoom: [" . $USER_SETTINGS['map_initial_zoom_level'] . "],            
+	        minZoom: 0,
+			maxZoom: 18,
+			//zoomSnap: 0,
+			zoomSnap: 1,
+			//zoomDelta: 0.25,
+			zoomDelta: 1,
+	        layers: [defaultMap, twoGHzStations, threeGHzStations, fiveGHzStations, nineHundredMHzStations, otherStations, rfLinks, tunnelLinks, dtdLinks, infiniteLinks],
+	        //layers: [defaultMap, twoGHzStations, threeGHzStations, fiveGHzStations, nineHundredMHzStations, otherStations],
+			//layers: [defaultMap],
+			fullscreenControl: true
+	    });\n\n
+	}
 ";
 
     return $Content;
@@ -1076,16 +1133,98 @@ function show_MapMarkerDetails($numNodes, $numLinks, $numMarkers, $numNodesTotal
 function instantiate_Map()
 {
     $Content = <<< EOD
+// Create additional Control placeholders
+function addControlPlaceholders(map) {
+    var corners = map._controlCorners,
+        l = 'leaflet-',
+        container = map._controlContainer;
+
+    function createCorner(vSide, hSide) {
+        var className = l + vSide + ' ' + l + hSide;
+
+        corners[vSide + hSide] = L.DomUtil.create('div', className, container);
+    }
+
+    createCorner('verticalcenter', 'left');
+    createCorner('verticalcenter', 'right');
+}
+addControlPlaceholders(map);
+map.zoomControl.setPosition('verticalcenterleft');
+map.fullscreenControl.setPosition('verticalcenterleft');
+
+//admin icon (the gears)
+L.Control.Admin = L.Control.extend({
+	options: {
+		position: 'verticalcenterleft'
+	},
+	onAdd: function(map) {
+		var adminControl = L.DomUtil.create('div', 'leaflet-control-custom leaflet-bar');
+		adminControl.style.backgroundColor = 'white';
+		//adminControl.content = "\F013";
+		//adminControl.font-family = "FontAwesome";
+		//adminControl.style.background = "fa-cog";
+		adminControl.style.width = '30px';
+		adminControl.style.height = '30px';
+		adminControl.title = 'Admin';
+		var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', adminControl);
+		var gear = L.DomUtil.create('span', 'fa fa-cogs', link);
+		gear.style.fontSize = '15px';
+		adminControl.onclick = function() {
+			//alert('you clicked it');
+			window.location = "admin/admin.php";
+		}
+		return adminControl;
+	}
+});
+L.control.admin = function(opts) {
+	return new L.Control.Admin(opts);
+}
+
+//the ruler
+var rulerOptions = {position: 'verticalcenterleft',
+	lengthUnit: {
+		factor: 0.621371,
+		display: 'Miles',
+		decimal: 3}
+	};
+    L.control.ruler(rulerOptions).addTo(map);
+    document.getElementById('ruler').title = 'Ruler\\n(ESC 1x to stop, 2x to remove)';
+
+//the watermark logo
+L.Control.Watermark = L.Control.extend({
+	onAdd: function(map) {
+		var img = L.DomUtil.create('img');
+		img.src = 'images/MESHMAP_LOGO.svg';
+		img.style.width = '75px';
+		//img.className += 'watermark';
+		img.style.background = 'rgba(0,0,0,0.5)';
+		img.style.border = '1px solid black';
+		img.style.borderRadius = '5px';
+		img.style.opacity = '0.3';
+		img.style.filter = 'alpha(opacity=30)';
+
+		return img;
+	},
+	OnRemove: function(map) {
+		//nothing
+	}
+});
+L.control.watermark = function(opts) {
+	return new L.Control.Watermark(opts);
+}
+L.control.watermark({position: 'bottomright'}).addTo(map);
+
     var hash = new L.Hash(map);
 
     /*
      * MeshMap Legend
      */
     legend.addTo(map);
+	legendHidden.addTo(map);
     /*
      * Layer Control
      */
-    var layerControls = L.control.groupedLayers(baseLayers, groupedOverlays, {position: 'topleft'}).addTo(map);
+    var layerControls = L.control.groupedLayers(baseLayers, groupedOverlays, {position: 'verticalcenterleft'}).addTo(map);
 	L.DomEvent.disableClickPropagation(layerControls._container);
 	L.DomEvent.disableScrollPropagation(layerControls._container);
     /*
@@ -1096,6 +1235,11 @@ function instantiate_Map()
 *The "help" button
 */
 var contents = "";
+
+/*
+*admin control button
+*/
+L.control.admin().addTo(map);
 
 EOD;
 
@@ -1112,11 +1256,10 @@ EOD;
     }else {
         $Content .= "alert('Could not open help_msg.html');\n";
     }
-    $Content .= "\nL.control.slideMenu(contents, {width: '400px'}).addTo(map);\n";
+    $Content .= "\nL.control.slideMenu(contents, {width: '400px', position: 'verticalcenterleft'}).addTo(map);\n";
 	/* Attribution */
 	//attributionCtrl({position: 'bottomleft'}).addTo(map);\n
-
-
+    
     return $Content;
 }
 ?>

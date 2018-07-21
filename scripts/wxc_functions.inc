@@ -120,6 +120,189 @@ function wxc_checkConfigs () {
 //		}
 //	}
 }
+function wxc_checkDB () {
+	//this function should probably be in it's own file
+	
+	//removing the olsrinfo_json binary blob from the database tables
+	//it's just taking up space and never getting used...
+	$olsrinfoQuery = "select table_name from information_schema.columns where table_schema = '" .
+			$GLOBALS['USER_SETTINGS']['sql_db'] . "' and column_name = 'olsrinfo_json'";
+	$jsonBlobs = mysqli_query($GLOBALS['sql_connection'], $olsrinfoQuery);
+	$olsrinfojsonBlobsNum = mysqli_num_rows($jsonBlobs);
+	if ($olsrinfojsonBlobsNum != 0) {
+		//$jsonBlobs = wxc_getMySql($sysinfoQuery);
+		//var_dump($jsonBlobs);
+		foreach ($jsonBlobs as $table) {
+			foreach ($table as $table_name) {
+				$alterQuery = 'alter table ' . $table_name . ' drop column olsrinfo_json';
+				wxc_putMySql($alterQuery);
+				$mesg = "olsrinfo_json binary blob removed from database table: " . $table_name . "!";
+				wxc_echoWithColor($mesg, "red");
+				echo "\n";
+			}
+		}
+		unset($jsonBlobs);
+		unset($olsrinfojsonBlobsNum);
+		unset($olsrinfoQuery);
+		wxc_echoWithColor("You had an old version of the Database tables. ", "orange");
+		wxc_echoWithColor("Fixed now...", "green");
+		echo "\nThis will make the database a lot smaller!\n";
+		echo "\n";
+	}else {
+		unset($jsonBlobs);
+		unset($olsrinfojsonBlobsNum);
+		unset($olsrinfoQuery);
+	}
+	
+	//removing the sysinfo_json binary blob from the database tables
+	//it's just taking up space and never getting used...
+	$sysinfoQuery = "select table_name from information_schema.columns where table_schema = '" .
+			$GLOBALS['USER_SETTINGS']['sql_db'] . "' and column_name = 'sysinfo_json'";
+	$jsonBlobs = mysqli_query($GLOBALS['sql_connection'], $sysinfoQuery);
+	$sysinfojsonBlobsNum = mysqli_num_rows($jsonBlobs);
+	if ($sysinfojsonBlobsNum != 0) {
+		//$jsonBlobs = wxc_getMySql($sysinfoQuery);
+		//var_dump($jsonBlobs);
+		foreach ($jsonBlobs as $table) {
+			foreach ($table as $table_name) {
+				$alterQuery = 'alter table ' . $table_name . ' drop column sysinfo_json';
+				wxc_putMySql($alterQuery);
+				$mesg = "sysinfo_json binary blob removed from database table: " . $table_name . "!";
+				wxc_echoWithColor($mesg, "red");
+				echo "\n";
+			}
+		}
+		unset($jsonBlobs);
+		unset($sysinfojsonBlobsNum);
+		unset($sysinfoQuery);
+		wxc_echoWithColor("This is a good thing! It was just taking up space", "green");
+		echo "\nThis will make the database smaller!\n";
+		echo "\n";
+	}else {
+		unset($jsonBlobs);
+		unset($sysinfojsonBlobsNum);
+		unset($sysinfoQuery);
+	}
+	
+	//people use the longest dang names for their nodes!
+	//it's like they want to make you type for a long time just to get to their node. :)
+	
+	//$columnNodeNames = mysqli_num_rows(mysqli_query($GLOBALS['sql_connection'], $query))
+	$nodeFieldsQuery = "select table_name from information_schema.columns where table_schema = '" .
+		$GLOBALS['USER_SETTINGS']['sql_db'] . "' and column_name = 'node' and character_maximum_length <= 69";
+	$nodeFields = mysqli_query($GLOBALS['sql_connection'], $nodeFieldsQuery);
+	$nodeFieldsNum = mysqli_num_rows($nodeFields);
+	if ($nodeFieldsNum != 0) {
+		foreach ($nodeFields as $table) {
+			foreach ($table as $table_name) {
+				//if ($nodeFields['size'] <= 50) {
+					//echo "\n\nFirst ECHO - Key: " .$key . " Value: " . $value . "\n\n";
+					//echo "Table: " . $key['table_name'] . "\n";
+					//echo "size: " . $key['size'] . "\n";
+					wxc_putMySql("alter table $table_name modify column node varchar(70)");
+					$mesg = "Altered column \"node\" to hold more characters in table: $table_name!";
+					wxc_echoWithColor($mesg, "green");
+					echo "\n";
+					//need to change this one too, it has a different name, but it's the same thing.
+					if ($table_name == "topology") {
+						wxc_putMySql("alter table topology modify column linkto varchar(70)");
+						$mesg = "... also altered column \"linkto\" to hold more characters in table: $table_name!";
+						wxc_echoWithColor($mesg, "orange");
+						echo "\n";
+					}
+				//}
+			}
+		}
+		echo "\n";
+		unset($nodeFields);
+		unset($nodeFieldsQuery);
+		unset($nodeFieldsNum);
+	}else {
+		unset($nodeFields);
+		unset($nodeFieldsQuery);
+		unset($nodeFieldsNum);
+	}
+	//Just like above (and for the same reasons)
+	//there are 1 or 2 columns called "name" that are used also
+	//This will also allow for longer names in the non-mesh markers area
+	$nameFieldsQuery = "select table_name from information_schema.columns where table_schema = '" .
+		$GLOBALS['USER_SETTINGS']['sql_db'] . "' and column_name = 'name' and character_maximum_length <= 69";
+	$nameFields = mysqli_query($GLOBALS['sql_connection'], $nameFieldsQuery);
+	$nameFieldsNum = mysqli_num_rows($nameFields);
+	if ($nameFieldsNum != 0){
+		foreach ($nameFields as $table) {
+			foreach ($table as $table_name) {
+				//if ($nameFields['size'] <= 50) {
+					if ($table_name == "marker_info") {
+						//$query = ;
+						wxc_putMySql("alter table $table_name modify column name varchar(128)");
+						$mesg = "Altered column \"name\" to hold more characters in table: $table_name!";
+						wxc_echoWithColor($mesg, "green");
+						echo "\n";
+					}else {
+						wxc_putMySql("alter table $table_name modify column name varchar(70)");
+						$mesg = "Altered column \"name\" to hold more characters in table: $table_name!";
+						wxc_echoWithColor($mesg, "green");
+						echo "\n";
+					}
+				//}
+			}
+		}
+		echo "\n";
+		unset($nameFields);
+		unset($nameFieldsQuery);
+		unset($nameFieldsNum);
+	}else {
+		unset($nameFields);
+		unset($nameFieldsQuery);
+		unset($nameFieldsNum);
+	}
+	
+	//new columns in the main database table
+	//these new columns are for the additions to the sysinfo.json file
+	//that are in the newer AREDN firmware builds.
+	//this might be only the beginning for these
+	$newColumns1dot2 = mysqli_num_rows(mysqli_query($GLOBALS['sql_connection'],
+			"show columns from " . $GLOBALS['USER_SETTINGS']['sql_db_tbl_node'] . " where field='uptime'"));
+	if ($newColumns1dot2 == 0) {
+		wxc_putMySql("alter table " . $GLOBALS['USER_SETTINGS']['sql_db_tbl_node'] . " add column uptime varchar(50) after last_seen");
+		wxc_putMySql("alter table " . $GLOBALS['USER_SETTINGS']['sql_db_tbl_node'] . " add column loadavg varchar(128) after uptime");
+		$mesg = "Added new columns to " . $GLOBALS['USER_SETTINGS']['sql_db_tbl_node'] . " for api_version 1.2";
+		wxc_echoWithColor($mesg, "green");
+		echo "\n";
+	}
+	
+	$newColumns1dot2 = mysqli_num_rows(mysqli_query($GLOBALS['sql_connection'],
+			"show columns from removed_nodes where field='uptime'"));
+	if ($newColumns1dot2 == 0) {
+		wxc_putMySql("alter table removed_nodes add column uptime varchar(50) after last_seen");
+		wxc_putMySql("alter table removed_nodes add column loadavg varchar(128) after uptime");
+		$mesg = "Added new columns to removed_nodes for api_version 1.2";
+		wxc_echoWithColor($mesg, "green");
+		echo "\n\n";
+	}
+	
+	$newColumns1dot3 = mysqli_num_rows(mysqli_query($GLOBALS['sql_connection'],
+			"show columns from " . $GLOBALS['USER_SETTINGS']['sql_db_tbl_node'] . " where field='services'"));
+	if ($newColumns1dot3 == 0) {
+		wxc_putMySql("alter table " . $GLOBALS['USER_SETTINGS']['sql_db_tbl_node'] . " add column services varchar(2048) after lan_ip");
+		$mesg = "Added new columns to " . $GLOBALS['USER_SETTINGS']['sql_db_tbl_node'] . " for api_version 1.3";
+		wxc_echoWithColor($mesg, "green");
+		echo "\n";
+	}
+	
+	$newColumns1dot3 = mysqli_num_rows(mysqli_query($GLOBALS['sql_connection'],
+			"show columns from removed_nodes where field='services'"));
+	if ($newColumns1dot3 == 0) {
+		wxc_putMySql("alter table removed_nodes add column services varchar(2048) after lan_ip");
+		$mesg = "Added new columns to removed_nodes for api_version 1.3";
+		wxc_echoWithColor($mesg, "green");
+		echo "\n\n";
+	}
+	unset($newColumns1dot2);
+	unset($newColumns1dot3);
+}
+
 function wxc_checkErrorMessage ($error, $nodeName) {
 	//deal with different problems and try to keep track of why and when.
 	//An excellent suggestion again by Mark, N2MH,
@@ -147,9 +330,13 @@ function wxc_checkErrorMessage ($error, $nodeName) {
 		}
 		if ($GLOBALS['do_sql']) {
 			wxc_putMySQL("INSERT INTO hosts_ignore SET ip = '$ip', name = '$nodeName', reason = 'no_route', timestamp = NOW() ON DUPLICATE KEY UPDATE ip = '$ip', name = '$nodeName', reason = 'refused', timestamp = NOW()");
+			
+			/*
 			if (!wxc_getMySql("SELECT node FROM node_info WHERE wlan_ip = '$ip'")) {
 				wxc_putMySql("INSERT INTO node_info SET node = '$nodeName', wlan_ip = '$ip' ON DUPLICATE KEY UPDATE wlan_ip = '$ip'");
 			}
+			*/
+			
 		}
 		if ($GLOBALS['testNodePolling'] && $nodeName) {
 			echo "\033[31mError while getting sysinfo.json\033[0m from \033[35m" . $nodeName . "\033[0m: no route to host!\n\n";
@@ -210,9 +397,13 @@ function wxc_checkErrorMessage ($error, $nodeName) {
 		}
 		if ($GLOBALS['do_sql']) {
 			wxc_putMySQL("INSERT INTO hosts_ignore SET ip = '$ip', name = '$nodeName', reason = 'refused', timestamp = NOW() ON DUPLICATE KEY UPDATE ip = '$ip', name = '$nodeName', reason = 'refused', timestamp = NOW()");
+			
+			/*
 			if (!wxc_getMySql("SELECT node FROM node_info WHERE wlan_ip = '$ip'")) {
 				wxc_putMySql("INSERT INTO node_info SET node = '$nodeName', wlan_ip = '$ip' ON DUPLICATE KEY UPDATE wlan_ip = '$ip'");
 			}
+			*/
+			
 		}
 		if ($GLOBALS['testNodePolling'] && $nodeName) {
 			echo "\033[31mError while getting sysinfo.json\033[0m from \033[35m" . $nodeName . "\033[0m: Connection Refused!\n\n";
@@ -239,9 +430,13 @@ function wxc_checkErrorMessage ($error, $nodeName) {
 		}
 		if ($GLOBALS['do_sql']) {
 			wxc_putMySQL("INSERT INTO hosts_ignore SET ip = '$ip', name = '$nodeName', reason = '404', timestamp = NOW() ON DUPLICATE KEY UPDATE ip = '$ip', name = '$nodeName', reason = '404', timestamp = NOW()");
+			
+			/*
 			if (!wxc_getMySql("SELECT node FROM node_info WHERE wlan_ip = '$ip'")) {
 				wxc_putMySql("INSERT INTO node_info SET node = '$nodeName', wlan_ip = '$ip' ON DUPLICATE KEY UPDATE wlan_ip = '$ip'");
 			}
+			*/
+			
 		}
 		if ($GLOBALS['testNodePolling'] && $nodeName) {
 			echo "\033[31mError while getting sysinfo.json\033[0m from \033[35m" . $nodeName . "\033[0m: 404 - Not Found!\n\n";
@@ -351,7 +546,7 @@ function wxc_putMySql ($query) {
 		return 0;
 	}else {
 		if(!mysqli_query($GLOBALS['sql_connection'], $query)) {
-			die ("Could not send to SQL. " . mysqli_error($GLOBALS['sql_connection']));
+			die ("Could not send to SQL.\n" . "Query: " . $query . "\n" . mysqli_error($GLOBALS['sql_connection']));
 			return 0;
 		}
 		return 1;
@@ -445,6 +640,12 @@ function wxc_echoWithColor ($text, $color) {
 	if ($color == "purple") {
 		echo "\033[35m" . $text . "\033[0m";
 	}
+	if ($color == "orange") {
+		echo "\033[33m" . $text . "\033[0m";
+	}
+	if ($color == "green") {
+		echo "\033[32m" . $text . "\033[0m";
+	}
 }
 
 //may use this at some point
@@ -456,7 +657,7 @@ function wxc_firstRun() {
 function wxc_checkOldNodes() {
 	//check for node that have not been heard from
 	$oldNodeQuery = "SELECT * FROM node_info WHERE TIMESTAMPDIFF(DAY, node_info.last_seen, NOW()) > " . $GLOBALS['USER_SETTINGS']['node_expire_interval'];
-	$oldNodes = mysqli_query($GLOBALS['sql_connection'], $oldNodeQuery) or die ("Could not fetch from SQL server. " . mysqli_error($GLOBALS['sql_connection']));
+	$oldNodes = mysqli_query($GLOBALS['sql_connection'], $oldNodeQuery) or die ("\"Old Node Query\" Could not fetch from SQL server. " . mysqli_error($GLOBALS['sql_connection']));
 	if ($oldNodes) {
 		$oldNodes = mysqli_fetch_all($oldNodes, MYSQLI_ASSOC);
 	}else {
@@ -467,7 +668,7 @@ function wxc_checkOldNodes() {
 		$oldNodeQuery = 
 			"INSERT INTO removed_nodes (
 			wifi_mac_address, node, model, firmware_version, lat, lon, ssid, chanbw, api_version, board_id,
-			tunnel_installed, active_tunnel_count, channel, firmware_mfg, lan_ip, wlan_ip, sysinfo_json, last_seen, time_removed)
+			tunnel_installed, active_tunnel_count, channel, firmware_mfg, lan_ip, wlan_ip, uptime, loadavg, services, last_seen, time_removed)
 			VALUES ";
 		$valuesArray = array();
 		foreach ($oldNodes as $row) {
@@ -488,12 +689,15 @@ function wxc_checkOldNodes() {
 			$firmware_mfg = $row['firmware_mfg'];
 			$lan_ip = $row['lan_ip'];
 			$wlan_ip = $row['wlan_ip'];
-			$sysinfo_json = $row['sysinfo_json'];
+			$uptime = $row['uptime'];
+			$loadavg = $row['loadavg'];
+			$services = $row['services'];
+			//$sysinfo_json = $row['sysinfo_json'];
 			//$olsrinfo_json = $row['olsrinfo_json'];
 			$last_seen = $row['last_seen'];
 			
 			$valuesArray[] = "('$wifi_mac_address', '$node', '$model', '$firmware_version', '$lat', '$lon', '$ssid', '$chanbw', '$api_version', '$board_id',
-				'$tunnel_installed', '$active_tunnel_count', '$channel', '$firmware_mfg', '$lan_ip', '$wlan_ip', '$sysinfo_json', '$last_seen', NOW())";
+				'$tunnel_installed', '$active_tunnel_count', '$channel', '$firmware_mfg', '$lan_ip', '$wlan_ip', $uptime, $loadavg, $services, '$last_seen', NOW())";
 		}
 		
 		if ($valuesArray) {
@@ -523,6 +727,28 @@ function wxc_removeIgnoredNodes() {
 	//}
 }
 
+function wxc_listServices ($serviceList) {
+	$services = array();
+	if ($serviceList == "NotAvailable" || empty($serviceList) || is_null($serviceList)) {
+		return FALSE;
+	}elseif (is_array(unserialize($serviceList))) {
+		$serviceArray = unserialize($serviceList);
+		foreach ($serviceArray as $num => $service) {
+			$name = $service['name'];
+			if (strpos($service['link'], ":0") !== FALSE) {
+				$link = NULL;
+			}elseif (strpos($service['link'], ":80")) {
+				$url = parse_url($service['link']);
+				$link = $url['scheme'] . '://' . $url['host'] . '.local.mesh' . $url['path'];
+			}else {
+				$url = parse_url($service['link']);
+				$link = $url['scheme'] . '://' . $url['host'] . '.local.mesh:' . $url['port'] . $url['path'];
+			}
+			$services[$name] = $link;
+		}
+		return $services;
+	}
+}
 //find any services the node knows about
 //this should be no longer called
 //but maybe we'll need it in the future.

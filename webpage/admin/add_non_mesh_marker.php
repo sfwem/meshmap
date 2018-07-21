@@ -25,11 +25,11 @@ if (!isset($_SESSION['userLoggedIn'])) {
 		echo "</form>";
 		if (($_POST['sub_action'] == "new_station") && (isset($_POST['new_station_name'])) && (isset($_POST['new_station_description'])) &&
 				(isset($_POST['new_station_type'])) && (isset($_POST['new_station_lat'])) && (isset($_POST['new_station_lon']))) {
-					$newStationName = $_POST['new_station_name'];
-					$newStationDescription = $_POST['new_station_description'];
+					$newStationName = strip_tags($_POST['new_station_name'], '<br>');
+					$newStationDescription = strip_tags($_POST['new_station_description'], '<br>');
 					$newStationType = $_POST['new_station_type'];
-					$newStationLat = $_POST['new_station_lat'];
-					$newStationLon = $_POST['new_station_lon'];
+					$newStationLat = strip_tags($_POST['new_station_lat']);
+					$newStationLon = strip_tags($_POST['new_station_lon']);
 					
 					$addedToSql = wxc_putMySQL("INSERT INTO marker_info (name, description, type, lat, lon) VALUES ('$newStationName', '$newStationDescription', '$newStationType', '$newStationLat', '$newStationLon')");
 					if ($addedToSql = 1) {

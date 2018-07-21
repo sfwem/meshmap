@@ -1,6 +1,6 @@
 -- --------------------------------------------------------
 -- Host:                         192.168.81.222
--- Server version:               10.2.14-MariaDB-log - MariaDB Server
+-- Server version:               10.3.7-MariaDB-log - MariaDB Server
 -- Server OS:                    Linux
 -- HeidiSQL Version:             9.4.0.5125
 -- --------------------------------------------------------
@@ -19,7 +19,7 @@ USE `node_map`;
 -- Dumping structure for table node_map.hosts_ignore
 CREATE TABLE IF NOT EXISTS `hosts_ignore` (
   `ip` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'The name of the host, no domain',
+  `name` varchar(70) COLLATE utf8_unicode_ci DEFAULT NULL,
   `reason` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `timestamp` datetime DEFAULT NULL,
   UNIQUE KEY `name_2` (`name`),
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `map_info` (
 -- Dumping structure for table node_map.marker_info
 CREATE TABLE IF NOT EXISTS `marker_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
   `description` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `type` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   `lat` double NOT NULL,
@@ -55,9 +55,11 @@ CREATE TABLE IF NOT EXISTS `marker_info` (
 -- Data exporting was unselected.
 -- Dumping structure for table node_map.node_info
 CREATE TABLE IF NOT EXISTS `node_info` (
-  `node` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `node` varchar(70) COLLATE utf8_unicode_ci DEFAULT NULL,
   `wlan_ip` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `last_seen` datetime DEFAULT NULL,
+  `uptime` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `loadavg` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
   `model` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `firmware_version` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `ssid` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -73,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `node_info` (
   `firmware_mfg` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `grid_square` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `lan_ip` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sysinfo_json` mediumblob DEFAULT NULL,
+  `services` varchar(2048) COLLATE utf8_unicode_ci DEFAULT NULL,
   `location_fix` int(11) DEFAULT 0,
   UNIQUE KEY `node` (`node`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Information about the nodes\r\ntaken from sysinfo.json that is on every node.';
@@ -81,9 +83,11 @@ CREATE TABLE IF NOT EXISTS `node_info` (
 -- Data exporting was unselected.
 -- Dumping structure for table node_map.removed_nodes
 CREATE TABLE IF NOT EXISTS `removed_nodes` (
-  `node` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `node` varchar(70) COLLATE utf8_unicode_ci DEFAULT NULL,
   `wlan_ip` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `last_seen` datetime DEFAULT NULL,
+  `uptime` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `loadavg` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
   `model` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `firmware_version` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `ssid` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -99,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `removed_nodes` (
   `firmware_mfg` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `grid_square` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `lan_ip` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `sysinfo_json` mediumblob DEFAULT NULL,
+  `services` varchar(2048) COLLATE utf8_unicode_ci DEFAULT NULL,
   `time_removed` datetime DEFAULT NULL,
   UNIQUE KEY `node` (`node`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='A place to put old nodes';
@@ -107,10 +111,10 @@ CREATE TABLE IF NOT EXISTS `removed_nodes` (
 -- Data exporting was unselected.
 -- Dumping structure for table node_map.topology
 CREATE TABLE IF NOT EXISTS `topology` (
-  `node` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `node` varchar(70) COLLATE utf8_unicode_ci DEFAULT NULL,
   `nodelat` double DEFAULT NULL,
   `nodelon` double DEFAULT NULL,
-  `linkto` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `linkto` varchar(70) COLLATE utf8_unicode_ci DEFAULT NULL,
   `linklat` double DEFAULT NULL,
   `linklon` double DEFAULT NULL,
   `cost` double DEFAULT NULL,
@@ -128,7 +132,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `passwd` varchar(256) COLLATE utf8_unicode_ci DEFAULT NULL,
   `last_login` datetime DEFAULT NULL,
   KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='a place to put users for the admin page(s)';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='a place to put users for the admin page(s)';
 
 -- Data exporting was unselected.
 -- Dumping structure for trigger node_map.node_info_after_insert

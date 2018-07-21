@@ -191,7 +191,7 @@ if (isset($_POST['remove_non_mesh_station']) == "remove_non_mesh_station") {
 
 <?php
 //display what is already there
-$nonMeshStationsAndMarkers = mysqli_query($GLOBALS['sql_connection'], "SELECT name, description, type, lat, lon FROM marker_info") or die ("Could not get list of non mesh stations" . mysqli_error($GLOBALS['sql_connection']));
+$nonMeshStationsAndMarkers = mysqli_query($GLOBALS['sql_connection'], "SELECT id, name, description, type, lat, lon FROM marker_info") or die ("Could not get list of non mesh stations" . mysqli_error($GLOBALS['sql_connection']));
 if ($nonMeshStationsAndMarkers) {
     $nonMeshStationsAndMarkers = mysqli_fetch_all($nonMeshStationsAndMarkers, MYSQLI_ASSOC);
     echo "These are the non-mesh stations already in the database:<br>\n";
@@ -204,11 +204,12 @@ if ($nonMeshStationsAndMarkers) {
     echo "<th class=\"pointerCursor\" onclick=\"sortTable(4)\"><boldText>Lon</boldText></th>\n";
     echo "</tr>\n";
     foreach ($nonMeshStationsAndMarkers as $value) {
-        echo "\n<tr><td>" . $value['name'] . "</td>" .
-            "<td>" . $value['description'] . "</td>" .
-            "<td>" . $value['type'] . "</td>" .
-            "<td>" . $value['lat'] . "</td>" .
-            "<td>" . $value['lon'] . "</td>" .
+        echo "\n<tr><td contenteditable='true' onBlur=\"saveToDatabase(this, 'name', '" . $value['id'] ."')\" " .
+	            "onClick=\"showEdit(this);\">" . $value['name'] . "</td>" .
+            "<td contenteditable='true' onBlur=''>" . $value['description'] . "</td>" .
+            "<td contenteditable='true' onBlur=''>" . $value['type'] . "</td>" .
+            "<td contenteditable='true' onBlur=''>" . $value['lat'] . "</td>" .
+            "<td contenteditable='true' onBlur=''>" . $value['lon'] . "</td>" .
             "<td class=\"BackgroundColor\">" .
             "<form action=\"non_mesh_stations.php\" class=\"remove_non_mesh_station_form\" method=\"POST\">" .
             "<input type=\"hidden\" name=\"station_name\" value=\"" . $value['name'] . "\">" .
@@ -223,5 +224,39 @@ if ($nonMeshStationsAndMarkers) {
             "</tr>";
     }
     echo "\n\n</table>\n";
+    
+    //adapted from some site called PHP Pot (yeah, it's not that... I thought that too at first... :) )
+    $jsEditing = <<< EOD
+<script>
+	function showEdit(editableObj) {
+		$(editableObj).css("background", "#FFF");
+	}
+	function saveToDatabase(editableObj, column, id) {
+		$(editableObj).css("background", "#FFF url(loaderIcon.gif) no-repeater right");
+		
+		//quick fix for a funny <br> that keeps showing up in the post data
+		var edit = editableObj.innerHTML.replace(/<br>/, "");
+		
+		$.ajax({
+			url: "update_nonmesh_marker.php",
+			type: "POST",
+			
+			//part of the quick fix
+			//data: 'column='+column+'&editval='+editableObj.innerHTML+'&id='+id,
+			
+			data: 'nonmesh=nonmesh&column='+column+'&editval='+edit+'&id='+id,
+			success: function(data) {
+				//$(editableObj).css("background", "#FDFDFD");
+	            $(editableObj).css("background-color", "inherit");
+	            $(editableObj).html(data);
+				$("#admin_content").load("non_mesh_stations.php");
+			}
+			
+		});
+	}
+</script>
+EOD;
+    
+    echo $jsEditing . "\n";
 }
 ?>
