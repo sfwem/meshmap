@@ -1152,6 +1152,10 @@ addControlPlaceholders(map);
 map.zoomControl.setPosition('verticalcenterleft');
 map.fullscreenControl.setPosition('verticalcenterleft');
 
+EOD;
+
+    if (!isset($GLOBALS['hide_admin']) == "1") {
+    $Content .= <<< EOD
 //admin icon (the gears)
 L.Control.Admin = L.Control.extend({
 	options: {
@@ -1179,7 +1183,13 @@ L.Control.Admin = L.Control.extend({
 L.control.admin = function(opts) {
 	return new L.Control.Admin(opts);
 }
-
+/*
+*admin control button
+*/
+L.control.admin().addTo(map);
+EOD;
+    }
+    $Content .= <<< EOD
 //the ruler
 var rulerOptions = {position: 'verticalcenterleft',
 	lengthUnit: {
@@ -1235,11 +1245,6 @@ L.control.watermark({position: 'bottomright'}).addTo(map);
 *The "help" button
 */
 var contents = "";
-
-/*
-*admin control button
-*/
-L.control.admin().addTo(map);
 
 EOD;
 
