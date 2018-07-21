@@ -1110,7 +1110,8 @@ function show_MapMarkerDetails($numNodes, $numLinks, $numMarkers, $numNodesTotal
     	"Map originally created by:" . '\n' .
     	"KG6WXC in Oct 2016" .'\n' .
 		"With later contributions from:" . '\n' .
-		"N2MH and K6GSE\'>KG6WXC</a>&nbsp;|&nbsp;';\n";
+		"N2MH and K6GSE" . '\n' .
+		"Official testing Guinea Pig: N7QJK\'>KG6WXC</a>&nbsp;|&nbsp;';\n";
 
     $Content .= "MapAttribution = '<a href=http://leafletjs.com title=\'" .
         "Map data &copy; by OpenStreetMap (http://openstreetmap.org) with contributions from:" . '\n' .
