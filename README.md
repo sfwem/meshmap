@@ -182,13 +182,15 @@ The meshmap.css file will override the -default.css file.
 - [x] Add new MeshMap Logo.  
 - [x] User css files will override the defaults.  
 - [x] Polling script checks the DB before it runs and makes changes if needed.  
-- [ ] Make "Parallel Threads" work again in get-map-info script, with limits on how many can be run at once.  
-    (this will greatly speed up network polling)  
 - [x] Catch more nodes information now, like 3.15.1.0b04 and hopefully some other pesky ones!  
     (this will probably cause some warnings during node polling, but it is getting the info it needs)  
     (also helps clean up the database and was a nice side effect of that)  
-- [ ] Change css file for the "?" slide-out menu.  
 - [x] Make the numbers for stations and links in the attribution bar a bit more accurate I hope.  
+- [x] Add a "Ruler" to allow for measuring of distance and bearings.  
+    (elevation plot of the line drawn via this ruler will hopefully come next)  
+- [ ] Change css file for the "?" slide-out menu.  
+- [ ] Make "Parallel Threads" work again in get-map-info script, with limits on how many can be run at once.  
+    (this will greatly speed up network polling)  
 - [ ] Implement N2MH's "Link aging" idea(s).  
 - [ ] The "Planning" Tab.  
 - [ ] Make it so other networks can export their data for use on a "Mega Map" type page. :)
