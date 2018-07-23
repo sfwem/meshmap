@@ -107,22 +107,22 @@ inetTileServer['Terrain-Default'] = "//stamen-tiles-{s}.a.ssl.fastly.net/terrain
 ;;The Title of the web page, web page logo and the text above the map.
 ;--------------------------------------------------------------
 pageTitle = "Mesh Map"
-pageLogo = "images/MESHMAP_LOGO.svg"
-logoHeaderText = "Mesh Map"
+;pageLogo = "images/MESHMAP_LOGO.svg"
+;logoHeaderText = "Mesh Map"
 
 ;;Welcome to the Mesh Map Message
 ;uncomment and edit the "otherTopOfMapMsg" below if you want to add other text above the map
 ;--------------------------------------------------------------
-welcomeMessage	=	"Welcome to the Mesh Map"
+;welcomeMessage	=	"Welcome to the Mesh Map"
 ;otherTopOfMapMsg = ""
 
 ;;Custom message if you are on the Mesh Server
 ;--------------------------------------------------------------
-meshServerText = "You are connected to the Mesh Network and running on device: %s"
+;meshServerText = "You are connected to the Mesh Network and running on device: %s"
 
 ;;Custom Message if you are on the Internet Server
 ;--------------------------------------------------------------
-inetServerText = "Your are connected to the internet and are running on device: %s"
+;inetServerText = "Your are connected to the internet and are running on device: %s"
 
 ;;Custom Mesh Warning message
 ;uncomment and edit to enable

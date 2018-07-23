@@ -1111,7 +1111,8 @@ function show_MapMarkerDetails($numNodes, $numLinks, $numMarkers, $numNodesTotal
     	"KG6WXC in Oct 2016" .'\n' .
 		"With later contributions from:" . '\n' .
 		"N2MH and K6GSE" . '\n' .
-		"Official testing Guinea Pig: N7QJK\'>KG6WXC</a>&nbsp;|&nbsp;';\n";
+		"Official Testing Guinea Pig:" . '\n' .
+		"N7QJK\'>KG6WXC</a>&nbsp;|&nbsp;';\n";
 
     $Content .= "MapAttribution = '<a href=http://leafletjs.com title=\'" .
         "Map data &copy; by OpenStreetMap (http://openstreetmap.org) with contributions from:" . '\n' .
@@ -1155,41 +1156,6 @@ map.fullscreenControl.setPosition('verticalcenterleft');
 
 EOD;
 
-    if (!isset($GLOBALS['hide_admin']) == "1") {
-    $Content .= <<< EOD
-//admin icon (the gears)
-L.Control.Admin = L.Control.extend({
-	options: {
-		position: 'verticalcenterleft'
-	},
-	onAdd: function(map) {
-		var adminControl = L.DomUtil.create('div', 'leaflet-control-custom leaflet-bar');
-		adminControl.style.backgroundColor = 'white';
-		//adminControl.content = "\F013";
-		//adminControl.font-family = "FontAwesome";
-		//adminControl.style.background = "fa-cog";
-		adminControl.style.width = '30px';
-		adminControl.style.height = '30px';
-		adminControl.title = 'Admin';
-		var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', adminControl);
-		var gear = L.DomUtil.create('span', 'fa fa-cogs', link);
-		gear.style.fontSize = '15px';
-		adminControl.onclick = function() {
-			//alert('you clicked it');
-			window.location = "admin/admin.php";
-		}
-		return adminControl;
-	}
-});
-L.control.admin = function(opts) {
-	return new L.Control.Admin(opts);
-}
-/*
-*admin control button
-*/
-L.control.admin().addTo(map);
-EOD;
-    }
     $Content .= <<< EOD
 //the ruler
 var rulerOptions = {position: 'verticalcenterleft',
@@ -1249,6 +1215,41 @@ var contents = "";
 
 EOD;
 
+    if (!isset($GLOBALS['hide_admin']) == "1") {
+    	$Content .= <<< EOD
+	//admin icon (the gears)
+	L.Control.Admin = L.Control.extend({
+		options: {
+			position: 'verticalcenterleft'
+		},
+		onAdd: function(map) {
+			var adminControl = L.DomUtil.create('div', 'leaflet-control-custom leaflet-bar');
+			adminControl.style.backgroundColor = 'white';
+			//adminControl.content = "\F013";
+			//adminControl.font-family = "FontAwesome";
+			//adminControl.style.background = "fa-cog";
+			adminControl.style.width = '30px';
+			adminControl.style.height = '30px';
+			adminControl.title = 'Admin';
+			var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', adminControl);
+			var gear = L.DomUtil.create('span', 'fa fa-cogs', link);
+			gear.style.fontSize = '15px';
+			adminControl.onclick = function() {
+				//alert('you clicked it');
+				window.location = "admin/admin.php";
+			}
+			return adminControl;
+		}
+	});
+	L.control.admin = function(opts) {
+		return new L.Control.Admin(opts);
+	}
+	/*
+	*admin control button
+	*/
+	L.control.admin().addTo(map);
+EOD;
+    }
     
 //    $help_msg = file_get_contents('../webpage/help_msg.html');
 //    $Content .= "L.Control.slideMenu(\"" . $help_msg . "\").addTo(map);\n";

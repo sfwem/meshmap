@@ -46,21 +46,28 @@ $sql_db_tbl_node = $USER_SETTINGS['sql_db_tbl_node'];
 $sql_db_tbl_topo = $USER_SETTINGS['sql_db_tbl_topo'];
 
 $sysinfoJson = @file_get_contents("http://$ipAddr:8080/cgi-bin/sysinfo.json"); //get the .json file
-$jsonFetchSuccess = 1;
 if($sysinfoJson === FALSE) {
-	$jsonFetchSuccess = 0;
 	$error = error_get_last();
 	wxc_checkErrorMessage($error, $ipAddr);
-	//just skip to the next IP since there was an error
-	continue;
+	//just exit since there was an error
+	//when running in parallel mode you wont see this
+	//this script can be used to "target" a node and see what it returns tho
+	if ($testNodePolling) {
+		wxc_echoWithColor("There was an error retreiving the json file for: $ipAddr\n");
+	}
+	exit();
 }else {
 	//node is there, get all the info we can
 	//get all the data from the json file and decode it
 	$result = json_decode($sysinfoJson,true);
 	
-	//if there's nothing really there just skip to the next IP
+	//if there's nothing really there just exit
+	//this is the parallel script!
 	if (!$result || empty($result)) {
-		continue;
+		if ($testNodePolling) {
+			wxc_echoWithColor("The json file is empty for node: $ipAddr\n");
+		}
+		exit();
 	}
 	
 	//first let's see what node we are dealing with
@@ -77,7 +84,12 @@ if($sysinfoJson === FALSE) {
 	if ($result['node'] && $result['lat'] == "" && $result['lon'] == "" && $result['ssid'] == ""
 			&& $result['model'] == "" && $result['firmware_mfg'] == ""
 			&& $result['api_version'] == "") {
-				continue;
+				//just exit since this is junk
+				//this is the parallel script!
+				if ($testNodePolling) {
+					wxc_echoWithColor("This is probably some linux device running OLSR: " . $result['node'] . "\n");
+				}
+				exit();
 	}
 
 	//save json data to some variables
@@ -89,12 +101,14 @@ if($sysinfoJson === FALSE) {
 	//if lat || lon is blank, make it "0"
 	//this was sometimes screwing up the SQL writing function
 	//but not always of course.
-	if ($result['lat'] == "") {
+	if (empty($result['lat'])) {
+	//if ($result['lat'] == "") {
 		$lat = 0.0;
 	}else {
 		$lat = $result['lat'];
 	}
-	if ($result['lon'] == "") {
+	if (empty($result['lon'])) {
+	//if ($result['lon'] == "") {
 		$lon = 0.0;
 	}else {
 		$lon = $result['lon'];
@@ -109,20 +123,25 @@ if($sysinfoJson === FALSE) {
 	$channel = $result['channel'];
 	$firmware_mfg = $result['firmware_mfg'];
 	
-	//had to screen scrape the status page for this info before (or use the evil port 9090!)
+	//had to screen scrape the status page for this info before
 	//now it is here! :)
 	$uptime = "NotAvailable";
 	$loadavg = "NotAvailable";
 	if (version_compare($api_version, "1.2", ">=")) {
-		$uptime = $result['sysinfo']['uptime'];
-		$loadavg = serialize($result['sysinfo']['loads']); // <-- this is an array that has been serialized!!
+		if (isset($result['sysinfo']['uptime'])) {
+			$uptime = $result['sysinfo']['uptime'];
+		}
+		if (isset($result['sysinfo']['loads'])) {
+			$loadavg = serialize($result['sysinfo']['loads']); // <-- this is an array that has been serialized!!
+		}
 	}
 	
 	//local service listing are now in the json file!!  yay!
-	//this required evil port 9090 before
 	$services = "NotAvailable";
 	if (version_compare($api_version, "1.3", ">=")) {
-		$services = serialize($result['services_local']); // <-- this is an array that has been serialized!
+		if (isset($result['services_local'])) {
+			$services = serialize($result['services_local']); // <-- this is an array that has been serialized!
+		}
 	}
 	
 	//this only seems to affect some nodes.
@@ -146,41 +165,29 @@ if($sysinfoJson === FALSE) {
 			}
 			//
 			// This should catch some of those pesky ones
-			// what a fricken nightmare... jeez
+			// finally!
 			//
-			if ($result['api_version'] == "1.0" && $infInfo['name'] == $eth && $interface !== $eth) {
-				$lan_ip = $infInfo['ip'];
-			}
-			//elseif ($result['api_version'] == "1.0" && $infInfo['name'] == "eth0.0") {
-			//	$lan_ip = $infInfo['ip'];
-			//}
-			elseif ($result['api_version'] == "1.0" && $infInfo['name'] == "wlan0" && $interface !== "wlan0") {
-				$wlan_ip = $infInfo['ip'];
-				$wifi_mac_address = $infInfo['mac'];
-			}elseif ($result['api_version'] == "1.0" && $interface == $eth) {
-				$lan_ip = $infInfo['ip'];
-			}
-			//elseif ($result['api_version'] == "1.0" && $interface == "eth0.0") {
-			//	$lan_ip = $infInfo['ip'];
-			//}
-			elseif ($result['api_version'] == "1.0" && $interface == "wlan0") {
-				$wlan_ip = $infInfo['ip'];
-				$wifi_mac_address = $infInfo['mac'];
-			}elseif (version_compare($result['api_version'], "1.0", ">")) {
-				if ($infInfo['name'] == $eth) { // error with KK9DS on $name (undefined index)
+			if (is_numeric($interface)) {
+				if ($infInfo['name'] == $eth) {
 					if (isset($infInfo['ip'])) {
-						if ($infInfo['ip'] == "none") {
+						if ($infInfo['ip'] == 'none') {
 							$lan_ip = "NotAvailable";
 						}else {
-							$lan_ip = $infInfo['ip']; //error with ke6upi here on $ip (undefinded index)
+							$lan_ip = $infInfo['ip'];
 						}
-					}elseif (!isset($infInfo['ip'])) {
+					}else {
 						$lan_ip = "NotAvailable";
 					}
-				}
-				if ($infInfo['name'] == "wlan0") {
+				}elseif ($infInfo['name'] == 'wlan0') {
 					$wlan_ip = $infInfo['ip'];
-					$wifi_mac_address = $infInfo['mac']; //added to fix MAC address issue, caught by Mark, N2MH 14 March 2017.
+					$wifi_mac_address = $infInfo['mac'];
+				}
+			}else {
+				if ($interface == $eth) {
+					$lan_ip = $infInfo['ip'];
+				}elseif ($interface == 'wlan0') {
+					$wlan_ip = $infInfo['ip'];
+					$wifi_mac_address = $infInfo['mac'];
 				}
 			}
 		}
@@ -243,7 +250,7 @@ if($sysinfoJson === FALSE) {
 		//}else {
 		//
 		//}
-		echo "\n";
+		//echo "\n";
 	}
 			
 	if ($do_sql) {
@@ -392,6 +399,12 @@ if($sysinfoJson === FALSE) {
 	                }
 	            }
 	        }
+	        if ($testNodePolling) {
+	        	wxc_echoWithColor('****This nodes location has been "fixed" in the Database!****', 'alert');
+	        	echo "\n";
+	        	wxc_echoWithColor('****It will not update from polling if the location changes****', 'alert');
+	        	echo "\n";
+	        }
 	    }else {
     	    //check if we have changed node name and have the same hardware.
     	    //the database itself should handle if there is new hardware with the same node name.
@@ -432,11 +445,11 @@ if($sysinfoJson === FALSE) {
 	$loadavg = NULL;
 	$services = NULL;
 	$sysinfoJson = NULL;
-	//$olsrdInfo = NULL;
 }
 
-//$sql_connection =  wxc_connectToMySql();
-//if ($sql_connection) {
-	
-//}
+//update the database with the time, so we know when the last update is
+if($do_sql) {
+	wxc_scriptUpdateDateTime("NODEINFO", "node_info");
+	wxc_putMySql("UPDATE map_info SET currently_running = '0' WHERE id = 'NODEINFO'");
+}
 ?>

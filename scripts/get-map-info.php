@@ -64,6 +64,7 @@ $mtimeStart = microtime(true);
 ******/
 
 //Increase PHP memory limit to 128M (you may need more if you are connected to a "Mega Mesh" :) )
+//this should be moved to the ini file maybe
 ini_set('memory_limit', '128M');
 
 /***********************************************************************
@@ -162,15 +163,8 @@ if ($do_sql) {
 	if ($TEST_MODE_NO_SQL) {
 		wxc_echoWithColor("SQL Server access disabled!", "red");
 		echo "\n";
-		//echo "\033[31mSQL Server access disabled!\033[0m\n\n";
 	}	
 }
-
-
-//if ($do_sql) {
-//	wxc_checkDB();
-//}
-
 
 //This controls when certain parts of the script run.
 //We check the DB for the time we last checked and only run if we need to.
@@ -248,10 +242,7 @@ if ($do_sql) {
 	wxc_removeIgnoredNodes();
 }
 
-$resolvedHostname = "";
-$nodeLocationFixed = 0;
 $node = "";
-$noPort9090 = 0;
 if ($getNodeInfo) {
 	//this section is what goes out to each node on the mesh and asks for it's info
 	//this is really the heart of the mapping system, without this (and the sysinfo.json file),
@@ -294,6 +285,7 @@ if ($getNodeInfo) {
 		//copy to new var name (I dont feel like editing it all right now)
 		$nodeName = $ipAddr;
 		if ($USER_SETTINGS['node_polling_parallel']) {
+			shell_exec("php $INCLUDE_DIR/scripts/parallel_node_polling.php $ipAddr $do_sql 0 > /dev/null 2>/dev/null &");
 			//for($count = 1; $count <= 20; $count++) {
 			//	$ipAddrList .= $ipAddr . "\n";
 			//}
@@ -307,10 +299,9 @@ if ($getNodeInfo) {
 		}else {
 			//get the sysinfo.json file from the node being polled.
 			$sysinfoJson = @file_get_contents("http://$ipAddr:8080/cgi-bin/sysinfo.json?services_local=1"); //get the .json file
-			$jsonFetchSuccess = 1;
+			
 			//check if we got anything back, if not, try to tell why.
 			if($sysinfoJson === FALSE) {
-				$jsonFetchSuccess = 0;
 				$error = error_get_last();
 				wxc_checkErrorMessage($error, $nodeName);
 				//just skip to the next IP since there was an error
@@ -324,8 +315,9 @@ if ($getNodeInfo) {
 				if (!$result || empty($result)) {
 					continue;
 				}
+				
 				//first let's see what node we are dealing with
-				//$node = $GLOBALS['node'] = $result['node'];
+				//sometimes this might be blank, catch it
 				$node = $result['node'];
 				
 				//if it's nothing other than the node name, it's some other device
@@ -350,12 +342,14 @@ if ($getNodeInfo) {
 				//if lat || lon is blank, make it "0"
 				//this was sometimes screwing up the SQL writing function
 				//but not always of course.
-				if ($result['lat'] == "") {
+                if (empty($result['lat'])) {
+				//if ($result['lat'] == "") {
 				    $lat = 0.0;
 				}else {
 				    $lat = $result['lat'];
 				}
-				if ($result['lon'] == "") {
+				if (empty($result['lon'])) {
+				//if ($result['lon'] == "") {
 				    $lon = 0.0;
 				}else {
 				    $lon = $result['lon'];
@@ -370,20 +364,27 @@ if ($getNodeInfo) {
 				$channel = $result['channel'];
 				$firmware_mfg = $result['firmware_mfg'];
 				
-				//had to screen scrape the status page for this info before (or use the evil port 9090!)
+				//had to screen scrape the status page for this info before
+				//which required an additional call to the node
 				//now it is here! :)
 				$uptime = "NotAvailable";
 				$loadavg = "NotAvailable";
 				if (version_compare($api_version, "1.2", ">=")) {
-					$uptime = $result['sysinfo']['uptime'];
-					$loadavg = serialize($result['sysinfo']['loads']); // <-- this is an array that has been serialized!!
+					if (isset($result['sysinfo']['uptime'])) {
+						$uptime = $result['sysinfo']['uptime'];
+					}
+					if (isset($result['sysinfo']['loads'])) {
+						$loadavg = serialize($result['sysinfo']['loads']); // <-- this is an array that has been serialized!!
+					}
 				}
 				
 				//local service listing are now in the json file!!  yay!
-				//this required evil port 9090 before
+				//this required an additional call to port 9090 on the node before
 				$services = "NotAvailable";
 				if (version_compare($api_version, "1.3", ">=")) {
-					$services = serialize($result['services_local']); // <-- this is an array that has been serialized!
+					if (isset($result['services_local'])) {
+						$services = serialize($result['services_local']); // <-- this is an array that has been serialized!
+					}
 				}
 				
 				//this only seems to affect some nodes.
@@ -407,41 +408,29 @@ if ($getNodeInfo) {
 						}
 						//
 						// This should catch some of those pesky ones
-						// what a fricken nightmare... jeez
+						// finally!
 						//
-						if ($result['api_version'] == "1.0" && $infInfo['name'] == $eth && $interface !== $eth) {
-							$lan_ip = $infInfo['ip'];
-						}
-						//elseif ($result['api_version'] == "1.0" && $infInfo['name'] == "eth0.0") {
-						//	$lan_ip = $infInfo['ip'];
-						//}
-						elseif ($result['api_version'] == "1.0" && $infInfo['name'] == "wlan0" && $interface !== "wlan0") {
-							$wlan_ip = $infInfo['ip'];
-							$wifi_mac_address = $infInfo['mac'];
-						}elseif ($result['api_version'] == "1.0" && $interface == $eth) {
-							$lan_ip = $infInfo['ip'];
-						}
-						//elseif ($result['api_version'] == "1.0" && $interface == "eth0.0") {
-						//	$lan_ip = $infInfo['ip'];
-						//}
-						elseif ($result['api_version'] == "1.0" && $interface == "wlan0") {
-							$wlan_ip = $infInfo['ip'];
-							$wifi_mac_address = $infInfo['mac'];
-						}elseif (version_compare($result['api_version'], "1.0", ">")) {
-							if ($infInfo['name'] == $eth) { // error with KK9DS on $name (undefined index)
+						if (is_numeric($interface)) {
+							if ($infInfo['name'] == $eth) {
 								if (isset($infInfo['ip'])) {
-									if ($infInfo['ip'] == "none") {
+									if ($infInfo['ip'] == 'none') {
 										$lan_ip = "NotAvailable";
 									}else {
-										$lan_ip = $infInfo['ip']; //error with ke6upi here on $ip (undefinded index)
+										$lan_ip = $infInfo['ip'];
 									}
-								}elseif (!isset($infInfo['ip'])) {
+								}else {
 									$lan_ip = "NotAvailable";
 								}
-							}
-							if ($infInfo['name'] == "wlan0") {
+							}elseif ($infInfo['name'] == 'wlan0') {
 								$wlan_ip = $infInfo['ip'];
-								$wifi_mac_address = $infInfo['mac']; //added to fix MAC address issue, caught by Mark, N2MH 14 March 2017.
+								$wifi_mac_address = $infInfo['mac'];
+							}
+						}else {
+							if ($interface == $eth) {
+								$lan_ip = $infInfo['ip'];
+							}elseif ($interface == 'wlan0') {
+								$wlan_ip = $infInfo['ip'];
+								$wifi_mac_address = $infInfo['mac'];
 							}
 						}
 					}
@@ -503,7 +492,7 @@ if ($getNodeInfo) {
 					//}else {
 					//						
 					//}
-					echo "\n";
+					//echo "\n";
 				}
 				
 				if ($do_sql) {
@@ -655,6 +644,12 @@ if ($getNodeInfo) {
 				                }
 				            }
 				        }
+				        if ($testNodePolling) {
+				        	wxc_echoWithColor('****This nodes location has been "fixed" in the Database!****', 'alert');
+				        	echo "\n";
+				        	wxc_echoWithColor('****It will not update from polling if the location changes****', 'alert');
+				        	echo "\n";
+				        }
 				    }else {
 				        //check if we have changed node name and have the same hardware.
 				        //the database itself should handle if there is new hardware with the same node name.
@@ -695,7 +690,6 @@ if ($getNodeInfo) {
 					$loadavg = NULL;
 					$services = NULL;
 					$sysinfoJson = NULL;
-					//$olsrdInfo = NULL;
 				}
 			}
 		}
@@ -746,6 +740,12 @@ if ($getLinkInfo) {
 			
 			if ($do_sql) {	//put the data into SQL, if we can.	
 				wxc_putMySQL("INSERT INTO $sql_db_tbl_topo(node, linkto, cost) VALUES('$nodeName', '$linktoName', '$cost')");
+				//quick hacks to remove/change junk
+				wxc_putMySQL("delete from $sql_db_tbl_topo where node is NULL and linkto is NULL");
+			//	wxc_putMySql("update topology set nodelat = 0 where nodelat is NULL");
+			//	wxc_putMySql("update topology set nodelon = 0 where nodelon is NULL");
+			//	wxc_putMySql("update topology set linklat = 0 where linklat is NULL");
+			//	wxc_putMySql("update topology set linklon = 0 where linklon is NULL");
 			}
 			
 			if ($testLinkInfo) {	//output to screen if we are in "test mode".

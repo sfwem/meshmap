@@ -330,13 +330,6 @@ function wxc_checkErrorMessage ($error, $nodeName) {
 		}
 		if ($GLOBALS['do_sql']) {
 			wxc_putMySQL("INSERT INTO hosts_ignore SET ip = '$ip', name = '$nodeName', reason = 'no_route', timestamp = NOW() ON DUPLICATE KEY UPDATE ip = '$ip', name = '$nodeName', reason = 'refused', timestamp = NOW()");
-			
-			/*
-			if (!wxc_getMySql("SELECT node FROM node_info WHERE wlan_ip = '$ip'")) {
-				wxc_putMySql("INSERT INTO node_info SET node = '$nodeName', wlan_ip = '$ip' ON DUPLICATE KEY UPDATE wlan_ip = '$ip'");
-			}
-			*/
-			
 		}
 		if ($GLOBALS['testNodePolling'] && $nodeName) {
 			echo "\033[31mError while getting sysinfo.json\033[0m from \033[35m" . $nodeName . "\033[0m: no route to host!\n\n";
@@ -376,7 +369,7 @@ function wxc_checkErrorMessage ($error, $nodeName) {
 	}
 	if (strpos($error['message'], 'Connection refused') !== false) {
 		//if we get a "connection refused" it's pretty safe to say we're not dealing with a node device
-		//or the sucker has really, really old firmware (3.15.*).
+		//or the sucker has really, really old firmware (< 3.15.*).
 		//but then I've actually seen "connection refused" from live nodes that I know are ok.
 		//I think it can also happen when OLSRd restarts or is rehashing it's files or something.
 		//these hosts get ignored for a while, but not too long.
@@ -397,20 +390,13 @@ function wxc_checkErrorMessage ($error, $nodeName) {
 		}
 		if ($GLOBALS['do_sql']) {
 			wxc_putMySQL("INSERT INTO hosts_ignore SET ip = '$ip', name = '$nodeName', reason = 'refused', timestamp = NOW() ON DUPLICATE KEY UPDATE ip = '$ip', name = '$nodeName', reason = 'refused', timestamp = NOW()");
-			
-			/*
-			if (!wxc_getMySql("SELECT node FROM node_info WHERE wlan_ip = '$ip'")) {
-				wxc_putMySql("INSERT INTO node_info SET node = '$nodeName', wlan_ip = '$ip' ON DUPLICATE KEY UPDATE wlan_ip = '$ip'");
-			}
-			*/
-			
 		}
 		if ($GLOBALS['testNodePolling'] && $nodeName) {
 			echo "\033[31mError while getting sysinfo.json\033[0m from \033[35m" . $nodeName . "\033[0m: Connection Refused!\n\n";
 		}
 	}
 	if (strpos($error['message'], '404') !== false) {
-		//404 errors are probably nodes at firmware 3.15 or less or something else entirely
+		//404 errors are probably nodes at firmware  < 3.15, or something else entirely
 		//these are only going to be checked once a day.
 		//if they *are* nodes hopefully someone can convince the owner to upgrade. :)
 		
@@ -461,9 +447,11 @@ function wxc_resolveIP ($ipAddr) {
 			//ask localnode directly to resolve this IP for us
 			$hostName = preg_replace("/.local.mesh/", "", gethostbyaddr_timeout("$hostName", $GLOBALS['USER_SETTINGS']['localnode'], 1));
 		}
-		if (filter_var($hostName, FILTER_VALIDATE_IP) != false) {		//check again
-			echo "Unable to resolve: ". $ipAddr . "\n";					//give up and echo error msg and return the IP
-		}
+		//if (filter_var($hostName, FILTER_VALIDATE_IP) != false) {		//check again
+		//	if ($GLOBALS['testNodePolling']) {
+		//		echo "Unable to resolve: ". $ipAddr . "\n";					//give up and echo error msg and return the IP
+		//	}
+		//}
 	}
 	return $hostName;
 }
@@ -553,6 +541,16 @@ function wxc_putMySql ($query) {
 	}
 }
 
+function wxc_getMysqlFetchAll ($query) {
+	$results = array();
+	if (empty($query)) {
+		return 0;
+	}else {
+		//$theQuery = mysqli_query($GLOBALS['sql_connection'], $query) or die ("Could not fetch from SQL server. " . mysqli_error($GLOBALS['sql_connection']));
+		//foreach $item in $query as $whatever
+		return 1;
+	}
+}
 /**
 * checkBand
 * 
@@ -622,16 +620,6 @@ function wxc_checkBand ($channel, $board_id = null) {
 
 }
 
-//this is a pipe dream, but I could use it myself if I wanted to
-//lets see if AREDN does something special just for me (I doubt it)
-function wxc_hostFileHTTP ($isItAvailable) {
-	if ($testHostInfo = file_get_contents("http://localnode.local.mesh:8080/known_hosts.txt")) {
-		return $testHostInfo;
-	}else {
-		return 0;
-	}
-}
-
 //something I was playing with
 function wxc_echoWithColor ($text, $color) {
 	if ($color == "red") {
@@ -645,6 +633,12 @@ function wxc_echoWithColor ($text, $color) {
 	}
 	if ($color == "green") {
 		echo "\033[32m" . $text . "\033[0m";
+	}
+	if ($color == 'redBold') {
+		echo "\033[1m\33[31m" . $text . "\033[0m";
+	}
+	if ($color == 'alert') {
+		echo "\033[41m\033[30m\033[1m" . $text . "\033[0m";
 	}
 }
 
@@ -705,35 +699,33 @@ function wxc_checkOldNodes() {
 			wxc_putMySql($oldNodeQuery);
 			$oldNodeQuery = "DELETE FROM node_info WHERE TIMESTAMPDIFF(DAY, node_info.last_seen, NOW()) > " . $GLOBALS['USER_SETTINGS']['node_expire_interval'];
 			wxc_putMySql($oldNodeQuery);
+			//also just remove some old nodes that may still be present in the DB (from very old versions of these scripts)
+			wxc_putMyMsql("delete from node_info where node.info.last_seen is NULL");
 		}
 	}
 }
 function wxc_removeIgnoredNodes() {
-	//wxc_getMySql("DELETE FROM node_info WHERE TIMESTAMPDIFF(DAY, node_info.last_seen, NOW()) > 30");
-	//return mysqli_fetch_all($theQuery);
-	
 	//check for entries to be removed from the "ignore_hosts" table
 	//-- prune the hosts_ignore table
-	//-- clear 404 errors after 26 hours, hopefully the user will update one day
-	//-- also remove no_route/refused errors after 90 min
+	//-- clear 404 errors after ini file interval, hopefully the user will update one day
+	//-- also remove no_route/refused errors after ini file interval
 	$oldNodeQuery = "DELETE FROM hosts_ignore WHERE HOUR(TIMEDIFF(NOW(), hosts_ignore.timestamp)) > " . $GLOBALS['USER_SETTINGS']['error404_expire_interval'] . " AND hosts_ignore.reason = '404'";
 	wxc_putMySql($oldNodeQuery);
 	$oldNodeQuery = "DELETE FROM hosts_ignore WHERE TIMESTAMPDIFF(MINUTE, hosts_ignore.timestamp, NOW()) > " . $GLOBALS['USER_SETTINGS']['errorNoRoute_expire_interval'] . " AND hosts_ignore.reason = 'no_route'";
 	wxc_putMySql($oldNodeQuery);
 	$oldNodeQuery = "DELETE FROM hosts_ignore WHERE TIMESTAMPDIFF(MINUTE, hosts_ignore.timestamp, NOW()) > " . $GLOBALS['USER_SETTINGS']['errorRefused_expire_interval'] . " AND hosts_ignore.reason = 'refused'";
 	wxc_putMySql($oldNodeQuery);
-	//else {
-		return;
-	//}
+	return;
 }
 
+//use the info from the nodes json file to get the local services from the node
 function wxc_listServices ($serviceList) {
 	$services = array();
 	if ($serviceList == "NotAvailable" || empty($serviceList) || is_null($serviceList)) {
 		return FALSE;
 	}elseif (is_array(unserialize($serviceList))) {
 		$serviceArray = unserialize($serviceList);
-		foreach ($serviceArray as $num => $service) {
+		foreach ($serviceArray as $service) {
 			$name = $service['name'];
 			if (strpos($service['link'], ":0") !== FALSE) {
 				$link = NULL;
@@ -748,41 +740,6 @@ function wxc_listServices ($serviceList) {
 		}
 		return $services;
 	}
-}
-//find any services the node knows about
-//this should be no longer called
-//but maybe we'll need it in the future.
-function wxc_findServices($json_data, $type) {
-	if ($type == "services") {
-		$services = array();
-		$olsrInfo = strstr($json_data, '"service"');
-		if ($olsrInfo == false) {
-			return FALSE;
-		}else {
-			$olsrInfo = preg_match_all('/service.*/', $olsrInfo, $out);
-			foreach ($out as $key => $value) {
-				foreach ($value as $line) {
-					$line = preg_replace('/service\"\: \"/', "", $line);
-					$line = preg_replace('/\",/', "", $line);
-					$boom = explode("|", $line );
-					if (strpos($boom['0'], ":0") !== FALSE) {
-						$name = $boom['2'];
-						$link = NULL;
-					}else {
-						$url = parse_url($boom[0]);
-						$link = $url['scheme'] . "://" . $url['host'] . ".local.mesh:" . $url['port'] . $url['path'];
-						//$host = $url['host'];
-						//$port = $url['port'];
-						//$link = $boom[0];
-						$name = $boom[2];
-					}
-					$services[$name] = $link;
-				}
-			}
-			return $services;
-		}
-	}
-	//other "types" go here if needed
 }
 
 //distance and bearing function? (no longer needed)
@@ -842,50 +799,5 @@ function checkVersion($node_firmware, $stable_firmware)
 		return 2;	
 	}
 	return 0;	
-}
-/**
-* Are you connected to the internet
-* No, this is actually: "does the server have access to google.com"?
-* It does not help to tell if the client has internet access at all.
-* It is a useless function and should be removed!!
-* who cares if the server can access google or not? That really does not matter.
-* 
-* @return bool
-*/
-function is_connected()
-{
-	return true;
-	//$connected = @fsockopen("www.google.com", 80);
-	//$connected = @fsockopen("www.thisshouldtotallynotexistanywhere.zz.yy.com", 80);
-	//website, port  (try 80 or 443)
-	//if ($connected)
-	//{
-	//	$is_conn = true; //action when connected
-	//	fclose($connected);	
-	//}
-	//else
-	//{
-	//	$is_conn = false; //action in connection failure	
-	//}
-	//return $is_conn;	
-}
-/**
-* Are you connected to the mesh
-* @return bool
-*/
-function is_connected_mesh()
-{
-	$connected = @fsockopen("localnode.local.mesh", 8080);
-	//website, port  (try 80 or 443)
-	if ($connected)
-	{
-		$is_conn = true; //action when connected
-		fclose($connected);	
-	}
-	else
-	{
-		$is_conn = false; //action in connection failure	
-	}
-	return $is_conn;	
 }
 ?>
