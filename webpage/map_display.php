@@ -493,6 +493,98 @@ $Content .= '<script>' . "\n" .
 		'}' . "\n" .
 	'</script>' . "\n";
 
+//autorefesh mechanism
+if (!isset($refresh) || $refresh == 1) {
+$Content .= <<< EOD
+	<script>
+	var autoRefreshCookieValue = 0;
+	var now = new Date();
+	//expire in 1 day
+	var cookieExpireTime = new Date(now.getTime() + 1 * 24 * 3600 * 1000);
+	//expire in 30 minutes
+	//var cookieExpireTime = new Date(now.getTime() + (30 * 60 * 1000));
+	function setCookie(name, value) {
+        document.cookie = name + "=" + escape(value) + "; expires=" + cookieExpireTime.toGMTString();
+	}
+	function getCookie(cname) {
+    	var name = cname + "=";
+    	var decodedCookie = decodeURIComponent(document.cookie);
+    	var ca = decodedCookie.split(';');
+    	for(var i = 0; i <ca.length; i++) {
+        	var c = ca[i];
+        	while (c.charAt(0) == ' ') {
+            	c = c.substring(1);
+        	}
+        	if (c.indexOf(name) == 0) {
+            	return c.substring(name.length, c.length);
+        	}
+    	}
+    	return "";
+	}
+	function checkForAutoRefreshCookie() {
+    	var arCookie = getCookie("meshmapAutoRefresh");
+    	if (arCookie != "") {
+			autoRefreshCookieValue = arCookie;
+    	} else {
+			setCookie("meshmapAutoRefresh", 0);
+        }
+	}
+	L.Control.autoRefresh = L.Control.extend({
+		options: {
+			position: 'topleft'
+		},
+		onAdd: function(map) {
+			var refreshControl = L.DomUtil.create('div', 'leaflet-control-custom leaflet-bar');
+			refreshControl.style.backgroundColor = 'white';
+			refreshControl.style.width = '30px';
+			refreshControl.style.height = '30px';
+			refreshControl.title = 'Toggle Auto Refresh\\nEvery 10 minutes';
+			var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', refreshControl);
+			var refreshIcon = L.DomUtil.create('span', 'fa fa-sync-alt', link);
+			refreshIcon.style.fontSize = '20px';
+			refreshIcon.style.verticalAlign = 'middle';
+			checkForAutoRefreshCookie();
+			if (autoRefreshCookieValue == 1) {
+					refreshIcon.style.color = 'green';
+					refreshControl.style.background = 'black';
+					document.addEventListener("DOMContentLoaded", function(event) {
+						if (getCookie("meshmapAutoRefresh")) {
+							setTimeout(function() {
+								window.location.reload(1);
+							}, 600000);
+						}});
+			}
+			if (autoRefreshCookieValue == 0) {
+					refreshIcon.style.color = 'grey';
+					refreshControl.style.background = 'lightgrey';
+			}
+			refreshControl.onclick = function() {
+				autoRefreshCookieValue = getCookie("meshmapAutoRefresh");
+				if (autoRefreshCookieValue == 1) {
+					refreshIcon.style.color = 'grey';
+					refreshControl.style.background = 'lightgrey';
+					setCookie("meshmapAutoRefresh", 0);
+					window.location.reload(1);
+				}else {
+					refreshIcon.style.color = 'green';
+					refreshControl.style.background = 'black';
+					setCookie("meshmapAutoRefresh", 1);
+					window.location.reload(1);
+				}
+			}
+			return refreshControl;
+		}
+	});
+	L.control.autoRefresh = function(opts) {
+		return new L.Control.autoRefresh(opts);
+	}
+	//refresh control button
+	L.control.autoRefresh().addTo(map);
+			
+	</script>
+EOD;
+}
+
 $Content .= "</div>\n"; // Closing tag
 
 // Display Page
