@@ -313,12 +313,24 @@ if ($getNodeInfo) {
 				
 				//if there's nothing really there just skip to the next IP
 				if (!$result || empty($result)) {
+					wxc_echoWithColor("The json file is empty for node: $ipAddr\n", "red");
 					continue;
 				}
 				
-				//first let's see what node we are dealing with
+				//pull out API version first
+				$api_version = $result['api_version'];
+				
+				//let's see what node we are dealing with
 				//sometimes this might be blank, catch it
-				$node = $result['node'];
+				if (version_compare($api_version, "1.5", "=")) {
+					if (isset($result['node_details']['node'])) {
+						$node = $result['node_details']['node'];
+					}else {
+						$node = $result['node'];
+					}
+				}else {
+					$node = $result['node'];
+				}
 				
 				//if it's nothing other than the node name, it's some other device
 				//or something else entirely... 
@@ -327,43 +339,92 @@ if ($getNodeInfo) {
 				//kg6wxc is *not* guilty of such things... :)
 				//
 				//just a few checks for nothing usually catches it.
-                if ($result['node'] && $result['lat'] == "" && $result['lon'] == "" && $result['ssid'] == ""
-                 && $result['model'] == "" && $result['firmware_mfg'] == ""
-				 && $result['api_version'] == "") {
-                        continue;
-                }
 				
-				//save json data to some variables
-				//probably don't really need to do this, but it is what it is for now...
-                $firmware_version = $result['firmware_version'];
-                $model = $result['model'];
+				//check API version first!
+				if (version_compare($api_version, "1.5", "=")) {
+					if (isset($result['location']['lat'])) {
+						$lat  = $result['location']['lat'];
+					}else {
+						$lat = $result['lat'];
+					}
+				}else {
+					$lat = $result['lat'];
+				}
+				if (version_compare($api_version, "1.5", "=")) {
+					if (isset($result['location']['lon'])) {
+						$lon  = $result['location']['lon'];
+					}else {
+						$lon = $result['lon'];
+					}
+				}else {
+					$lon = $result['lon'];
+				}
+				if ($node && $lat == "" && $lon == "" && $result['api_version'] == "") {
+                	continue;
+                }
 				
 				//this only seems to affect some nodes.
 				//if lat || lon is blank, make it "0"
 				//this was sometimes screwing up the SQL writing function
 				//but not always of course.
-                if (empty($result['lat'])) {
+                if (empty($lat)) {
 				//if ($result['lat'] == "") {
 				    $lat = 0.0;
-				}else {
-				    $lat = $result['lat'];
 				}
-				if (empty($result['lon'])) {
+				//else {
+				//    $lat = $result['lat;
+				//}
+				if (empty($lon)) {
 				//if ($result['lon'] == "") {
 				    $lon = 0.0;
-				}else {
-				    $lon = $result['lon'];
 				}
+				//else {
+				//    $lon = $result['lon'];
+				//}
 				
-				$chanbw = $result['chanbw'];
-				$api_version = $result['api_version'];
-				$board_id = $result['board_id'];
-				$tunnel_installed = $result['tunnel_installed'];
-				$ssid = $result['ssid'];
-				$active_tunnel_count = $result['active_tunnel_count'];
-				$channel = $result['channel'];
-				$firmware_mfg = $result['firmware_mfg'];
+				//save json data to some variables
+				//probably don't really need to do this, but it is what it is for now...
 				
+				//check for new sysinfo.json API
+				if (version_compare($api_version, "1.5", ">=")) {
+					if (isset($result['meshrf']['chanbw'])) {
+						$chanbw				=	$result['meshrf']['chanbw'];
+					}
+					else {
+						$chanbw = "0";
+					}
+					$ssid					=	$result['meshrf']['ssid'];
+					$channel				=	$result['meshrf']['channel'];
+					$board_id				=	$result['node_details']['board_id'];
+					$firmware_version		=	$result['node_details']['firmware_version'];
+					$model					=	$result['node_details']['model'];
+					$firmware_mfg			=	$result['node_details']['firmware_mfg'];
+					$tunnel_installed		=	$result['tunnels']['tunnel_installed'];
+					$active_tunnel_count	=	$result['tunnels']['active_tunnel_count'];
+					if (isset($result['location']['grid_square'])) {
+						$grid_square = $result['location']['grid_square'];
+					}
+					else {
+						$grid_square = $result['grid_square'];
+					}
+				}else {
+					if (isset($result['chanbw'])) {
+						$chanbw = $result['chanbw'];
+					}
+					else {
+						$chanbw = "0";
+					}
+					$ssid = $result['ssid'];
+					$channel = $result['channel'];
+					$board_id = $result['board_id'];
+					$firmware_version = $result['firmware_version'];
+					$model = $result['model'];
+					$firmware_mfg = $result['firmware_mfg'];
+					$tunnel_installed = $result['tunnel_installed'];
+					$active_tunnel_count = $result['active_tunnel_count'];
+					$grid_square = $result['grid_square'];
+				}
+
 				//had to screen scrape the status page for this info before
 				//which required an additional call to the node
 				//now it is here! :)
@@ -391,21 +452,33 @@ if ($getNodeInfo) {
 				//if grid_square is blank, make it "none"
 				//this was sometimes screwing up the SQL writing function
 				//but not always of course.
-				if ($result['grid_square'] == "") {
+				if ($grid_square == "") {
 				    $grid_square = "none";
-				}else {
-				    $grid_square = $result['grid_square'];
 				}
+				//else {
+				//    $grid_square = $result['grid_square'];
+				//}
 				
 				//W6BI requested this info to be added, so here it is now. :)
 				//current ip/mac address info
 				if ($result['interfaces']) {
 					foreach($result['interfaces'] as $interface => $infInfo) {
 						$eth = "eth0";
-						if ($result['model'] == "Ubiquiti Nanostation M XW" || $result['model'] == "AirRouter " || $result['model'] == "NanoStation M5 XW ") {
+						$wlan = "wlan0";
+						if ($model == "Ubiquiti Nanostation M XW" || $model == "AirRouter " || $model == "NanoStation M5 XW ") {
 							//"AirRouter " model name bug caught and fixed by Mark, N2MH 13 March 2017.
 							$eth = "eth0.0";
 						}
+						if ($model == "MikroTik RouterBOARD 952Ui-5ac2nD ") {
+							$eth = "eth1.0";
+						}
+						
+						//!!!THERE IS ONLY 1 Wireless interface available on this device so far!!!
+						//this will be changed in the near future.
+						if ($model == "MikroTik RouterBOARD 952Ui-5ac2nD ") {
+							$wlan = "wlan1";
+						}
+						
 						//
 						// This should catch some of those pesky ones
 						// finally!
@@ -421,14 +494,14 @@ if ($getNodeInfo) {
 								}else {
 									$lan_ip = "NotAvailable";
 								}
-							}elseif ($infInfo['name'] == 'wlan0') {
+							}elseif ($infInfo['name'] == $wlan) {
 								$wlan_ip = $infInfo['ip'];
 								$wifi_mac_address = $infInfo['mac'];
 							}
 						}else {
 							if ($interface == $eth) {
 								$lan_ip = $infInfo['ip'];
-							}elseif ($interface == 'wlan0') {
+							}elseif ($interface == $wlan) {
 								$wlan_ip = $infInfo['ip'];
 								$wifi_mac_address = $infInfo['mac'];
 							}
@@ -437,28 +510,28 @@ if ($getNodeInfo) {
 				}
 				
 				if ($testNodePolling) {
-					echo "Name: "; wxc_echoWithColor($result['node'], "purple"); echo "\n";
+					echo "Name: "; wxc_echoWithColor($node, "purple"); echo "\n";
 					echo "MAC Address: " . $wifi_mac_address . "\n";
-					echo "Model: " . $result['model'] . "\n";
-					if ($result['firmware_version'] !== $USER_SETTINGS['current_stable_fw_version']) {
-						if (version_compare($result['firmware_version'], $USER_SETTINGS['current_stable_fw_version'], "<")) {
-							if ($result['firmware_version'] === "Linux" || $result['firmware_version'] === "linux") {
-								echo "Firmware: " . $result['firmware_version'] . "  <- \033[1;32mViva Linux!!!\033[0m\n";
+					echo "Model: " . $model . "\n";
+					if ($firmware_version !== $USER_SETTINGS['current_stable_fw_version']) {
+						if (version_compare($firmware_version, $USER_SETTINGS['current_stable_fw_version'], "<")) {
+							if ($firmware_version === "Linux" || $firmware_version === "linux") {
+								echo "Firmware: " . $firmware_version . "  <- \033[1;32mViva Linux!!!\033[0m\n";
 							}else {
-								echo "Firmware: " . $result['firmware_mfg'] . " " . $result['firmware_version'];
+								echo "Firmware: " . $firmware_mfg . " " . $firmware_version;
 								wxc_echoWithColor(" Should update firmware!", "red");
 								echo "\n";
 							}
 						}
-						if (version_compare($result['firmware_version'], $USER_SETTINGS['current_stable_fw_version'], ">")) {
+						if (version_compare($firmware_version, $USER_SETTINGS['current_stable_fw_version'], ">")) {
 							//echo "Firmware: " . $result['firmware_mfg'] . " " . $result['firmware_version'] . "  <- \033[31mBeta firmware!\033[0m\n";
-							echo "Firmware: " . $result['firmware_mfg'] . " " . $result['firmware_version'];
+							echo "Firmware: " . $firmware_mfg . " " . $firmware_version;
 							wxc_echoWithColor(" Beta firmware!", "red");
 							echo "\n";
 						}
 					}else {
 						//echo "Firmware Version: " . $firmware_version . "\n";
-						echo "Firmware: \033[32m" . $result['firmware_mfg'] . " " . $result['firmware_version'] . "\033[0m\n";
+						echo "Firmware: \033[32m" . $firmware_mfg . " " . $firmware_version . "\033[0m\n";
 					}
 					
 					echo "LAN ip: ";
@@ -469,8 +542,8 @@ if ($getNodeInfo) {
 					}
 					echo " WLAN ip: " . $wlan_ip . "\n";
 					
-					if (($result['lat']) && ($result['lon'])) {
-						echo "Location: \033[32m" . $result['lat'] . ", " . $result['lon']. "\033[0m\n";
+					if (($lat) && ($lon)) {
+						echo "Location: \033[32m" . $lat . ", " . $lon. "\033[0m\n";
 					//}elseif ($nodeLocationFixed = 1) {
 					//	echo "\033[31mNo Location Info Set!\033[0m (FIXED!)\n";
 					//	$nodeLocationFixed = 0;
@@ -492,7 +565,7 @@ if ($getNodeInfo) {
 					//}else {
 					//						
 					//}
-					//echo "\n";
+					echo "\n";
 				}
 				
 				if ($do_sql) {
