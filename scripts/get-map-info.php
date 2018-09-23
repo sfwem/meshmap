@@ -313,7 +313,9 @@ if ($getNodeInfo) {
 				
 				//if there's nothing really there just skip to the next IP
 				if (!$result || empty($result)) {
-					wxc_echoWithColor("The json file is empty for node: $ipAddr\n", "red");
+					//$host = wxc_resolveIP($ipAddr);
+					wxc_echoWithColor("The json file is empty for node: " . $ipAddr . " " . wxc_resolveIP($ipAddr) . "\n", "red");
+					echo "\n";
 					continue;
 				}
 				
@@ -331,14 +333,6 @@ if ($getNodeInfo) {
 				}else {
 					$node = $result['node'];
 				}
-				
-				//if it's nothing other than the node name, it's some other device
-				//or something else entirely... 
-				//people hack things onto the mesh all the time
-				//
-				//kg6wxc is *not* guilty of such things... :)
-				//
-				//just a few checks for nothing usually catches it.
 				
 				//check API version first!
 				if (version_compare($api_version, "1.5", "=")) {
@@ -359,6 +353,14 @@ if ($getNodeInfo) {
 				}else {
 					$lon = $result['lon'];
 				}
+				
+				//if it's nothing other than the node name, it's some other device
+				//or something else entirely...
+				//people hack things onto the mesh all the time
+				//
+				//kg6wxc is *not* guilty of such things... :)
+				//
+				//just a few checks for nothing usually catches it.
 				if ($node && $lat == "" && $lon == "" && $result['api_version'] == "") {
                 	continue;
                 }
@@ -565,7 +567,7 @@ if ($getNodeInfo) {
 					//}else {
 					//						
 					//}
-					echo "\n";
+					//echo "\n";
 				}
 				
 				if ($do_sql) {
@@ -741,6 +743,7 @@ if ($getNodeInfo) {
 				        }
 				    }
 				}
+				echo "\n";
 					//Thanks to K6GSE
 					// Clear Variables so they do not carry over
 					$wifi_mac_address = NULL;
