@@ -691,7 +691,7 @@ function wxc_checkOldNodes() {
 			$last_seen = $row['last_seen'];
 			
 			$valuesArray[] = "('$wifi_mac_address', '$node', '$model', '$firmware_version', '$lat', '$lon', '$ssid', '$chanbw', '$api_version', '$board_id',
-				'$tunnel_installed', '$active_tunnel_count', '$channel', '$firmware_mfg', '$lan_ip', '$wlan_ip', $uptime, $loadavg, $services, '$last_seen', NOW())";
+				'$tunnel_installed', '$active_tunnel_count', '$channel', '$firmware_mfg', '$lan_ip', '$wlan_ip', '$uptime', '$loadavg', '$services', '$last_seen', NOW())";
 		}
 		
 		if ($valuesArray) {
@@ -700,7 +700,7 @@ function wxc_checkOldNodes() {
 			$oldNodeQuery = "DELETE FROM node_info WHERE TIMESTAMPDIFF(DAY, node_info.last_seen, NOW()) > " . $GLOBALS['USER_SETTINGS']['node_expire_interval'];
 			wxc_putMySql($oldNodeQuery);
 			//also just remove some old nodes that may still be present in the DB (from very old versions of these scripts)
-			wxc_putMyMsql("delete from node_info where node.info.last_seen is NULL");
+			wxc_putMySql("delete from node_info where node.info.last_seen is NULL");
 		}
 	}
 }
