@@ -314,8 +314,10 @@ if ($getNodeInfo) {
 				//if there's nothing really there just skip to the next IP
 				if (!$result || empty($result)) {
 					//$host = wxc_resolveIP($ipAddr);
-					wxc_echoWithColor("The json file is empty for node: " . $ipAddr . " " . wxc_resolveIP($ipAddr) . "\n", "red");
-					echo "\n";
+					if($testNodePolling) {
+						wxc_echoWithColor("The json file is empty for node: " . $ipAddr . " " . wxc_resolveIP($ipAddr) . "\n", "red");
+						echo "\n";
+					}
 					continue;
 				}
 				

@@ -700,7 +700,7 @@ function wxc_checkOldNodes() {
 			$oldNodeQuery = "DELETE FROM node_info WHERE TIMESTAMPDIFF(DAY, node_info.last_seen, NOW()) > " . $GLOBALS['USER_SETTINGS']['node_expire_interval'];
 			wxc_putMySql($oldNodeQuery);
 			//also just remove some old nodes that may still be present in the DB (from very old versions of these scripts)
-			wxc_putMySql("delete from node_info where node.info.last_seen is NULL");
+			wxc_putMySql("delete from node_info where node_info.last_seen is NULL");
 		}
 	}
 }
