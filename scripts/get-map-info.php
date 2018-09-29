@@ -16,6 +16,10 @@ $mtimeStart = microtime(true);
 *                                                                                               
 * One Script to rule them all!!
 * 
+* Late Sept 2018
+* move to private gitlab server
+* 3.18.9.0 firmware released!
+* 
 * Mid April 2018
 * Added the above check for CLI environment, this script should not be run in the browser!
 * It will now exit if you try to do so.
