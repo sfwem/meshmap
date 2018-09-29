@@ -865,3 +865,103 @@ Author: Eric Satterlee - KG6WXC <kg6wxc@gmail.com>
 Date:   Sun Mar 25 12:02:47 2018 -0700
 
     Initial commit!
+
+Historical Notes
+
+March 2018
+-----------
+wow, it's been that long huh?
+now using git repo at https://mapping.kg6wxc.net/git/meshmap
+fixed issues with running the webpage on PHP 7.2.3, it should be good now.
+tested on PHP 5.6.30 7.0.27-0+deb9u1 and 7.2.3
+had to create an array properly and not let PHP fix my mistakes for me. :)
+more to come!
+
+June 2017
+-----------------
+Added CSS values
+First pass at Optimization for Node and Topology array handling
+Moved several control values to user-setting.ini
+   Including: Server Settings, Messages, Starting Coordinates and Zoom
+GSE: Moved map specific details to meshmap-settings.inif
+GSE: Optimized link building
+GSE: Cloned map.php to map_display.php for additional ( non-mesh ) features
+GSE: Moved Icon and Colour definitions to meshmap-settings.ini
+GSE: Moved all map building infrastruures to individual routines.
+GSE: Added ( Additional Markers ) - These are additional filtered non-mesh markers.
+GSE: Added Services to the mesh node pop up
+GSE: Added Popup to Link lines.
+GSE: Added another popup for those nodes with an non-standard firmware version. ( Visiable when layer is active )
+
+late march 2017
+----------------
+Many, many updates and changes.
+Almost a complete rewrite.
+No longer requires "olsr-topology-view",
+or wxc's original get-topology.sh or build_topology.php.
+Also no longer requires jsontomysql.php or get_nodes.sh.
+The temporary files called mesh_hosts and topology.new are no longer needed as well.
+You can safely delete all of those files if you had them.
+
+This one script should do it all.
+It will run different parts at different times. 
+
+Now using "netcat" to get the olsr info, this was Mark's (N2MH) idea.
+Turns out there are "pure" PHP ways to do that, do not even have to make a call to "nc" any longer.
+Mark also caught a bug and now there is a better way to find the wifi mac address that should work for all devices.
+
+Moved many things into the wxc_functions file.
+Alternate IP to host name solution, since PHP's own function would sometimes fail.
+Moved wxc's totally site-specific stuff into an alternate file that is not required.
+
+early march 2017
+-----------------
+sorted "Linked to:" popup list by distance and cost
+this was easiest by putting the distance info into the database.
+see the scripts for more info
+Can now tell the difference between "real" DTD links and those that are linked in some other way (mostly)
+Additionally, This page is becoming more and more modified to do things based on which "host" it is running on
+At SBARC we currently have 3 different "versions" of this page, plus my system I use for testing
+I was starting to lose track of what was where so it has all become one now.
+if you are running on a different host then things will default to "normal".
+
+early feb 2017
+-----------------
+changed to use only free (as in beer) maps
+OSM, openTopo, Stamen maps, etc.
+
+early jan 2017
+-----------------
+migrated to use mysqli
+also added the mapbox "topographic" maps (which suck)
+
+mid dec 2016
+-----------------
+yet another update (due to request)
+added distance and bearing info to the linked node listing in the station popup
+
+more updates dec 2016
+-----------------
+added lat, lon to the popup info
+added channel and bandwidth info to the station popups
+out of date (and maybe beta) firmware now shows up as red text in the station popups
+changed the bottom "attributions" section a bit, formatted it differently and added in the number of stations and links shown. :)
+
+v.03 early December 2016
+-----------------
+added fullscreen control.(mid november 2016).
+the basemap layers are now able to be switched.
+there is differentiation between the different bands.
+now more info in the stations popup.
+you can now filter out different bands and different types of links on the map.
+the node's name now shows up if you hover over the marker.
+I think I'm now able to pick out the tunnels vs. any other type of link... maybe
+
+v.02 early Nov 2016
+-----------------
+new "radio" icons
+"two way" link lines
+legend overlay
+
+v.01 inital map Oct 2016
+-----------------
