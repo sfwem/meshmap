@@ -20,32 +20,6 @@
  *             OpenTopoMap https://opentopomap.org
  *
  **************************************************************************/
-/* Current version notes
- * 
- * March 2018
- * wow, it's been that long huh?
- * now using git repo at https://mapping.kg6wxc.net/git/meshmap
- * fixed issues with running the webpage on PHP 7.2.3, it should be good now.
- * tested on PHP 5.6.30 7.0.27-0+deb9u1 and 7.2.3
- * had to create an array properly and not let PHP fix my mistakes for me. :)
- * more to come!
- *
- * June 2017
- * -----------------
- * Added CSS values
- * First pass at Optimization for Node and Topology array handling
- * Moved several control values to user-setting.ini
- *                       Including: Server Settings, Messages, Starting Coordinates and Zoom
- * GSE: Moved map specific details to meshmap-settings.inif
- * GSE: Optimized link building
- * GSE: Cloned map.php to map_display.php for additional ( non-mesh ) features
- * GSE: Moved Icon and Colour definitions to meshmap-settings.ini
- * GSE: Moved all map building infrastruures to individual routines.
- * GSE: Added ( Additional Markers ) - These are additional filtered non-mesh markers.
- * GSE: Added Services to the mesh node pop up
- * GSE: Added Popup to Link lines.
- * GSE: Added another popup for those nodes with an non-standard firmware version. ( Visiable when layer is active )
-**/
 /******
 * This file is part of the Mesh Mapping System.
 * The Mesh Mapping System is free software: you can redistribute it and/or modify
@@ -61,59 +35,7 @@
 * You should have received a copy of the GNU General Public License   
 * along with The Mesh Mapping System.  If not, see <http://www.gnu.org/licenses/>.
 ******/
-/* Historical Notes ( colapsed )
-* early march 2017
-* -----------------
-* sorted "Linked to:" popup list by distance and cost
-* this was easiest by putting the distance info into the database.
-* see the scripts for more info
-* Can now tell the difference between "real" DTD links and those that are linked in some other way (mostly)
-* Additionally, This page is becoming more and more modified to do things based on which "host" it is running on
-* At SBARC we currently have 3 different "versions" of this page, plus my system I use for testing
-* I was starting to lose track of what was where so it has all become one now.
-* if you are running on a different host then things will default to "normal".
-*
-* early feb 2017
-* -----------------
-* changed to use only free (as in beer) maps
-* OSM, openTopo, Stamen maps, etc.
-*
-* early jan 2017
-* -----------------
-* migrated to use mysqli
-* also added the mapbox "topographic" maps (which suck)
-*
-* mid dec 2016
-* -----------------
-* yet another update (due to request)
-* added distance and bearing info to the linked node listing in the station popup
-*
-* more updates dec 2016
-* -----------------
-* added lat, lon to the popup info
-* added channel and bandwidth info to the station popups
-* out of date (and maybe beta) firmware now shows up as red text in the station popups
-* changed the bottom "attributions" section a bit, formatted it differently and added in the number of stations and links shown. :)
-*
-* v.03 early December 2016
-* -----------------
-* added fullscreen control.(mid november 2016).
-* the basemap layers are now able to be switched.
-* there is differentiation between the different bands.
-* now more info in the stations popup.
-* you can now filter out different bands and different types of links on the map.
-* the node's name now shows up if you hover over the marker.
-* I think I'm now able to pick out the tunnels vs. any other type of link... maybe
-*
-* v.02 early Nov 2016
-* -----------------
-* new "radio" icons
-*  "two way" link lines
-*  legend overlay
-*
-*  v.01 inital map Oct 2016
-* -----------------
-*/
+
 //Increase PHP memory limit to 128M (you may need more if you are connected to a "Mega Mesh" :) )
 ini_set('memory_limit', '128M');
 

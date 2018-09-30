@@ -16,40 +16,7 @@ $mtimeStart = microtime(true);
 *                                                                                               
 * One Script to rule them all!!
 * 
-* Late Sept 2018
-* move to private gitlab server
-* 3.18.9.0 firmware released!
-* 
-* 
-* Mid April 2018
-* Added the above check for CLI environment, this script should not be run in the browser!
-* It will now exit if you try to do so.
-* Cleaned up the Array generation in the map_functions file, PHP 7.2.3 barfed all over before,
-* It is now done properly and has been tested on php5 and php7.
-* moved the entire system to a new private git repo.
-* more to come....
-*
-*
-*late march 2017
-*Many, many updates and changes.
-*Almost a complete rewrite.
-*No longer requires "olsr-topology-view",
-*or wxc's original get-topology.sh or build_topology.php.
-*Also no longer requires jsontomysql.php or get_nodes.sh.
-*The temporary files called mesh_hosts and topology.new are no longer needed as well.
-*You can safely delete all of those files if you had them.
-*
-*This one script should do it all.
-*It will run different parts at different times. 
-*
-*Now using "netcat" to get the olsr info, this was Mark's (N2MH) idea.
-*Turns out there are "pure" PHP ways to do that, do not even have to make a call to "nc" any longer.
-*Mark also caught a bug and now there is a better way to find the wifi mac address that should work for all devices.
-*
-*Moved many things into the wxc_functions file.
-*Alternate IP to host name solution, since PHP's own function would sometimes fail.
-*Moved wxc's totally site-specific stuff into an alternate file that is not required.
-*
+* see CHANGELOG.md for notes
 **************************************************************************************/
 
 /******
@@ -750,7 +717,9 @@ if ($getNodeInfo) {
 				        }
 				    }
 				}
-				echo "\n";
+				if ($testNodePolling) {
+					echo "\n";
+				}
 					//Thanks to K6GSE
 					// Clear Variables so they do not carry over
 					$wifi_mac_address = NULL;
