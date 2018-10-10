@@ -8,6 +8,6 @@ if you know how to use that you should be fine.
 
 @kg6wxc retains the right to approve new code to the "main" branch.
 Anyone is free to contribute.  
-Go ahead and create new fork with additial options/settings/maps, etc...  
+Go ahead and create new fork with additional options/settings/maps, etc...  
 
 Fork this off to github if you like even, it is here for everyone!
