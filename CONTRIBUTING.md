@@ -1,5 +1,5 @@
 To contribute to this project, please just create an account here:  
-https://gitlab.kg6wxc.net  
+https://gitlab.kg6wxc.net/users/sign_in  
 
 Create your own fork if you like and submit merge requests,  
 or just use the issues area to suggest new ideas.  
