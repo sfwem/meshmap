@@ -133,6 +133,7 @@ pageTitle = "Mesh Map"
 ;after how many *days* do nodes get removed when we have not heard from them?
 ;if the same node re-appears after this time it will get automatically removed from the ignore list,
 ;and will continue to be updated as normal.
+;Set expire_old_nodes to "1" to actually expire the old nodes. "0" will not expire any nodes.
 ;--------------------------------------------------------------
 node_expire_interval = "30"
 expire_old_nodes = "0"
