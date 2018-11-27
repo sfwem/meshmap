@@ -73,7 +73,8 @@ if (file_exists($INCLUDE_DIR . "/scripts/meshmap-settings.ini")) {
 require $INCLUDE_DIR . "/scripts/wxc_functions.inc";
 require $INCLUDE_DIR . "/scripts/map_functions.inc";
 
-date_default_timezone_set($USER_SETTINGS['localTimeZone']);
+//commented out for timezone fizes -wxc 11-26-2018
+//date_default_timezone_set($USER_SETTINGS['localTimeZone']);
 
 /*
  * This section will try to tell if the client has internet access or not
