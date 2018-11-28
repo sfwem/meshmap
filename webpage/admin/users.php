@@ -294,7 +294,7 @@ if (!isset($_SESSION['userLoggedIn'])) {
 	    echo "<th class=\"pointerCursor\" onclick=\"sortTable(2)\"><boldText>Last Login</boldText></th>\n";
 	    echo "</tr>\n";
 	    foreach ($users as $value) {
-	    	$locaTimeZone = new DateTimeZone($USER_SETTINGS['localTimeZone']);
+	    	$localTimeZone = new DateTimeZone($USER_SETTINGS['localTimeZone']);
 	    	$lastLogin = new DateTime($value['last_login']);
 	    	date_timezone_set($lastLogin, $localTimeZone);
 	    	/*
