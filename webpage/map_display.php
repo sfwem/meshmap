@@ -74,8 +74,8 @@ require $INCLUDE_DIR . "/scripts/wxc_functions.inc";
 require $INCLUDE_DIR . "/scripts/map_functions.inc";
 
 //commented out for timezone fizes -wxc 11-27-2018
-global $tz;
-$tz = new DateTimeZone($USER_SETTINGS['localTimeZone']);
+global $localTimeZone;
+$localTimeZone = new DateTimeZone($USER_SETTINGS['localTimeZone']);
 
 /*
  * This section will try to tell if the client has internet access or not
