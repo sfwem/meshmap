@@ -432,11 +432,9 @@ function load_LinkedTO($node_info, $TopoList)
 function build_Marker($node_info, $node_ServiceList, $node_LinkedList, $node_FirmwareStatus)
 {
 	
-	//timezone fixes - wxc 11-26-2018
-	$tz = new DateTimeZone($GLOBALS['USER_SETTINGS']['localTimeZone']);
-	//$nodeLastSeen = date_create($node_info['last_seen'], $tz);
+	//timezone fixes - wxc 11-27-2018
 	$nodeLastSeen = new DateTime($node_info['last_seen']);
-	date_timezone_set($nodeLastSeen, $tz);
+	date_timezone_set($nodeLastSeen, $GLOBALS['localTimeZone']);
 	
     
 	$markerList = '';
@@ -1104,8 +1102,7 @@ function show_MapMarkerDetails($numNodes, $numLinks, $numMarkers, $numNodesTotal
     $filetime = wxc_scriptGetLastDateTime("LINKINFO", "topology");
     if ($filetime)
     {
-    	$tz = new DateTimeZone($GLOBALS['USER_SETTINGS']['localTimeZone']);
-    	date_timezone_set($filetime, $tz);
+    	date_timezone_set($filetime, $GLOBALS['localTimeZone']);
         $filetime = date_format($filetime, 'F d Y H:i:s T');
     }
 

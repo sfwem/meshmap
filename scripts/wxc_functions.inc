@@ -491,11 +491,10 @@ function wxc_scriptGetLastDateTime ($id, $name) {
 		return 0;
 	}
 	
-	//timezone fixes - wxc 11-26-2018
-	$tz = new DateTimeZone($GLOBALS['USER_SETTINGS']['localTimeZone']);
+	//timezone fixes - wxc 11-27-2018
 	$datetime = new DateTime($lastRunSelf['script_last_run']);
-	date_timezone_set($datetime, $tz);
-	//return date_create($lastRunSelf['script_last_run']);
+	date_timezone_set($datetime, $GLOBALS['localTimeZone']);
+
 	return $datetime;
 }
 
