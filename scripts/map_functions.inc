@@ -438,7 +438,7 @@ function build_Marker($node_info, $node_ServiceList, $node_LinkedList, $node_Fir
 	
     
 	$markerList = '';
-    $nodeUrl = "<NodeTitle><a href='http://" . $node_info['node'] . ".local.mesh:8080'>" . $node_info['node'] .
+    $nodeUrl = "<NodeTitle><a href='http://" . $node_info['node'] . ".local.mesh:8080' target='node'>" . $node_info['node'] .
         "</a></NodeTitle>";
 
     //Now we look at the 'channel' value, for each node, from the node_info database.
