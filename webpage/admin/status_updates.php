@@ -28,6 +28,12 @@ if (!$sql_connection) {
     $totalNumNonMeshMarkers = mysqli_num_rows(mysqli_query($sql_connection, "SELECT name from marker_info"));
     mysqli_close($sql_connection);
 }
+$localTimeZone = new DateTimeZone($USER_SETTINGS['localTimeZone']);
+$nodeInfoLastUpdate = new DateTime($lastUpdateNodeInfo['script_last_run']);
+$linkInfoLastUpdate = new DateTime($lastUpdateLinkInfo['table_last_update']);
+date_timezone_set($nodeInfoLastUpdate, $localTimeZone);
+date_timezone_set($linkInfoLastUpdate, $localTimeZone);
+
 ?>
 <table id="admin_sql_status_table">
 <thead>
@@ -63,7 +69,8 @@ echo "<td class=\"admin_sql_status_table_background\">With Locations:</td>\n";
 echo "<td class=\"admin_sql_status_table_background\">$totalNumNodesWithLocations</td>\n";
 echo "<td colspan=\"2\" class=\"admin_sql_status_table_background\">Nodes Last Polled:</td>\n";
 //echo "<td class=\"admin_sql_status_table_background\">&nbsp;</td>\n";
-echo "<td class=\"admin_sql_status_table_background\">" . $lastUpdateNodeInfo['script_last_run'] . "\n";
+echo "<td class=\"admin_sql_status_table_background\">" . date_format($nodeInfoLastUpdate, 'Y-m-d H:i:s T') . "\n";
+//echo "<td class=\"admin_sql_status_table_background\">" . $lastUpdateNodeInfo['script_last_run'] . "\n";
 echo "<td class=\"admin_sql_status_table_background\"></td>\n";
 echo "</tr>";
 echo "<tr>";
@@ -73,7 +80,7 @@ echo "<td class=\"admin_sql_status_table_background\">With Locations:</td>\n";
 echo "<td class=\"admin_sql_status_table_background\">$totalNumLinksWithLocations</td>\n";
 echo "<td colspan=\"2\" class=\"admin_sql_status_table_background\">Links Last Updated:</td>\n";
 //echo "<td class=\"admin_sql_status_table_background\">Updated:</td>\n";
-echo "<td class=\"admin_sql_status_table_background\">" . $lastUpdateLinkInfo['table_last_update'] . "\n";
+echo "<td class=\"admin_sql_status_table_background\">" . date_format($linkInfoLastUpdate, 'Y-m-d H:i:s T') . "\n";
 echo "<td class=\"admin_sql_status_table_background\">&nbsp;</td>\n";
 echo "</tr>\n";
 echo "<tr>\n";

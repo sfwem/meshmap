@@ -431,7 +431,13 @@ function load_LinkedTO($node_info, $TopoList)
  */
 function build_Marker($node_info, $node_ServiceList, $node_LinkedList, $node_FirmwareStatus)
 {
-    $markerList = '';
+	
+	//timezone fixes - wxc 11-27-2018
+	$nodeLastSeen = new DateTime($node_info['last_seen']);
+	date_timezone_set($nodeLastSeen, $GLOBALS['localTimeZone']);
+	
+    
+	$markerList = '';
     $nodeUrl = "<NodeTitle><a href='http://" . $node_info['node'] . ".local.mesh:8080'>" . $node_info['node'] .
         "</a></NodeTitle>";
 
@@ -510,7 +516,10 @@ function build_Marker($node_info, $node_ServiceList, $node_LinkedList, $node_Fir
         "', icon: " . $icon . "}).bindPopup(\" " . $nodeUrl . " (" . $band . ")<br>" . $node_info['lat'] .
         ", " . $node_info['lon'] . "<br>SSID: " . $node_info['ssid'] . "<br>Channel: " . $node_info['channel'] .
         ", Bandwidth: " . $node_info['chanbw'] . "<br>" . $node_info['model'] . "<br>" . $firmware .
-        "<br>Last Polled: " . $node_info['last_seen'] . '<br>' . "Uptime: " . $node_info['uptime'] . '<br>';
+        //"<br>Last Polled: " . $node_info['last_seen'] . '<br>' . "Uptime: " . $node_info['uptime'] . '<br>';
+        
+        //timezone fixes - wxc 11-26-2018
+		"<br>Last Polled: " . date_format($nodeLastSeen, 'Y-m-d H:i:s T') . '<br>' . "Uptime: " . $node_info['uptime'] . '<br>';
     //dot
     if ($node_info['loadavg'] !== "NotAvailable") {
     	$loadavgs = unserialize($node_info['loadavg']);
@@ -1093,7 +1102,8 @@ function show_MapMarkerDetails($numNodes, $numLinks, $numMarkers, $numNodesTotal
     $filetime = wxc_scriptGetLastDateTime("LINKINFO", "topology");
     if ($filetime)
     {
-        $filetime = date_format($filetime, 'F d Y H:i:s');
+    	date_timezone_set($filetime, $GLOBALS['localTimeZone']);
+        $filetime = date_format($filetime, 'F d Y H:i:s T');
     }
 
     //$Content = "MeshMapDetails = '<strong>" . $numNodes . " Nodes shown, with " . $numLinks .

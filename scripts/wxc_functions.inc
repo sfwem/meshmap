@@ -490,8 +490,12 @@ function wxc_scriptGetLastDateTime ($id, $name) {
 //		$lastRunSelf = wxc_getMySql("SELECT script_last_run FROM map_info WHERE id = '$id' AND table_or_script_name = '$name'");
 		return 0;
 	}
-	//mysqli_close();
-	return date_create($lastRunSelf['script_last_run']);
+	
+	//timezone fixes - wxc 11-27-2018
+	$datetime = new DateTime($lastRunSelf['script_last_run']);
+	date_timezone_set($datetime, $GLOBALS['localTimeZone']);
+
+	return $datetime;
 }
 
 //put a new "last_run_time" for the script into the DB

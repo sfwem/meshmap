@@ -46,6 +46,9 @@ if (!isset($_SESSION['userLoggedIn'])) {
 	    echo "<th class=\"pointerCursor\" onclick=\"sortTable(5)\"><boldText>Last Seen</boldText></th>\n";
 	    echo "</tr>\n";
 	    foreach ($nodeInfo as $value) {
+	    	$localTimeZone = new DateTimeZone($USER_SETTINGS['localTimeZone']);
+	    	$lastSeen = new DateTime($value['last_seen']);
+	    	date_timezone_set($lastSeen, $localTimeZone);
 	//         if ($value['location_fix'] == 0) {
 	//             $yesOrNo = "No";
 	//         }elseif ($value['location_fix'] == 1) {
@@ -61,7 +64,7 @@ if (!isset($_SESSION['userLoggedIn'])) {
 	            "<td>" . $value['grid_square'] . "</td>" .
 	            "<td contenteditable='true' onBlur=\"saveToDatabase(this, 'location_fix', '" . $value['node'] ."')\" " .
 	            "onClick=\"showEdit(this);\">" . $value['location_fix'] . "</td>" .
-	            "<td>" . $value['last_seen'] . "</td>" .
+	            "<td>" . date_format($lastSeen, 'Y-m-d H:i:s T') . "</td>" .
 	            "<td class='BackgroundColor'>\n" .
 				"<form class='remove_node_from_db' action='remove_node.php' method='post'>\n" .
 				"<input type='hidden' name='wifi_mac_address' value='" . $value['wifi_mac_address'] . "'>\n" .

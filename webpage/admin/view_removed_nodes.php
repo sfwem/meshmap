@@ -33,9 +33,12 @@ if (!isset($_SESSION['userLoggedIn'])) {
 	//    echo "<th onclick=\"sortTable(4)\"><boldText>Lon</boldText></th>\n";
 	    echo "</tr>\n";
 	    foreach ($removedNodes as $value) {
+	    	$tz = new DateTimeZone($GLOBALS['USER_SETTINGS']['localTimeZone']);
+	    	$lastSeen = new DateTime($value['last_seen'], $tz);
+	    	$timeRemoved = new DateTime($value['time_removed'], $tz);
 	        echo "\n<tr><td>" . $value['node'] . "</td>" .
-	            "<td>" . $value['last_seen'] . "</td>" .
-	            "<td>" . $value['time_removed'] . "</td>" .
+	 	        "<td>" . date_format($lastSeen, 'Y-m-d H:i:s T') . "</td>" .
+	 	        "<td>" . date_format($timeRemoved, 'Y-m-d H:i:s T') . "</td>" .
 	//            "<td>" . $value['lat'] . "</td>" .
 	//            "<td>" . $value['lon'] . "</td>" .
 	            "<td></td>" .

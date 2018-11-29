@@ -184,6 +184,9 @@ if (is_array($NodeList) && !empty($NodeList))
     echo "<tbody>\n\n";
     foreach ($NodeList as $Node)
     {
+    	$tz = new DateTimeZone($USER_SETTINGS['localTimeZone']);
+    	$datetime = new DateTime($Node['last_seen']);
+    	date_timezone_set($datetime, $tz);
         $node_FirmwareStatus = checkVersion($Node['firmware_version'], $STABLE_MESH_VERSION);
         /*
          * If you add columns here, make sure to add them to display_HeaderTitles()
@@ -215,8 +218,7 @@ if (is_array($NodeList) && !empty($NodeList))
         }
         echo "<td>" . $firmware . "</td>\n";
         echo "<td align=\"center\">"
-	. $Node['last_seen']
-	." GMT"
+    . date_format($datetime, 'F d Y H:i:s T')
 	."</td>\n";
     //added kg6wxc may 2018
     /*****START*****/

@@ -48,10 +48,13 @@ if (!isset($_SESSION['userLoggedIn'])) {
 	//    echo "<th onclick=\"sortTable(4)\"><boldText>Lon</boldText></th>\n";
 	    echo "</tr>\n";
 	    foreach ($ignoredNodes as $value) {
+	    	$tz = new DateTimeZone($GLOBALS['USER_SETTINGS']['localTimeZone']);
+	    	$datetime = new DateTime($value['timestamp'], $tz);
 	        echo "\n<tr><td>" . $value['ip'] . "</td>" .
 	            "<td>" . $value['name'] . "</td>" .
 	            "<td>" . $value['reason'] . "</td>" .
-	            "<td>" . $value['timestamp'] . "</td>" .
+	            "<td>" . date_format($datetime, 'Y-m-d H:i:s T') . "</td>" .
+	//            "<td>" . $value['timestamp'] . "</td>" .
 	//            "<td>" . $value['lon'] . "</td>" .
 	            "<td>" .
 	            "<form class='remove_ignored_node_form' action='view_ignored_nodes.php' method='post'>" .

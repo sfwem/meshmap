@@ -294,6 +294,9 @@ if (!isset($_SESSION['userLoggedIn'])) {
 	    echo "<th class=\"pointerCursor\" onclick=\"sortTable(2)\"><boldText>Last Login</boldText></th>\n";
 	    echo "</tr>\n";
 	    foreach ($users as $value) {
+	    	$localTimeZone = new DateTimeZone($USER_SETTINGS['localTimeZone']);
+	    	$lastLogin = new DateTime($value['last_login']);
+	    	date_timezone_set($lastLogin, $localTimeZone);
 	    	/*
 	    	if ($value['id'] !== "map-admin") {
 		    	echo "\n<tr><td>" . $value['id'] . "</td>" .
@@ -316,7 +319,7 @@ if (!isset($_SESSION['userLoggedIn'])) {
 	 	    		"<td>" . $value['super_user'] . "</td>" .
 	 	    		"<td>" . $value['id'] . "</td>" .
 	 	    		"<td>" . $value['user'] . "</td>" .
-	 	    		"<td>" . $value['last_login'] . "</td>" .
+	 	    		"<td>" . date_format($lastLogin, 'Y-m-d H:i:s T') . "</td>" .
 	 	    		//            "<td>" . $value['timestamp'] . "</td>" .
 	    		//            "<td>" . $value['lon'] . "</td>" .
 	    		"<td class='BackgroundColor'>" .
@@ -372,7 +375,7 @@ if (!isset($_SESSION['userLoggedIn'])) {
 	    		if ($value['user'] == $_SESSION['username']) {
 	    		echo "\n<tr>" .
 	 	    		"<td>" . $value['user'] . "</td>" .
-	 	    		"<td>" . $value['last_login'] . "</td>" .
+	 	    		"<td>" . date_format($lastLogin, 'Y-m-d H:i:s T') . "</td>" .
 	 	    		//            "<td>" . $value['timestamp'] . "</td>" .
 	    		//            "<td>" . $value['lon'] . "</td>" .
 	    		//"<td class='BackgroundColor'>" .
