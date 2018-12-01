@@ -119,6 +119,9 @@ wxc_checkConfigs();
 //what time is it now? returns a DateTime Object with current time.
 date_default_timezone_set($USER_SETTINGS['localTimeZone']);
 $currentTime = wxc_getCurrentDateTime();
+//setting our global TimeZone
+global $localTimeZone;
+$localTimeZone = new DateTimeZone($USER_SETTINGS['localTimeZone']);
 
 //what do we want to use in the sql server
 $sql_db_tbl = $USER_SETTINGS['sql_db_tbl'];
