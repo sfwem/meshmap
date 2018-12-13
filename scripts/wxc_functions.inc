@@ -496,6 +496,7 @@ function wxc_scriptGetLastDateTime ($id, $name) {
 	$dtz = new DateTimeZone($GLOBALS['localTimeZone']);
 	date_timezone_set($datetime, $dtz);
 
+
 	return $datetime;
 }
 
