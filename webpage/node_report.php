@@ -185,7 +185,7 @@ if (is_array($NodeList) && !empty($NodeList))
     foreach ($NodeList as $Node)
     {
     	$tz = new DateTimeZone($USER_SETTINGS['localTimeZone']);
-    	$datetime = new DateTime($Node['last_seen']);
+    	$datetime = new DateTime($Node['last_seen'], $tz);
     	date_timezone_set($datetime, $tz);
         $node_FirmwareStatus = checkVersion($Node['firmware_version'], $STABLE_MESH_VERSION);
         /*

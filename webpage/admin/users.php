@@ -295,7 +295,7 @@ if (!isset($_SESSION['userLoggedIn'])) {
 	    echo "</tr>\n";
 	    foreach ($users as $value) {
 	    	$localTimeZone = new DateTimeZone($USER_SETTINGS['localTimeZone']);
-	    	$lastLogin = new DateTime($value['last_login']);
+	    	$lastLogin = new DateTime($value['last_login'], $localTimeZone);
 	    	date_timezone_set($lastLogin, $localTimeZone);
 	    	/*
 	    	if ($value['id'] !== "map-admin") {

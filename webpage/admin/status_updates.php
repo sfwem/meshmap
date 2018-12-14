@@ -29,8 +29,8 @@ if (!$sql_connection) {
     mysqli_close($sql_connection);
 }
 $localTimeZone = new DateTimeZone($USER_SETTINGS['localTimeZone']);
-$nodeInfoLastUpdate = new DateTime($lastUpdateNodeInfo['script_last_run']);
-$linkInfoLastUpdate = new DateTime($lastUpdateLinkInfo['table_last_update']);
+$nodeInfoLastUpdate = new DateTime($lastUpdateNodeInfo['script_last_run'], $localTimeZone);
+$linkInfoLastUpdate = new DateTime($lastUpdateLinkInfo['table_last_update'], $localTimeZone);
 date_timezone_set($nodeInfoLastUpdate, $localTimeZone);
 date_timezone_set($linkInfoLastUpdate, $localTimeZone);
 

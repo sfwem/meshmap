@@ -47,7 +47,7 @@ if (!isset($_SESSION['userLoggedIn'])) {
 	    echo "</tr>\n";
 	    foreach ($nodeInfo as $value) {
 	    	$localTimeZone = new DateTimeZone($USER_SETTINGS['localTimeZone']);
-	    	$lastSeen = new DateTime($value['last_seen']);
+	    	$lastSeen = new DateTime($value['last_seen'], $localTimeZone);
 	    	date_timezone_set($lastSeen, $localTimeZone);
 	//         if ($value['location_fix'] == 0) {
 	//             $yesOrNo = "No";
