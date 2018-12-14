@@ -433,7 +433,7 @@ function build_Marker($node_info, $node_ServiceList, $node_LinkedList, $node_Fir
 {
 	
 	//timezone fixes - wxc 11-27-2018
-	$nodeLastSeen = new DateTime($node_info['last_seen']);
+	$nodeLastSeen = new DateTime($node_info['last_seen'], $GLOBALS['localTimeZone']);
 	date_timezone_set($nodeLastSeen, $GLOBALS['localTimeZone']);
 	
     
