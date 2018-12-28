@@ -69,6 +69,8 @@ if($sysinfoJson === FALSE) {
 		}
 		exit();
 	}
+	//is RF enabled? (default to "on")
+	$meshRF = "on";
 	
 	//pull out API version first
 	$api_version = $result['api_version'];
@@ -80,6 +82,11 @@ if($sysinfoJson === FALSE) {
 			$node = $result['node_details']['node'];
 		}else {
 			$node = $result['node'];
+		}
+		if (isset($result['meshrf']['status'])) {
+			if ($result['meshrf']['status'] == "off") {
+				$meshRF = "off";
+			}
 		}
 	}else {
 		$node = $result['node'];
@@ -146,8 +153,16 @@ if($sysinfoJson === FALSE) {
 		else {
 			$chanbw = "0";
 		}
-		$ssid					=	$result['meshrf']['ssid'];
-		$channel				=	$result['meshrf']['channel'];
+		if ($meshRF == "off") {
+			$ssid = "NONE";
+		}else {
+			$ssid				=	$result['meshrf']['ssid'];
+		}
+		if ($meshRF == "off") {
+			$channel = "NONE";
+		}else {
+			$channel			=	$result['meshrf']['channel'];
+		}
 		$board_id				=	$result['node_details']['board_id'];
 		$firmware_version		=	$result['node_details']['firmware_version'];
 		$model					=	$result['node_details']['model'];
@@ -245,9 +260,15 @@ if($sysinfoJson === FALSE) {
 					}else {
 						$lan_ip = "NotAvailable";
 					}
-				}elseif ($infInfo['name'] == $wlan) {
+				}elseif ($infInfo['name'] == $wlan && $meshRF == "on") {
 					$wlan_ip = $infInfo['ip'];
 					$wifi_mac_address = $infInfo['mac'];
+				}elseif ($infInfo['name'] == $wlan && $meshRF == "off") {
+					$wifi_mac_address = $infInfo['mac'];
+				}elseif ($meshRF == "off") {
+					if (strpos($infInfo['name'], ".3975") !== false) {
+						$wlan_ip = $infInfo['ip'];
+					}
 				}
 			}else {
 				if ($interface == $eth) {
