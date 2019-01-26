@@ -147,6 +147,7 @@ function sortTable(n) {
 		<option value="police">Police Station</option>
 		<option value="eoc">EOC</option>
 		<option value="hospital">Hospital</option>
+		<option value="futuremesh">Future Mesh</option>
 	</select>
 	Lat: <input type="text" name="station_lat" value="">
 	Lon: <input type="text" name="station_lon" value="">
