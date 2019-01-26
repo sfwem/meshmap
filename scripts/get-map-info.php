@@ -299,7 +299,14 @@ if ($getNodeInfo) {
 				$meshRF = "on";
 				
 				//pull out API version first
-				$api_version = $result['api_version'];
+				//some user-created json files leave out the api_version section
+				//so lets set a default
+				if (isset($result['api_version'])) {
+					$api_version = $result['api_version'];
+				}else {
+					//just make it 0.0.0 by default, it will always fail a compare_version then.
+					$api_version = "0.0.0";
+				}
 				
 				//let's see what node we are dealing with
 				//sometimes this might be blank, catch it
@@ -345,6 +352,8 @@ if ($getNodeInfo) {
 				//kg6wxc is *not* guilty of such things... :)
 				//
 				//just a few checks for nothing usually catches it.
+				
+				//***NOTE*** this might not be needed any more
 				if ($node && $lat == "" && $lon == "" && $result['api_version'] == "") {
                 	continue;
                 }
@@ -408,15 +417,59 @@ if ($getNodeInfo) {
 					else {
 						$chanbw = "0";
 					}
-					$ssid = $result['ssid'];
-					$channel = $result['channel'];
-					$board_id = $result['board_id'];
-					$firmware_version = $result['firmware_version'];
-					$model = $result['model'];
-					$firmware_mfg = $result['firmware_mfg'];
-					$tunnel_installed = $result['tunnel_installed'];
-					$active_tunnel_count = $result['active_tunnel_count'];
-					$grid_square = $result['grid_square'];
+					if (isset($result['ssid'])) {
+						$ssid = $result['ssid'];
+					}else {
+						$ssid = "None";
+					}
+					if (isset($result['channel'])) {
+						$channel = $result['channel'];
+					}else {
+						$channel = "N/A";
+					}
+					if (isset($result['board_id'])) {
+						$board_id = $result['board_id'];
+					}
+					if (isset($result['firmware_version'])) {
+						$firmware_version = $result['firmware_version'];
+					}
+					if (isset($result['model'])) {
+						$model = $result['model'];
+					}
+					if (isset($result['firmware_mfg'])) {
+						$firmware_mfg = $result['firmware_mfg'];
+					}
+					if (isset($result['tunnel_installed'])) {
+						$tunnel_installed = $result['tunnel_installed'];
+					}
+					if (isset($result['active_tunnel_count'])) {
+						$active_tunnel_count = $result['active_tunnel_count'];
+					}
+					if (isset($result['grid_square'])) {
+						$grid_square = $result['grid_square'];
+					}
+					
+					//catch some weird ones just in case...
+					//If you make a custom json file, try to make sure you conform to the AREDN api_versions.
+					//if not, this might catch it... maybe... we'll see.
+					if (isset($result['node_details']['board_id'])) {
+						$board_id = $result['node_details']['board_id'];
+					}
+					if (isset($result['node_details']['firmware_version'])) {
+						$firmware_version = $result['node_details']['firmware_version'];
+					}
+					if (isset($result['node_details']['model'])) {
+						$model = $result['node_details']['model'];
+					}
+					if (isset($result['tunnels']['tunnel_installed'])) {
+						$tunnel_installed = $result['tunnels']['tunnel_installed'];
+					}
+					if (isset($result['tunnels']['active_tunnel_count'])) {
+						$active_tunnel_count = $result['tunnels']['active_tunnel_count'];
+					}
+					if (isset($result['node_details']['firmware_mfg'])) {
+						$firmware_mfg = $result['node_details']['firmware_mfg'];
+					}
 				}
 
 				//had to screen scrape the status page for this info before
@@ -505,6 +558,15 @@ if ($getNodeInfo) {
 								$wlan_ip = $infInfo['ip'];
 								$wifi_mac_address = $infInfo['mac'];
 							}
+						}
+					}
+					if (!isset($wlan_ip) || !isset($wifi_mac_address)) {
+						$infInfo = end($result['interfaces']);
+						if (!isset($wlan_ip)) {
+							$wlan_ip = $infInfo['ip'];
+						}
+						if (!isset($wifi_mac_address)) {
+							$wifi_mac_address = $infInfo['mac'];
 						}
 					}
 				}
