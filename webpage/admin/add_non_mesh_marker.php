@@ -14,6 +14,7 @@ if (!isset($_SESSION['userLoggedIn'])) {
 		echo "<option value=\"operator\">Radio Operator</option>";
 		echo "<option value=\"firedepartment\">Fire Department</option>";
 		echo "<option value=\"police\">Police Station</option>";
+		echo "<option value=\"futuremesh\">Future Mesh</option>";
 		echo "</select>";
 		echo "Lat: <input type=\"text\" name=\"new_station_lat\" value=\"\"> ";
 		echo "Lon: <input type=\"text\" name=\"new_station_lon\" value=\"\"> ";
