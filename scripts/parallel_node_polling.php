@@ -160,8 +160,11 @@ if($sysinfoJson === FALSE) {
 		else {
 			$chanbw = "0";
 		}
-		if ($meshRF == "off") {
-			$ssid = "NONE";
+		if (isset($result['meshrf']['status'])) {
+			if ($result['meshrf']['status'] == "off") {
+				$meshRF = "off";
+				$ssid = "NONE";
+			}
 		}else {
 			$ssid				=	$result['meshrf']['ssid'];
 		}
