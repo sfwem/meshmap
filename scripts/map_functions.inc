@@ -402,7 +402,11 @@ function load_LinkedTO($node_info, $TopoList)
 		                }else {
 		                    $display_cost = ' (' . $costArray['costTo'] . '/' . $costArray['costFrom'] . ') ';
 		                }
-		                $linkedToList .= $linkedNodeName . $display_cost . $costArray['distance'] . ' mi ' . $costArray['bearing'] . '&deg;<br>';
+		                if ($GLOBALS['USER_SETTINGS']['kilometers']) {
+		                	$linkedToList .= $linkedNodeName . $display_cost . round($costArray['distance'], 2) . 'km (' . round($costArray['distance'] * 0.62137, 2) . 'mi) ' . $costArray['bearing'] . '&deg;<br>';
+		                }else {
+		                	$linkedToList .= $linkedNodeName . $display_cost . round($costArray['distance'] * 0.62137, 2) . 'mi (' . round($costArray['distance'], 2) . 'km) ' . $costArray['bearing'] . '&deg;<br>';
+		                }
             		}
             	}
             }
@@ -526,7 +530,7 @@ function build_Marker($node_info, $node_ServiceList, $node_LinkedList, $node_Fir
     	//var_dump($loadavgs);
     	$markerList .= 'LoadAvg: 1 min ' . $loadavgs[0] . ', 5 min ' . $loadavgs[1] . ', 15 min ' . $loadavgs[2] . "<br>";
     }
-    $markerList .= $node_ServiceList . $node_LinkedList . "\").addTo(" . $AssignedLayer . ") ,\n"; // Close out this node
+    $markerList .= $node_ServiceList . $node_LinkedList . "\",{ maxWidth: 500 } ).addTo(" . $AssignedLayer . ") ,\n"; // Close out this node
     /*
     * If Upgrade Suggested add Node to that layer
     */
