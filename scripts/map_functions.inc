@@ -403,9 +403,9 @@ function load_LinkedTO($node_info, $TopoList)
 		                    $display_cost = ' (' . $costArray['costTo'] . '/' . $costArray['costFrom'] . ') ';
 		                }
 		                if ($GLOBALS['USER_SETTINGS']['kilometers']) {
-		                	$linkedToList .= $linkedNodeName . $display_cost . round($costArray['distance'], 2) . 'km (' . round($costArray['distance'] * 0.62137, 2) . 'mi) ' . $costArray['bearing'] . '&deg;<br>';
+		                	$linkedToList .= $linkedNodeName . $display_cost . $costArray['distance'] . 'km (' . round($costArray['distance'] * 0.62137, 2) . 'mi) ' . $costArray['bearing'] . '&deg;<br>';
 		                }else {
-		                	$linkedToList .= $linkedNodeName . $display_cost . round($costArray['distance'] * 0.62137, 2) . 'mi (' . round($costArray['distance'], 2) . 'km) ' . $costArray['bearing'] . '&deg;<br>';
+		                	$linkedToList .= $linkedNodeName . $display_cost . round($costArray['distance'] * 0.62137, 2) . 'mi (' . $costArray['distance'] . 'km) ' . $costArray['bearing'] . '&deg;<br>';
 		                }
             		}
             	}
