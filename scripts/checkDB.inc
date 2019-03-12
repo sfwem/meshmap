@@ -184,7 +184,7 @@ function wxc_checkDB () {
 	
 	//check for old trigger based on miles and update to new trigger based on kilometers.
 	//the conversion to miles will be done later in the code.
-	$oldDistanceTriggerQuery = "select action_statement from information_schema.triggers where action_statement like '%3959%'";
+	$oldDistanceTriggerQuery = wxc_getMySql("select action_statement from information_schema.triggers where action_statement like '%3959%'");
 	if ($oldDistanceTriggerQuery) {
 		$sql = "drop trigger topology_get_latlons_brg_dist";
 		mysqli_query($GLOBALS['sql_connection'], $sql)
