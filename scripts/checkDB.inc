@@ -187,7 +187,14 @@ function wxc_checkDB () {
 	$oldDistanceTriggerQuery = "select action_statement from information_schema.triggers where action_statement like '%3959%'";
 	if ($oldDistanceTriggerQuery) {
 		$sql = "drop trigger topology_get_latlons_brg_dist";
-		wxc_putMySql($sql);
+		mysqli_query($GLOBALS['sql_connection'], $sql)
+			or die(wxc_addColor("Could not drop SQL Trigger!", "red") . "\n" .
+				"Please try to use the \"" . wxc_addColor("updateDBtoKilometers.sql", "bold") . "\" file.\n" .
+				"Example: " . wxc_addColor("sudo mysql -D node_map < /home/pi/meshmap/updateDBtoKilometers.sql", "bold") . "\n\n" .
+				"or... try to fix the following,\n" .
+				wxc_addColor("SQL Error:", "red") . "\n" .
+				mysqli_error($GLOBALS['sql_connection']) . "\n\n");
+		
 		$sql = "CREATE TRIGGER `topology_get_latlons_brg_dist` BEFORE INSERT ON `topology` FOR EACH ROW BEGIN
 
 			-- get locations and names for each end of the link
@@ -208,7 +215,16 @@ function wxc_checkDB () {
 			SET NEW.distance = round(2*asin(sqrt(pow(sin((radians(NEW.linklat)-radians(NEW.nodelat))/2),2)+cos(radians(NEW.nodelat))*cos(radians(NEW. linklat))*pow(sin((radians(NEW.linklon)-radians(NEW.nodelon))/2),2)))*6371,2);
 
 			END;";
-		wxc_putMySql($sql);
+		
+		mysqli_query($GLOBALS['sql_connection'], $sql)
+			or die(wxc_addColor("Could not recreate SQL Trigger to use Kilometers.", "red") . "\n" .
+				wxc_addColor("The Trigger may have already been dropped as well!", "redBold") . "\n" .
+				"Please try to use the \"". wxc_addColor("updateDBtoKilometers.sql", "bold") . "\" file.\n" .
+				"Example: " . wxc_addColor("sudo mysql -D node_map < /home/pi/meshmap/updateDBtoKilometers.sql", "bold") . "\n\n" .
+				"or... try to fix the following,\n" .
+				wxc_addColor("SQL Error:", "red") . "\n" .
+				mysqli_error($GLOBALS['sql_connection']) . "\n");
+		
 		unset($oldDistanceTriggerQuery);
 		unset($sql);
 		$mesg = "Changed database to have default distance in Kilometers.";

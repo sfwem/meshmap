@@ -464,6 +464,32 @@ function wxc_echoWithColor ($text, $color) {
 	if ($color == 'alert') {
 		echo "\033[41m\033[30m\033[1m" . $text . "\033[0m";
 	}
+	if ($color == 'bold') {
+		echo "\033[1m" . $text . "\033[0m";
+	}
+}
+function wxc_addColor ($text, $color) {
+	if ($color == "red") {
+		return "\33[31m" . $text . "\033[0m";
+	}
+	if ($color == "purple") {
+		return "\033[35m" . $text . "\033[0m";
+	}
+	if ($color == "orange") {
+		return "\033[33m" . $text . "\033[0m";
+	}
+	if ($color == "green") {
+		return "\033[32m" . $text . "\033[0m";
+	}
+	if ($color == 'redBold') {
+		return "\033[1m\33[31m" . $text . "\033[0m";
+	}
+	if ($color == 'alert') {
+		return "\033[41m\033[30m\033[1m" . $text . "\033[0m";
+	}
+	if ($color == 'bold') {
+		return "\033[1m" . $text . "\033[0m";
+	}
 }
 
 //may use this at some point

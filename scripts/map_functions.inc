@@ -391,6 +391,10 @@ function load_LinkedTO($node_info, $TopoList)
     }
     //now take all that info back out and put into a properly formatted string variable that we'll use later
     //this part of the function reformatted by kg6wxc.
+    //the "kilometers" setting will default to "0"
+    if (!isset($GLOBALS['USER_SETTINGS']['kilometers'])) {
+    	$GLOBALS['USER_SETTINGS']['kilometers'] = "0";
+    }
     foreach ($linkInfoForStationPopups as $nodeNameLinkArray => $linktoArray) {
         if (!empty($linktoArray)) {
             foreach ($linktoArray as $linkedNodeName => $costArray) {
