@@ -76,6 +76,11 @@ numParallelThreads = "2"
 map_center_coordinates = "34.35, -119.6"
 map_initial_zoom_level = "10"
 
+;;Prefer Kilometers over Miles?
+;change to 1 to flip the preference
+;the map page will then show 1km (1.62mi)
+kilometers = "0"
+
 ;;If you have map tiles or a mesh tile server of your own (or on your mesh network) put it here.
 ;these map tiles will be used when there is no internet access available
 ;if you use a directory name, it must be relative to the webroot.

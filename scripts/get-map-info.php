@@ -55,6 +55,7 @@ if (file_exists($INCLUDE_DIR . "/scripts/user-settings.ini")) {
 
 //kg6wxc's functions. (ALWAYS REQUIRED!, change path if you moved it!)
 require $INCLUDE_DIR . "/scripts/wxc_functions.inc";
+require $INCLUDE_DIR . "/scripts/checkDB.inc";
 
 //the custom include file
 //the "@" just suppresses any errors if the file is not found, the file is optional

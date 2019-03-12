@@ -391,6 +391,10 @@ function load_LinkedTO($node_info, $TopoList)
     }
     //now take all that info back out and put into a properly formatted string variable that we'll use later
     //this part of the function reformatted by kg6wxc.
+    //the "kilometers" setting will default to "0"
+    if (!isset($GLOBALS['USER_SETTINGS']['kilometers'])) {
+    	$GLOBALS['USER_SETTINGS']['kilometers'] = "0";
+    }
     foreach ($linkInfoForStationPopups as $nodeNameLinkArray => $linktoArray) {
         if (!empty($linktoArray)) {
             foreach ($linktoArray as $linkedNodeName => $costArray) {
@@ -402,7 +406,11 @@ function load_LinkedTO($node_info, $TopoList)
 		                }else {
 		                    $display_cost = ' (' . $costArray['costTo'] . '/' . $costArray['costFrom'] . ') ';
 		                }
-		                $linkedToList .= $linkedNodeName . $display_cost . $costArray['distance'] . ' mi ' . $costArray['bearing'] . '&deg;<br>';
+		                if ($GLOBALS['USER_SETTINGS']['kilometers']) {
+		                	$linkedToList .= $linkedNodeName . $display_cost . $costArray['distance'] . 'km (' . round($costArray['distance'] * 0.62137, 2) . 'mi) ' . $costArray['bearing'] . '&deg;<br>';
+		                }else {
+		                	$linkedToList .= $linkedNodeName . $display_cost . round($costArray['distance'] * 0.62137, 2) . 'mi (' . $costArray['distance'] . 'km) ' . $costArray['bearing'] . '&deg;<br>';
+		                }
             		}
             	}
             }
@@ -526,7 +534,7 @@ function build_Marker($node_info, $node_ServiceList, $node_LinkedList, $node_Fir
     	//var_dump($loadavgs);
     	$markerList .= 'LoadAvg: 1 min ' . $loadavgs[0] . ', 5 min ' . $loadavgs[1] . ', 15 min ' . $loadavgs[2] . "<br>";
     }
-    $markerList .= $node_ServiceList . $node_LinkedList . "\").addTo(" . $AssignedLayer . ") ,\n"; // Close out this node
+    $markerList .= $node_ServiceList . $node_LinkedList . "\",{ maxWidth: 500 } ).addTo(" . $AssignedLayer . ") ,\n"; // Close out this node
     /*
     * If Upgrade Suggested add Node to that layer
     */

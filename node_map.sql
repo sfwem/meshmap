@@ -201,7 +201,7 @@ END IF;
 -- figure out distance and bearing
 
 SET NEW.bearing = round(mod(degrees(atan2(sin(radians(NEW.linklon)-radians(NEW.nodelon))*cos(radians(NEW.linklat)), cos(radians(NEW.nodelat))*sin(radians(NEW.linklat))-sin(radians(NEW.nodelat))*cos(radians(NEW.linklat))*cos(radians(NEW.linklon)-radians(NEW.nodelon)))) + 360,360),1);
-SET NEW.distance = round(2*asin(sqrt(pow(sin((radians(NEW.linklat)-radians(NEW.nodelat))/2),2)+cos(radians(NEW.nodelat))*cos(radians(NEW. linklat))*pow(sin((radians(NEW.linklon)-radians(NEW.nodelon))/2),2)))*3959,2);
+SET NEW.distance = round(2*asin(sqrt(pow(sin((radians(NEW.linklat)-radians(NEW.nodelat))/2),2)+cos(radians(NEW.nodelat))*cos(radians(NEW. linklat))*pow(sin((radians(NEW.linklon)-radians(NEW.nodelon))/2),2)))*6371,2);
 
 END//
 DELIMITER ;
