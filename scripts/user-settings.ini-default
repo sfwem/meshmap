@@ -34,7 +34,7 @@ localnode = "localnode.local.mesh"
 ;(this will have to be edited by hand each time it changes)
 ;Sorry, no way around that yet.
 ;--------------------------------------------------------------
-current_stable_fw_version = "3.18.9.0"
+current_stable_fw_version = "3.19.3.0"
 
 ;;Time Zone we're going to be running in.
 ;It must be in "PHP Format". Sorry. :)
@@ -177,3 +177,6 @@ inetServerHostname = ""
 ; 1 = display the map in an iFrame.
 map_iFrame_Enabled = "0"
 
+;;Outerrors in "silent" mode (cron jobs)
+;leave set to "0" for now (3-29-19)
+errorsInCron = "0"
