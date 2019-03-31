@@ -3,7 +3,7 @@
 <img src="https://mapping.kg6wxc.net/meshmap/images/MESHMAP_LOGO.svg" style="float:left; vertical-align: middle;"/><h1 style="float: left; vertical-align: middle;">MeshMap</h1>  
 <br/>
 Automated mapping of AREDN Networks.  
-2016-2018 - Eric Satterlee / KG6WXC  
+2016-2019 - Eric Satterlee / KG6WXC  
 Addtional Credit to: Mark/N2MH and Glen/K6GSE for their work on this project.  
 Licensed under GPL v3 and later.  
 Donations / Beer accepted! :) (paypal possibly coming soon, email: kg6wxc@gmail.com in the meantime.)
