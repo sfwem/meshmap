@@ -104,14 +104,15 @@ You should now be able to run get-map-info.php from the scripts directory.
 I would suggest giving it a test run or two first.  
 Node polling can take lots of time, especially on a large network. Be Patient! :)  
 Enter the meshmap/scripts directory.  
+Run the `get-map-info.php` script.  
     <blockquote style="background: #66CC66; margin-right: 35%;">Tip: if you get a "command not found" error, you may need to run it like this:<br/> `./get-map-info.php <option>` </blockquote>
-These are options you can send to get-map-info.php:
+These are options you can send to get-map-info.php:  
     > `--test-mode-no-sql`  
-Output to console only, *do not* read/write to the database.  
+    Output to console only, *do not* read/write to the database.  
     <blockquote style="background: #FFFF99; margin-right: 30%">This will make sure the scripts can reach your localnode and the rest of the network.  
     This will **not** update the database, you won't see anything on the map page yet, it only outputs to the terminal for testing.</blockquote>
     > `--test-mode-with-sql`  
-Output to console *and* read/write to the database.  
+    Output to console *and* read/write to the database.  
     <blockquote style="background: #FFFF99; margin-right: 40%;">This will ensure everything is setup correctly and get some data into your database!</blockquote>
     <blockquote style="background: #66CC66; margin-right: 30%;">Tip: <em><strong>Do not</strong></em> ctrl-C out of the script while it is using the database!<br/>
 	Let it finish, even if it seems hung up.<br/>
@@ -125,8 +126,7 @@ Rename the file as httpd-meshmap.conf (or whatever you want to call it really.)
 Once the file is copied, you need to edit it and make sure the `<Alias>` and `<Directory>` directives have the correct paths.  
 After you have made sure the file is correct then run: `sudo a2enconf httpd-meshmap`  
 This is will load the config into Apache and if successful, it will tell you to reload apache, do so.  
-    <blockquote style="background: #d3d3d3; margin-right: 30%;"><em>Other linux distibutions may require you to copy this file into /etc/httpd/extra<br/>
-and then edit /etc/httpd/httpd.conf and add the line:</em> `Include extra/httpd-meshmap.conf` <em>somewhere.</em></blockquote>  
+    <blockquote style="background: #d3d3d3; margin-right: 30%;"><em>Other linux distibutions may require you to copy this file into /etc/httpd/extra<br>and then edit /etc/httpd/httpd.conf and add the line:</em> Include extra/httpd-meshmap.conf <em>somewhere.</em></blockquote>  
 
 - **6: Load up the page: http://myhostname/meshmap/index.php and you should hopefully see your data.**  
 You may or may not see any map tiles, depending on if the system you are using to view the page has access to the internet or not.  
@@ -138,8 +138,7 @@ Copy the cronscript.sh-default to where ever you like and rename it to just cron
 Then, you **must** edit the cronscript.sh file and make sure the path it uses to get to the scripts directory is correct!  
 After that, create a cron entry with `crontab -e`  
 A cron entry is as easy as this: `* * * * * /home/pi/cronscript.sh`  
-    <blockquote style="background: #d3d3d3; margin-right: 30%;">You <em>can</em> safely run the script every minute in cron like this.<br/>
-It won't actually do anything unless the intervals specified in the ini file have expired.</blockquote>  
+    <blockquote style="background: #d3d3d3; margin-right: 30%;">You <em>can</em> safely run the script every minute in cron like this.<br>It won't actually do anything unless the intervals specified in the ini file have expired.</blockquote>  
   
 ## Updating the scripts
 ----------
@@ -196,4 +195,4 @@ The meshmap.css file will override the -default.css file.
 I can't think of *everything*!  
 If you find an improvement, typo, or whatever, please, send an email to kg6wxc@gmail.com and we can get you setup with write access if you'd like!  
 
-This README file last updated: July 2018
+This README file last updated: April 2019 (fixed some Markdowns)
