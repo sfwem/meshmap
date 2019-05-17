@@ -571,7 +571,7 @@ function wxc_removeIgnoredNodes() {
 //use the info from the nodes json file to get the local services from the node
 function wxc_listServices ($serviceList) {
 	$services = array();
-	if ($serviceList == "NotAvailable" || empty($serviceList) || is_null($serviceList)) {
+	if ($serviceList == "Not Available" || empty($serviceList) || is_null($serviceList)) {
 		return FALSE;
 	}elseif (is_array(unserialize($serviceList))) {
 		$serviceArray = unserialize($serviceList);
