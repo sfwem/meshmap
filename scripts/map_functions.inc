@@ -529,7 +529,7 @@ function build_Marker($node_info, $node_ServiceList, $node_LinkedList, $node_Fir
         //timezone fixes - wxc 11-26-2018
 		"<br>Last Polled: " . date_format($nodeLastSeen, 'Y-m-d H:i:s T') . '<br>' . "Uptime: " . $node_info['uptime'] . '<br>';
     //dot
-    if ($node_info['loadavg'] !== "NotAvailable") {
+    if ($node_info['loadavg'] !== "Not Available") {
     	$loadavgs = unserialize($node_info['loadavg']);
     	//var_dump($loadavgs);
     	$markerList .= 'LoadAvg: 1 min ' . $loadavgs[0] . ', 5 min ' . $loadavgs[1] . ', 15 min ' . $loadavgs[2] . "<br>";
