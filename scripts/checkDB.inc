@@ -1,4 +1,20 @@
 <?php
+function wxc_check4Dupes() {
+	//this function should clear out any duplicate entries in the node_info table.
+	//sometimes, for various reasons, you'll end up with 2 nodes, with the same IP.
+	//that causes the trigger topology_get_latlons_brg_dist to explode,
+	//and you see no link lines on the map
+	$findDupeQuery = mysqli_query($GLOBALS['sql_connection'], "select node, wlan_ip from node_info group by wlan_ip having count(wlan_ip) > 1");
+	if(mysqli_num_rows($findDupeQuery) > 0) {
+		echo "FOUND DUPLICATES IN NODE_INFO TABLE! NOW REPAIRING...\n";
+		echo "Removed from Database:\n";
+		$findDupeQuery = mysqli_fetch_all($findDupeQuery, MYSQLI_ASSOC);
+		foreach($findDupeQuery as $dupe) {
+			mysqli_query($GLOBALS['sql_connection'], "delete from node_info where wlan_ip = '" . $dupe['wlan_ip'] . "'");
+			echo "\t" . $dupe['node'] . " (and it's duplicate) with wlan_ip's of " . $dupe['wlan_ip'] . "\n";
+		}
+	}
+}
 function wxc_checkDB () {
 	//this function is now in its own file
 	

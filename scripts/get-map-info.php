@@ -146,6 +146,8 @@ if ($do_sql) {
         wxc_connectToMySQL();
         //check for new or changed database items (tables, columns,etc)
         wxc_checkDB();
+        //find and remove dupes in node_info
+        wxc_check4Dupes();
 }else {
         if ($TEST_MODE_NO_SQL) {
                 wxc_echoWithColor("SQL Server access disabled!", "red");
@@ -621,6 +623,9 @@ if ($getNodeInfo) {
 							
 							echo "API Version: ";
 							switch($api_version) {
+								case "1.7":
+									wxc_echoWithColor($api_version, "greenBold");
+									break;
 								case "1.6":
 									wxc_echoWithColor($api_version, "green");
 									break;
