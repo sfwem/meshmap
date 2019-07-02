@@ -193,6 +193,6 @@ The meshmap.css file will override the -default.css file.
 ----------
 **Contribution is encouraged!!**  
 I can't think of *everything*!  
-If you find an improvement, typo, or whatever, please, send an email to kg6wxc@gmail.com and we can get you setup with write access if you'd like!  
+If you find an improvement, typo, or whatever, please,  sign up at https://gitlab.kg6wxc.net or send an email to kg6wxc@gmail.com or something!!  
 
-This README file last updated: April 2019 (fixed some Markdowns)
+This README file last updated: July 2019 (fixed some Markdowns)
