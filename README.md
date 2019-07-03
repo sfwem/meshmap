@@ -2,7 +2,8 @@
 <!-- May 2018 -->
 <img src="https://mapping.kg6wxc.net/meshmap/images/MESHMAP_LOGO.svg" style="float:left; vertical-align: middle;"/><br/>
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![HamRadio](https://img.shields.io/badge/HamRadio-Yes!-success.svg)](https://img.shields.io/badge)  
+[![HamRadio](https://img.shields.io/badge/HamRadio-Yes!-success.svg)](https://www.arednmesh.org)
+[![MattermostChat](https://img.shields.io/badge/Chat-Mattermost-blueviolet.svg)](https://mattermost.kg6wxc.net)  
 <h1 style="float: left; vertical-align: middle;">MeshMap</h1>
 Automated mapping of AREDN Networks.  
 2016-2019 - Eric Satterlee / KG6WXC  
