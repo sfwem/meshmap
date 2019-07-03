@@ -1,7 +1,8 @@
 <!-- KG6WXC MeshMap README.md file -->
 <!-- May 2018 -->
-<img src="https://mapping.kg6wxc.net/meshmap/images/MESHMAP_LOGO.svg" style="float:left; vertical-align: middle;"/><h1 style="float: left; vertical-align: middle;">MeshMap</h1>  
-<br/>
+<img src="https://mapping.kg6wxc.net/meshmap/images/MESHMAP_LOGO.svg" style="float:left; vertical-align: middle;"/><br/>
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)  
+<h1 style="float: left; vertical-align: middle;">MeshMap</h1>
 Automated mapping of AREDN Networks.  
 2016-2019 - Eric Satterlee / KG6WXC  
 Addtional Credit to: Mark/N2MH and Glen/K6GSE for their work on this project.  
