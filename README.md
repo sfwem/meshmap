@@ -6,11 +6,11 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![HamRadio](https://img.shields.io/badge/HamRadio-Roger!-green.svg)](https://www.arednmesh.org)
 [![MattermostChat](https://img.shields.io/badge/Chat-Mattermost-blueviolet.svg)](https://mattermost.kg6wxc.net)  
-Automated mapping of AREDN Networks.  
+Automated mapping of [AREDN](https://arednmesh.org) Networks.  
 
 2016-2019 - Eric Satterlee / KG6WXC  
 
-Addtional Credit to: Mark/N2MH and Glen/K6GSE for their work on this project.  
+Addtional Credit to: Mark/N2MH and Glen/K6GSE for their work on this project and to the rest of the [AREDN](https://arednmesh.org) team, without them this would not be a project.  
 
 Licensed under GPL v3 and later.  
 [Donations](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=6K5KQYYU34H4U&currency_code=USD&source=url) / Beer accepted! :) 
