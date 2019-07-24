@@ -1023,7 +1023,7 @@ function create_MapLegend()
                 '<div id="legendTunnelLink">Tunnel</div>' +
                 '<div id="legendInfinite">Infinite</div>' +
 				'<div id="legendUnknownOther">' +
-						'<img class="legendBandIcon" src="images/mapMarkers/greyRadioCircle-icon.png">Unknown' +
+						'<img class="legendBandIcon" src="images/mapMarkers/greyRadioCircle-icon.png">Other' +
 				'</div>' +
                 '<div id="legend900MHz">' +
                         '<img class="legendBandIcon" src="images/mapMarkers/magentaRadioCircle-icon.png">900MHz' +
