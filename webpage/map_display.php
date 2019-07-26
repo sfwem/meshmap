@@ -535,6 +535,7 @@ $scaling = <<<EOD
 			offset = offset + 14;
 		}
 		str = "calc(100vh - " + offset + "px)";
+		map.style.height = str;
 	}
 </script>
 
