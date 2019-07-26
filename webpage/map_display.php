@@ -528,7 +528,7 @@ $scaling = <<<EOD
 	var userAgent = window.navigator.userAgent;
 	var map = document.getElementById("mapid");
 	var header = document.getElementById("mapHeader");
-	if(header) {
+	if(header.offsetHeight != 0 || !header) {
 		var offset = header.offsetHeight;
 		var search4FF = /Firefox/;
 		if(search4FF.test(userAgent)) {
