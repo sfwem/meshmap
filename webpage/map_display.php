@@ -531,7 +531,7 @@ $scaling = <<<EOD
 	if(header) {
 		var offset = header.offsetHeight;
 		var search4FF = /Firefox/;
-		if(search4FF.test(userAgent) {
+		if(search4FF.test(userAgent)) {
 			offset = offset + 14;
 		}
 		str = "calc(100vh - " + offset + "px)";
