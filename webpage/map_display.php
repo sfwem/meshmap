@@ -299,6 +299,9 @@ if (isset($USER_SETTINGS['map_iFrame_Enabled']) && ($USER_SETTINGS['map_iFrame_E
     }
 }else {
     echo "<div id='meshmap'>\n"; // Closing tag at end of primary routine
+    
+    echo "<div id='mapHeader'>\n";
+    
     if (isset($USER_SETTINGS['pageLogo'])) {
         //echo "<MapTitle>";
         echo "<img class='maptitle' id='pageLogo' src='" . $USER_SETTINGS['pageLogo'] . "' alt='The Logo'>";
@@ -330,6 +333,8 @@ if (isset($USER_SETTINGS['map_iFrame_Enabled']) && ($USER_SETTINGS['map_iFrame_E
         //echo "</Warning_MSG>";
         echo "<br>";
     }
+    
+    echo "</div>\n"; // end of mapHeader <div>
 }
 
 if (isset($GLOBALS['hide_admin'])) {
@@ -506,7 +511,9 @@ $Content .= <<< EOD
 	L.control.autoRefresh().addTo(map);
 			
 	</script>
+
 EOD;
+
 }
 
 $Content .= "</div>\n"; // Closing tag
@@ -514,21 +521,27 @@ $Content .= "</div>\n"; // Closing tag
 // Display Page
 echo $Content;
 
+// the final scaling of the map div
+// kinda hacky but it works well enough for now.
+$scaling = <<<EOD
+<script>
+	var userAgent = window.navigator.userAgent;
+	var map = document.getElementById("mapid");
+	var header = document.getElementById("mapHeader");
+	if(header) {
+		var offset = header.offsetHeight;
+		var search4FF = /Firefox/;
+		if(search4FF.test(userAgent) {
+			offset = offset + 14;
+		}
+		str = "calc(100vh - " + offset + "px)";
+	}
+</script>
 
-//if (is_connected() && $USER_SETTINGS['inetServerText'])
-//{
-//    echo "<Internet_MSG>";
-//    echo sprintf($USER_SETTINGS['inetServerText'], $USER_SETTINGS['inetServerHostname']);
-//    echo "<br>";
-//    echo "</Internet_MSG>";
-//}
+EOD;
 
-//echo "</div>\n"; // End division meshmap
+echo $scaling;
 
 echo "</body>\n";
 echo "</html>\n";
-/*
-* End of primary display
-********************************************************************************************************************/
-
 ?>
