@@ -118,6 +118,9 @@ if($sysinfoJson === FALSE) {
 		$noise = 0;
 		$freq = "";
 		
+		//quick hack for USB150 devices
+		$eth3975 = 0;
+		
 		//check a couple of things at first
 		if(isset($result['meshrf']['status']) && $result['meshrf']['status'] == "off") {
 			$meshRF = "off";
@@ -146,7 +149,7 @@ if($sysinfoJson === FALSE) {
 									$wifi_mac_address = $value2['mac'];
 									break;
 							}
-							if(isset($value2['ip']) && $value2['ip'] != "none") {
+							if(isset($value2['ip']) && $value2['ip'] != "none" && !$eth3975) {
 								switch($value2['name']) {
 									case $wlanInf:
 										$wlan_ip = $value2['ip'];
@@ -157,9 +160,11 @@ if($sysinfoJson === FALSE) {
 											break;
 									case "eth1.3975":
 										$wlan_ip = $value2['ip'];
+										$eth3975 = 1;
 										break;
 									case "eth0.3975":
 										$wlan_ip = $value2['ip'];
+										$eth3975 = 1;
 										break;
 								}
 							}
