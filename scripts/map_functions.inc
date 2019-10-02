@@ -282,7 +282,7 @@ function load_LinkList($NodeList, $TopoList)
                     $map_LayerAssigned = 'rfLinks';
                 }
                 //links of greater than 10.000 ETX, but not "INFINITE" (these links are always red)
-                if ($value['cost'] > 10.000 && $value['cost'] != 99.99)
+                if ($value['cost'] > 14.000 && $value['cost'] != 99.99)
                 {
                     $display_color = $MESH_SETTINGS['Link_BAD'];
                     $moreThanTen = 1;
@@ -291,13 +291,13 @@ function load_LinkList($NodeList, $TopoList)
                 }
                 //now for the more normal links
                 //less than ETX 5.0 links
-                if ($value['cost'] < 5 && !($dtd) && !($tunnel))
+                if ($value['cost'] < 7 && !($dtd) && !($tunnel))
                 {
                     $display_color = sprintf("#%02XFF00", ($value['cost'] - 1) * (255 / (5 - 1)));
                     $map_LayerAssigned = 'rfLinks';
                 }
                 //more than ETX 5.0 links
-                if ($value['cost'] > 5 && !($moreThanTen) && !($infinite))
+                if ($value['cost'] > 7 && !($moreThanTen) && !($infinite))
                 {
                     $display_color = sprintf("#FF%02X00", ($value['cost'] - 1) * (255 / (5 - 1)) -
                         255);
