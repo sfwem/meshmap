@@ -120,6 +120,17 @@ function testForInet() {
 <html>
 <head>
 <title>meshmap internet check page</title>
+<meta property="og:sitename" content="KG6WXC MeshMap">
+<meta property="og:locale" content="en-US">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Map your local Amatuer Radio MESH Network">
+<meta property="og:description" content="The KG6WXC MeshMap is Automated Mapping of AREDN MESH Networks.">
+EOD;
+
+echo "<meta property='og:url' content='" . $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['CONTEXT_PREFIX'] . "'>\n";
+echo "<meta property='og:image' content='" . $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['CONTEXT_PREFIX'] . "/images/MESHMAP_LOGO.png'>\n";
+
+$page .= <<< EOD
 <script src='javascripts/ping.min.js'></script>
 <script>
 var now = new Date();
@@ -218,6 +229,17 @@ echo '<head>' . "\n";
 echo '<meta http-equiv="Pragma" content="no-cache">' . "\n";
 echo '<meta http-equiv="Expires" content="-1">' . "\n";
 echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' . "\n";
+echo '<meta property="og:sitename" content="KG6WXC MeshMap">' . "\n";
+echo '<meta property="og:local" content="en-US">' . "\n";
+echo '<meta property="og:type" content="website">' . "\n";
+echo '<meta property="og:title" content="Map your local Amatuer Radio MESH Network">' . "\n";
+echo '<meta property="og:description" content="The KG6WXC MeshMap is Automated Mapping of AREDN MESH Networks.">' . "\n";
+//echo '<meta property="og:url" content="http://kg6wxc-srv.local.mesh/meshmap">' . "\n";
+echo "<meta property='og:url' content='" . $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['CONTEXT_PREFIX'] . "'>\n";
+echo "<meta property='og:image' content='" . $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['CONTEXT_PREFIX'] . "/images/MESHMAP_LOGO.png'>\n";
+//echo "<meta property='og:image:height' content='1200'>\n";
+//echo "<meta property='og:image:width' content='1200'>\n";
+//echo '<meta property="og:image" content="images/MESHMAP_LOGO.png">' . "\n";
 //EOD;
 
 //echo $page_header . "\n";
