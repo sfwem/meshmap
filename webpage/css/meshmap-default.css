@@ -208,3 +208,6 @@ MAP_DETAILS {
     text-align: center;
     display: inline;
 }
+.leaflet-control-layers-expanded, .leaflet-control-layers-list {
+        height: 200px !important;
+}
