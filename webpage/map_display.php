@@ -246,30 +246,6 @@ echo "<meta property='og:image' content='" . $_SERVER['REQUEST_SCHEME'] . "://" 
 echo "<title>" . $USER_SETTINGS['pageTitle'] . "</title>\n";
 
 /*
- * check for the users custom.css files and use them if exists...
- * load the "-default" files first (meshmap-default.css)
- * and the user files second, that way changes in the users file(s)
- * will override the default ones (if I understand CSS correctly)
- */
-echo "<link href='css/meshmap-default.css' rel='stylesheet'>\n";
-if (file_exists ("./css/meshmap.css")) {
-    echo "<link href='css/meshmap.css' rel='stylesheet'>\n";
-}
-
-//same thing but for legend.css (which controls the map legend)
-echo "<link href='css/map-legend-default.css' rel='stylesheet'>\n";
-if (file_exists ("./css/map-legend.css")) {
-	echo "<link href='css/map-legend.css' rel='stylesheet'>\n";
-}
-
-//same thing, but for some custom controls
-//these can be used to move the main buttons (on the left) around on the map
-echo "<link href='css/leaflet-custom-control-vertical-center-default.css' rel='stylesheet'>\n";
-if (file_exists ("./css/leaflet-custom-control-vertical-center.css")) {
-	echo "<link href='css/leaflet-custom-control-vertical-center.css' rel='stylesheet'>\n";
-}
-
-/*
  * If the client has internet access load everything from there
  * if not, use the local resources.
  */
@@ -298,6 +274,31 @@ echo "<script src='javascripts/L.Control.SlideMenu.js'></script>\n";
 echo "<link href='css/L.Control.SlideMenu.css' rel='stylesheet'>\n";
 echo "<script src='javascripts/leaflet-ruler.js'></script>\n";
 echo "<link rel='stylesheet' type='text/css' href='css/leaflet-ruler.css'>\n";
+
+/*
+ * check for the users custom.css files and use them if exists...
+ * load the "-default" files first (meshmap-default.css)
+ * and the user files second, that way changes in the users file(s)
+ * will override the default ones (if I understand CSS correctly)
+ * These can also be used to override CSS values from anything above!
+ */
+echo "<link href='css/meshmap-default.css' rel='stylesheet'>\n";
+if (file_exists ("./css/meshmap.css")) {
+	echo "<link href='css/meshmap.css' rel='stylesheet'>\n";
+}
+
+//same thing but for legend.css (which controls the map legend)
+echo "<link href='css/map-legend-default.css' rel='stylesheet'>\n";
+if (file_exists ("./css/map-legend.css")) {
+	echo "<link href='css/map-legend.css' rel='stylesheet'>\n";
+}
+
+//same thing, but for some custom controls
+//these can be used to move the main buttons (on the left) around on the map
+echo "<link href='css/leaflet-custom-control-vertical-center-default.css' rel='stylesheet'>\n";
+if (file_exists ("./css/leaflet-custom-control-vertical-center.css")) {
+	echo "<link href='css/leaflet-custom-control-vertical-center.css' rel='stylesheet'>\n";
+}
 
 echo "\n";
 echo "</head>\n";
