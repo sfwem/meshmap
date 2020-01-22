@@ -53,7 +53,7 @@ PHP is PHP after all.</blockquote>
 **Without a map tile server or static tiles, Mesh users without internet access on their systems may not see any map tiles.**  
 On the mesh, you *cannot* expect the client to have internet access in order to retrieve the tiles, you must provide them yourself, one way or another.  
 The main map webpage will try to check for internet access and load the appropriate maps.  
-Default internet map tile servers have been provided in the ini file, but the ini file will need tweaking if you want to use "local" tile servers or directories.  
+Default internet map tile servers can be modified in your user-settings.ini file, if you want to use "local" tile servers or directories.  
 
 It is *way* beyond the scope of this README file to help in setting up a map tile server.  
 You are unfortunatly on your own there.  
