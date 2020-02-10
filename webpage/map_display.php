@@ -123,7 +123,7 @@ function testForInet() {
 <meta property="og:sitename" content="KG6WXC MeshMap">
 <meta property="og:locale" content="en-US">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Map your local Amatuer Radio MESH Network">
+<meta property="og:title" content="Map your local Amateur Radio MESH Network">
 <meta property="og:description" content="The KG6WXC MeshMap is Automated Mapping of AREDN MESH Networks.">
 EOD;
 
@@ -232,7 +232,7 @@ echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' . "\n
 echo '<meta property="og:sitename" content="KG6WXC MeshMap">' . "\n";
 echo '<meta property="og:local" content="en-US">' . "\n";
 echo '<meta property="og:type" content="website">' . "\n";
-echo '<meta property="og:title" content="Map your local Amatuer Radio MESH Network">' . "\n";
+echo '<meta property="og:title" content="Map your local Amateur Radio MESH Network">' . "\n";
 echo '<meta property="og:description" content="The KG6WXC MeshMap is Automated Mapping of AREDN MESH Networks.">' . "\n";
 //echo '<meta property="og:url" content="http://kg6wxc-srv.local.mesh/meshmap">' . "\n";
 echo "<meta property='og:url' content='" . $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['CONTEXT_PREFIX'] . "'>\n";
