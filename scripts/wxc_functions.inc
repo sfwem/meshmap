@@ -447,7 +447,7 @@ function wxc_checkBand ($channel, $board_id = null) {
 //something I was playing with
 function wxc_echoWithColor ($text, $color) {
 	if ($color == "red") {
-		echo "\33[31m" . $text . "\033[0m";
+		echo "\033[31m" . $text . "\033[0m";
 	}
 	if ($color == 'redBold') {
 		echo "\033[1m\33[31m" . $text . "\033[0m";
@@ -470,10 +470,13 @@ function wxc_echoWithColor ($text, $color) {
 	if ($color == 'bold') {
 		echo "\033[1m" . $text . "\033[0m";
 	}
+	if ($color == 'grey') {
+		echo "\033[37m" . $text . "\033[0m";
+	}
 }
 function wxc_addColor ($text, $color) {
 	if ($color == "red") {
-		return "\33[31m" . $text . "\033[0m";
+		return "\033[31m" . $text . "\033[0m";
 	}
 	if ($color == "purple") {
 		return "\033[35m" . $text . "\033[0m";
@@ -492,6 +495,9 @@ function wxc_addColor ($text, $color) {
 	}
 	if ($color == 'bold') {
 		return "\033[1m" . $text . "\033[0m";
+	}
+	if ($color == 'grey') {
+		return "\033[35m" . $text . "\033[0m";
 	}
 }
 
