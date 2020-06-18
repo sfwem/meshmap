@@ -173,7 +173,7 @@ Even without map tiles, you should still see your data being mapped out.</p></li
 Copy the cronscript.sh-default to where ever you like and rename it to just cronscript.sh (or whatever you want).<br/>
 Then, you <strong>must</strong> edit the cronscript.sh file and make sure the path it uses to get to the scripts directory is correct!<br/>
 After that, create a cron entry with <code>crontab -e</code><br/>
-A cron entry is as easy as this: <code>* * * * * /home/pi/cronscript.sh</code><br/>
+A cron entry is as easy as this: <code>* * * * * /home/pi/meshmap/cronscript.sh</code><br/>
   <blockquote style="background: #d3d3d3; margin-right: 30%;">You <em>can</em> safely run the script every minute in cron like this.<br/>
 It won&rsquo;t actually do anything unless the intervals specified in the ini file have expired.</blockquote></p></li>
 </ul>
