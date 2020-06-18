@@ -257,12 +257,17 @@ function load_LinkList($NodeList, $TopoList)
                 }
                 //this is for the "other" DTD links
                 //using other wireless tech to create links that are seen as "DTD" by the AREDN software
+                //
+                // this is also some (all) tunnels now after 3.20.3 changes
+                // TODO: check this!
                 if ($value['cost'] == 0.1 && $value['distance'] > 0.7)
                 {
                     $display_color = $MESH_SETTINGS['DTD_Link_Plus'];
                     $dtd = 1;
-                    $display_opacity = 0.3;
-                    $display_weight = 0.3;
+                    //$display_opacity = 0.3;
+                    $display_opacity = 1.0;
+                    //$display_weight = 0.3;
+                    $display_weight = 1.0;
                     $map_LayerAssigned = 'dtdLinks';
                 }
                 //find the "infinite cost" links (they show as "INFINITE" in the olsr files the other script changes that to 99.99)
