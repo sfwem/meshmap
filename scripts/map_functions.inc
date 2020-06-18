@@ -163,11 +163,12 @@ function load_ServiceList($serviceList)
         {
             //WXC 6-30-2017: removed links for services that have no link
             if ($value == NULL) {
-                $serviceList .= '<br>'. $key;
+                //$serviceList .= "<br>". $key;
+                $serviceList .= $key;
             }else {
                 //WXC 6-30-2017: Moved <br> from after link to before the link,
                 //made the pop up look better.
-                $serviceList .= "<br><a href='" . $value . "' target='service'>" . $key . "</a>";
+                $serviceList .= "<br><a href=\"" . $value . "\" target=\"service\">" . $key . "</a>";
             }
         }
     }
@@ -446,7 +447,7 @@ function build_Marker($node_info, $node_ServiceList, $node_LinkedList, $node_Fir
 	
     
 	$markerList = '';
-    $nodeUrl = "<NodeTitle><a href='http://" . $node_info['node'] . ".local.mesh:8080' target='node'>" . $node_info['node'] .
+    $nodeUrl = "<NodeTitle><a href=\"http://" . $node_info['node'] . ".local.mesh:8080\" target=\"node\">" . $node_info['node'] .
         "</a></NodeTitle>";
 
     //Now we look at the 'channel' value, for each node, from the node_info database.
@@ -511,41 +512,86 @@ function build_Marker($node_info, $node_ServiceList, $node_LinkedList, $node_Fir
     /*
     * Now build the marker
     */
-    if ($node_ServiceList)
-    {
-        $node_ServiceList = '<hr><Strong>Services:</Strong>' . $node_ServiceList;
-    }
+    
     if ($node_LinkedList)
     {
-        $node_LinkedList =
-            '<hr><Strong>Linked to:<br>Node Name (cost to/from) distance bearing</Strong><br>' . $node_LinkedList;
+    	$node_LinkedList = '<Strong>Node Name (cost to/from) distance bearing</Strong><br>' . $node_LinkedList;
     }
+    
+    //add java variable to hold the "main tab" info
+    //*** node names used in these variables must have all dashes converted to underscores!! ***
+    //*** they also must be outside of the $markerList, just echo them out for now since it'll just work! ***
+    // TODO: remove these echos and do it properly
+    echo "<script>\n";
+    echo "var popupTabs_" . str_replace("-", "_", $node_info['node']) . " = '<div class=\"popupTabs\"><div class=\"popupTab\" id=\"popupTab-Main\">" .
+        "<div class=\"popupTabContent\">" . $nodeUrl . " (" . $band . ")<br>" .
+    	$node_info['lat'] . ", " . $node_info['lon'] . "<br>SSID: " . $node_info['ssid'] . "<br>Channel: " . $node_info['channel'] .
+    	", Bandwidth: " . $node_info['chanbw'] . "<br>" . $node_info['model'] . "<br>" . $firmware .
+    	"<br>Last Polled: ". date_format($nodeLastSeen, 'Y-m-d H:i:s T') . "<br>" . "Uptime: " . $node_info['uptime'] . "<br>";
+    	if ($node_info['loadavg'] !== "Not Available") {
+    		$loadavgs = unserialize($node_info['loadavg']);
+    		//var_dump($loadavgs);
+    		echo 'LoadAvg: 1 min ' . $loadavgs[0] . ', 5 min ' . $loadavgs[1] . ', 15 min ' . $loadavgs[2] . "<br></div></div>';" . "\n";
+    	}else {
+    		echo "</div></div>';" . "\n";
+    	}
+    
+    //add the "services tab" info to the java variable if it is available
+    if ($node_ServiceList) {
+    	echo "popupTabs_" . str_replace("-", "_", $node_info['node']) .
+	   		" += '<div class=\"popupTab\" id=\"popupTab-Services\"><div class=\"popupTabContent\">" .
+    		$node_ServiceList . "</div></div>';" . "\n";
+    }
+
+    //add the "links tab" info to the java variable if it is available
+    if ($node_LinkedList) {
+    	echo "popupTabs_" . str_replace("-", "_", $node_info['node']) .
+    		" += '<div class=\"popupTab\" id=\"popupTab-Links\"><div class=\"popupTabContent\">" .
+    		$node_LinkedList . "</div></div>';" . "\n";
+    }else {
+    	echo "popupTabs_" . str_replace("-", "_", $node_info['node']) .
+    	" += '<div class=\"popupTab\" id=\"popupTab-Links\"><div class=\"popupTabContent\">" .
+    	"This node has no links, it may be powered off, old data, no longer linked to the network or otherwise having problems" .
+    	"</div></div>';" . "\n";
+    }
+    
+    //complete the popup div stuff
+    echo "popupTabs_" . str_replace("-", "_", $node_info['node']) . " += '<ul class=\"popupTabs-link\">" .
+    	"<li class=\"popupTab-link\"><a href=\"#popupTab-Main\"><span>Main</span></a></li>";
+    if ($node_ServiceList) {
+    	echo "<li class=\"popupTab-link\"><a href=\"#popupTab-Services\"><span>Services</span></a></li>";
+    }
+    echo "<li class=\"popupTab-link\"><a href=\"#popupTab-Links\"><span>Links</span></a></li></ul></div>';\n";
+    
+    //*** close the additional <script> tag! ***
+    echo "</script>\n";
+    
+    //*now* create the marker
     $markerList .= "L.marker([" . $node_info['lat'] . "," . $node_info['lon'] . "], {title: '" . $node_info['node'] .
-        "', icon: " . $icon . "}).bindPopup(\" " . $nodeUrl . " (" . $band . ")<br>" . $node_info['lat'] .
-        ", " . $node_info['lon'] . "<br>SSID: " . $node_info['ssid'] . "<br>Channel: " . $node_info['channel'] .
-        ", Bandwidth: " . $node_info['chanbw'] . "<br>" . $node_info['model'] . "<br>" . $firmware .
-        //"<br>Last Polled: " . $node_info['last_seen'] . '<br>' . "Uptime: " . $node_info['uptime'] . '<br>';
-        
-        //timezone fixes - wxc 11-26-2018
-		"<br>Last Polled: " . date_format($nodeLastSeen, 'Y-m-d H:i:s T') . '<br>' . "Uptime: " . $node_info['uptime'] . '<br>';
-    //dot
-    if ($node_info['loadavg'] !== "Not Available") {
-    	$loadavgs = unserialize($node_info['loadavg']);
-    	//var_dump($loadavgs);
-    	$markerList .= 'LoadAvg: 1 min ' . $loadavgs[0] . ', 5 min ' . $loadavgs[1] . ', 15 min ' . $loadavgs[2] . "<br>";
-    }
-    $markerList .= $node_ServiceList . $node_LinkedList . "\",{ maxWidth: 500 } ).addTo(" . $AssignedLayer . ") ,\n"; // Close out this node
-    /*
-    * If Upgrade Suggested add Node to that layer
-    */
+    	"', icon: " . $icon . "}).bindPopup(popupTabs_" . str_replace("-", "_", $node_info['node']) .
+    	", { maxWidth: 500 } ).addTo(" . $AssignedLayer . ") ,\n";
+
+    //
+    // If Upgrade Suggested add Node to that layer and change the popup
+    //
     if ($node_FirmwareStatus > 0)
     {
         $markerList .= "L.marker([" . $node_info['lat'] . "," . $node_info['lon'] . "], {title: '" .
             $node_info['node'] . "', icon: " . (($node_FirmwareStatus == 1) ? "redCircle" :
-                "orangeCircle") . "}).bindPopup(\" " . $nodeUrl . " (" . $band . ")<br>" . $node_info['model'] .
+            "orangeCircle") . "}).bindPopup('<div class=\"popupTabs-fw\">" . 
+            (($node_FirmwareStatus == 1) ? "**** FIRMWARE UPDATE NEEDED ****" : "**** EXPERIMENTAL FIRMWARE ****") .
+            "<div class=\"popupTab\"><div class=\"popupTabContent-fw\"> " .
+            $nodeUrl . " (" . $band . ")<br>" . $node_info['model'] .
             "<br>" . $firmware . "<br>" . (($node_FirmwareStatus == 1) ?
-                "Software upgrade is highly recommended" : "Experimental") . " \").addTo(upgradeStations) ,\n";
+            "<br><strong>Software upgrade is <em>highly</em> recommended!</strong><br>" .
+            "<br>Current Stable AREDN version is: " . $GLOBALS['USER_SETTINGS']['current_stable_fw_version'] . "<br>" .
+            "<br>Please visit: <a href=\"http://downloads.arednmesh.org/firmware/html/stable.html\">" .
+            "arednmesh.org</a> to find the proper firmware." : "Experimental Firmware<br><br>" .
+            "The most recent nightly build can be found at:<br><a href=\"http://downloads.arednmesh.org/snapshots/trunk/\">" .
+            "http://downloads.arednmesh.org/snapshots/trunk/</a>") .
+        	"</div></div></div>').addTo(upgradeStations) ,\n";
     }
+
 
     return $markerList;
 }
