@@ -649,9 +649,10 @@ function buildStationMarker($Marker)
     * Now build the marker
     */
     $markerList = "L.marker([" . $Marker['lat'] . "," . $Marker['lon'] . "], {title: '" . $Marker['name'] .
-        "', icon: " . $icon . "}).bindPopup(\" " . $Marker['name'] . "<br>" . $Marker['description'] .
-        "<br>" . $Marker['lat'] . ", " . $Marker['lon'] . "<br>TYPE: " . $Marker['type'] . "\")
-        .addTo(" . $AssignedLayer . ") ,\n";
+        "', icon: " . $icon . "}).bindPopup('<div class=\"popupTabs-nonmesh\">" . $Marker['name'] .
+        "<div class=\"popupTab\"><div class=\"popupTabContent-fw\">" .
+        $Marker['name'] . "<br>" . $Marker['description'] .
+        "<br>" . $Marker['lat'] . ", " . $Marker['lon'] . "<br>TYPE: " . $Marker['type'] . "</div></div></div>').addTo(" . $AssignedLayer . ") ,\n";
 
     return $markerList;
 }
