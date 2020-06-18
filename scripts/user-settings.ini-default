@@ -34,7 +34,7 @@ localnode = "localnode.local.mesh"
 ;(this will have to be edited by hand each time it changes)
 ;Sorry, no way around that yet.
 ;--------------------------------------------------------------
-current_stable_fw_version = "3.19.3.0"
+current_stable_fw_version = "3.20.3.0"
 
 ;;Time Zone we're going to be running in.
 ;It must be in "PHP Format". Sorry. :)
