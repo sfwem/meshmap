@@ -316,6 +316,15 @@ MAP_DETAILS {
     border-top-right-radius: 15px;
     border-top-left-radius: 15px;
 }
+.popupTabs-nonmesh {
+	position: relative;
+	min-height: 250px;
+	color: white;
+	font-weight: 900;
+	text-align: center;
+	clear: both;
+	margin: 18px 0;
+}
 .popupTab:target {
 	display: block;
 }
