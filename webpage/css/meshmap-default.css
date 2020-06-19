@@ -208,7 +208,8 @@ MAP_DETAILS {
     display: inline;
 }
 .leaflet-control-layers-expanded, .leaflet-control-layers-list {
-        height: 200px !important;
+    height: 200px !important;
+    overflow: auto !important;
 }
 
 /** New stuff for the popup tabs **/
