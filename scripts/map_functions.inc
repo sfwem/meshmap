@@ -963,6 +963,13 @@ function create_MapLayers($numNodes, $numLinks, $numMarkers)
     var fiveGHzStations = new L.LayerGroup();
     var otherStations = new L.LayerGroup();
     var upgradeStations = new L.LayerGroup();\n
+
+	var allStations = L.layerGroup([
+		nineHundredMHzStations,
+		twoGHzStations,
+		threeGHzStations,
+		fiveGHzStations,
+		otherStations]);
 ";
 
     if ($numLinks > 0)
@@ -1227,15 +1234,15 @@ map.fullscreenControl.setPosition('verticalcenterleft');
 EOD;
 
     $Content .= <<< EOD
-//the ruler
-var rulerOptions = {position: 'verticalcenterleft',
-	lengthUnit: {
-		factor: 0.621371,
-		display: 'Miles',
-		decimal: 3}
-	};
-    L.control.ruler(rulerOptions).addTo(map);
-    document.getElementById('ruler').title = 'Ruler\\n(ESC 1x to stop, 2x to remove)';
+
+//the search button
+L.control.search({
+	layer: allStations,
+	initial: false,
+	zoom: 16,
+	position: 'verticalcenterleft',
+	hideMarkerOnCollapse: true
+}).addTo(map);
 
 //the watermark logo
 L.Control.Watermark = L.Control.extend({
@@ -1268,12 +1275,7 @@ L.control.watermark({position: 'bottomright'}).addTo(map);
      */
     legend.addTo(map);
 	legendHidden.addTo(map);
-    /*
-     * Layer Control
-     */
-    var layerControls = L.control.groupedLayers(baseLayers, groupedOverlays, {position: 'verticalcenterleft'}).addTo(map);
-	L.DomEvent.disableClickPropagation(layerControls._container);
-	L.DomEvent.disableScrollPropagation(layerControls._container);
+
     /*
      * Scale Control
      */
@@ -1337,6 +1339,24 @@ EOD;
 	/* Attribution */
 	//attributionCtrl({position: 'bottomleft'}).addTo(map);\n
     
+    //the left side controls go in the order they are added.
+    //we want the ruler and the layers control to be the last two on the bottom
+    $Content .= <<< EOD
+	//the ruler
+	var rulerOptions = {position: 'verticalcenterleft',
+	lengthUnit: {
+		factor: 0.621371,
+		display: 'Miles',
+		decimal: 3}
+	};
+    L.control.ruler(rulerOptions).addTo(map);
+    document.getElementById('ruler').title = 'Ruler\\n(ESC 1x to stop, 2x to remove)';
+
+    //Grouped Layer Control
+    var layerControls = L.control.groupedLayers(baseLayers, groupedOverlays, {position: 'verticalcenterleft'}).addTo(map);
+	L.DomEvent.disableClickPropagation(layerControls._container);
+	L.DomEvent.disableScrollPropagation(layerControls._container);
+EOD;
     return $Content;
 }
 ?>

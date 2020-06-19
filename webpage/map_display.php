@@ -255,9 +255,8 @@ if (!$mesh) {
     echo "<script src='//bbecquet.github.io/Leaflet.PolylineOffset/leaflet.polylineoffset.js'></script>\n";
     echo "<script src='//api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>\n";
     echo "<link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet'>\n";
-    echo "<script src='//ismyrnow.github.io/leaflet-groupedlayercontrol/src/leaflet.groupedlayercontrol.js'></script>\n";
-    echo "<link rel='stylesheet' href='//ismyrnow.github.io/leaflet-groupedlayercontrol/src/leaflet.groupedlayercontrol.css'>\n";
     echo "<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.0.10/css/all.css' integrity='sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg' crossorigin='anonymous'>\n";
+
 
 }else {
     echo "<link href='css/leaflet.css' rel='stylesheet'>\n";
@@ -265,15 +264,18 @@ if (!$mesh) {
     echo "<script src='javascripts/leaflet.polylineoffset.js'></script>\n";
     echo "<script src='javascripts/Leaflet.fullscreen.min.js'></script>\n";
     echo "<link href='css/leaflet.fullscreen.css' rel='stylesheet'>\n";
-    echo "<script src='javascripts/leaflet.groupedlayercontrol.min.js'></script>\n";
-    echo "<link href='css/leaflet.groupedlayercontrol.min.css' rel='stylesheet'>\n";
     echo "<link href='javascripts/fontawesome-all.css' rel='stylesheet'>\n";
 }
+echo "<script src='javascripts/leaflet.groupedlayercontrol.js'></script>\n";
+echo "<link rel='stylesheet' href='css/leaflet.groupedlayercontrol.css'>\n";
 echo "<script src='javascripts/leaflet-hash.js'></script>\n";
 echo "<script src='javascripts/L.Control.SlideMenu.js'></script>\n";
 echo "<link href='css/L.Control.SlideMenu.css' rel='stylesheet'>\n";
 echo "<script src='javascripts/leaflet-ruler.js'></script>\n";
 echo "<link rel='stylesheet' type='text/css' href='css/leaflet-ruler.css'>\n";
+echo "<link rel='stylesheet' href='css/leaflet-search.css'>\n";
+echo "<script src='javascripts/leaflet-search.src.js'></script>\n";
+
 
 /*
  * check for the users custom.css files and use them if exists...
