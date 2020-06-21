@@ -193,6 +193,7 @@ The meshmap.css file will override the -default.css file.
 - [x] Station PopUps now have tabs for the different sections (main, services, links).  
 - [x] Search and zoom to a node now implemented.  
 - [x] Import/Export the "Non-Mesh" Markers via CSV file.  
+- [ ] Add button for "node_report.php" (List View) on the Map. (and a link to the map from node_report).  
 - [ ] Change css file for the "?" slide-out menu.  
 - [ ] Make "Parallel Threads" work again in get-map-info script, with limits on how many can be run at once.  
     (this will greatly speed up network polling)  
