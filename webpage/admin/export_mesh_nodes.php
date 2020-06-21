@@ -34,7 +34,8 @@ if (!isset($_SESSION['userLoggedIn'])) {
 	            fputcsv($f, array_keys($row));
 	            $first = false;
 	        }
-	        $row['sysinfo_json'] = json_encode(json_decode($row['sysinfo_json']));
+	        //there is not more sysinfo.json column anymore... maybe again in the future.
+	        //$row['sysinfo_json'] = json_encode(json_decode($row['sysinfo_json']));
 	        fputcsv($f, $row);
 	    } // end while
 	

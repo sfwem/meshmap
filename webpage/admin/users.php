@@ -34,7 +34,7 @@ if (!isset($_SESSION['userLoggedIn'])) {
 		}elseif ($_POST['promote_user'] == "demote_user") {
 			$query = "update users set admin = 0 where user = '" . $_POST['user'] . "' and id = '" . $_POST['id'] . "'";
 			if (wxc_putMySql($query)) {
-				echo "<strong><greenText>Succesfully demoted " . $user . " from super-user!</greenText></strong><br>\n";
+				echo "<strong><greenText>Succesfully demoted " . $_POST['user'] . " from super-user!</greenText></strong><br>\n";
 			}else {
 				echo "<strong><redText>There was and error demoting the user: " . $_POST['user'] . "!!";
 			}
