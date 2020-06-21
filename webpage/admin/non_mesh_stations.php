@@ -80,6 +80,38 @@ $(".remove_non_mesh_station_form").submit(function(event) {
     });
 });
 </script>
+
+<script>
+//TODO: add stuff for the CSV upload
+$("#import_non_mesh_csv").submit(function(event) {
+	event.preventDefault();
+	
+	var $form = $(this),
+ 	which = $form.find("input[type='submit'][name='submitNonMeshCSV']").val(),
+	csvFile = $form.find("input[type='file'][name='csvFile']").val(),
+	url = $form.attr("action");
+	postData = new FormData(this);
+	
+	postData.append("csvFile", csvFile);
+	postData.append("submitNonMeshCSV", which);
+
+//	var posting = $.post(url, { submitNonMeshCSV: which, csvFile: postData } );
+//	posting.done(function(data) { $("#admin_content").html(data); } );
+
+	var posting = $.post({
+			url: url,
+			method: "POST",
+			data: postData,
+			contentType: false,
+			processData: false,
+			success: function(data) {
+				$("#admin_content").html(data);
+				}
+			});
+
+});
+</script>
+
 <script>
 function sortTable(n) {
   var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
@@ -188,9 +220,57 @@ if (isset($_POST['remove_non_mesh_station']) == "remove_non_mesh_station") {
         $_POST = array();
     }
 }
+
+//deal with uploaded CSV files
+if ((isset($_POST['submitNonMeshCSV']) == "Upload") && (isset($_FILES['csvFile']['type']) == "text/csv")) {
+	$updateTable = 0;
+	if (($handle = fopen($_FILES['csvFile']['tmp_name'], "r")) !== FALSE) {
+	//	fgetcsv($handle, 0, ",");
+		while (($data = fgetcsv($handle, 0, ",")) !== FALSE) {
+			$station_id = strip_tags($data['0']);
+			$station_name = strip_tags($data['1'], "<br>");
+			$station_description = strip_tags($data['2'], "<br>");
+			$station_type = strip_tags($data['3']);
+			$station_lat = strip_tags($data['4']);
+			$station_lon = strip_tags($data['5']);
+			
+			if ((strtolower($station_id) == "id") &&
+				(strtolower($station_name)== "name") &&
+				(strtolower($station_description) == "description") &&
+				(strtolower($station_type) == "type")) {
+					continue;
+			}
+			
+			$updateTable = wxc_putMySQL("INSERT INTO marker_info " .
+					"(id, name, description, type, lat, lon) " .
+					"VALUES ".
+					"('$station_id', '$station_name', '$station_description', '$station_type', '$station_lat', '$station_lon') " .
+					"ON DUPLICATE KEY UPDATE " .
+					"name = '$station_name', description = '$station_description', type = '$station_type', lat = '$station_lat', lon = '$station_lon'");
+			}
+			fclose($handle);
+			if ($updateTable = 1) {
+				echo "<boldText>Succesfully imported: <greenText>" .
+					$_FILES['csvFile']['name'] . "</greenText></boldText>.<br>\n";
+				//unset the post arrays
+				$_POST = array();
+				$_FILES = array();
+			}
+		}
+}
 ?>
 
 <?php
+echo "<br>";
+echo "<a href='export_non_mesh.php'>Download CSV file of the Non Mesh Markers.</a>" .
+	"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" .
+	"<form action='non_mesh_stations.php' id='import_non_mesh_csv' enctype='multipart/form-data' method='POST'>" .
+	"Upload Non Mesh Marker CSV file: " .
+	"<input type='file' name='csvFile' id='csvFile'>&nbsp;&nbsp;<input type='submit' value='Upload' id='submitNonMeshCSV' name='submitNonMeshCSV'></form>" . "\n";
+//echo "<br>\n";
+echo "The uploaded CSV file <em>must</em> follow this same format: id, name, description, type, lat, lon\n";
+echo "<br>\n";
+echo "<br>\n";
 //display what is already there
 $nonMeshStationsAndMarkers = mysqli_query($GLOBALS['sql_connection'], "SELECT id, name, description, type, lat, lon FROM marker_info") or die ("Could not get list of non mesh stations" . mysqli_error($GLOBALS['sql_connection']));
 if ($nonMeshStationsAndMarkers) {
@@ -198,6 +278,7 @@ if ($nonMeshStationsAndMarkers) {
     echo "These are the non-mesh stations already in the database:<br>\n";
     echo "<table id=\"existing_non_mesh_stations\">\n";
     echo "<tr>\n";
+    echo "<th class=\"pointerCursor\" onclick=\"sortTable(0)\"><boldText>Id#</boldText></th>\n";
     echo "<th class=\"pointerCursor\" onclick=\"sortTable(0)\"><boldText>Name</boldText></th>\n";
     echo "<th class=\"pointerCursor\" onclick=\"sortTable(1)\"><boldText>Description</boldText></th>\n";
     echo "<th class=\"pointerCursor\" onclick=\"sortTable(2)\"><boldText>Type</boldText></th>\n";
@@ -205,12 +286,17 @@ if ($nonMeshStationsAndMarkers) {
     echo "<th class=\"pointerCursor\" onclick=\"sortTable(4)\"><boldText>Lon</boldText></th>\n";
     echo "</tr>\n";
     foreach ($nonMeshStationsAndMarkers as $value) {
-        echo "\n<tr><td contenteditable='true' onBlur=\"saveToDatabase(this, 'name', '" . $value['id'] ."')\" " .
-	            "onClick=\"showEdit(this);\">" . $value['name'] . "</td>" .
-            "<td contenteditable='true' onBlur=''>" . $value['description'] . "</td>" .
+        echo "\n" . "<tr>" .
+          	"<td>" . $value['id'] . "</td>" .
+          	"<td contenteditable='true' onBlur=\"saveToDatabase(this, 'name', '" . $value['id'] ."')\" " .
+	        "onClick=\"showEdit(this);\">" . $value['name'] . "</td>" .
+            "<td contenteditable='true' onBlur=\"saveToDatabase(this, 'description', '" . $value['id'] ."')\" " .
+	        "onClick=\"showEdit(this);\">" . $value['description'] . "</td>" .
             "<td contenteditable='true' onBlur=''>" . $value['type'] . "</td>" .
-            "<td contenteditable='true' onBlur=''>" . $value['lat'] . "</td>" .
-            "<td contenteditable='true' onBlur=''>" . $value['lon'] . "</td>" .
+            "<td contenteditable='true' onBlur=\"saveToDatabase(this, 'lat', '" . $value['id'] ."')\" " .
+	        "onClick=\"showEdit(this);\">" . $value['lat'] . "</td>" .
+            "<td contenteditable='true' onBlur=\"saveToDatabase(this, 'lon', '" . $value['id'] ."')\" " .
+	        "onClick=\"showEdit(this);\">" . $value['lon'] . "</td>" .
             "<td class=\"BackgroundColor\">" .
             "<form action=\"non_mesh_stations.php\" class=\"remove_non_mesh_station_form\" method=\"POST\">" .
             "<input type=\"hidden\" name=\"station_name\" value=\"" . $value['name'] . "\">" .
@@ -226,7 +312,7 @@ if ($nonMeshStationsAndMarkers) {
     }
     echo "\n\n</table>\n";
     
-    //adapted from some site called PHP Pot (yeah, it's not that... I thought that too at first... :) )
+    //adapted from some site called PHP Pot
     $jsEditing = <<< EOD
 <script>
 	function showEdit(editableObj) {
@@ -237,7 +323,7 @@ if ($nonMeshStationsAndMarkers) {
 		
 		//quick fix for a funny <br> that keeps showing up in the post data
 		var edit = editableObj.innerHTML.replace(/<br>/, "");
-		
+
 		$.ajax({
 			url: "update_nonmesh_marker.php",
 			type: "POST",
