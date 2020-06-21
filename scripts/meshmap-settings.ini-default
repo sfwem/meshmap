@@ -12,7 +12,8 @@ Device_OOD = 'images/mapMarkers/redCircle.png';
 Device_Experimental = 'images/mapMarkers/orangeCircle.png';
 ; Link colours
 ; Colours are also control in webpage/css/meshmap.css
-DTD_Link_Plus = "steelblue";
+;DTD_Link_Plus = "steelblue";
+DTD_Link_Plus = "#808080";
 DTD_Link_Minus = "#A020F0";
 ;Link_Tunnel = "lightblue";
 Link_Tunnel = "#808080";
