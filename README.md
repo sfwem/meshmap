@@ -190,12 +190,15 @@ The meshmap.css file will override the -default.css file.
 - [x] Make the numbers for stations and links in the attribution bar a bit more accurate I hope.  
 - [x] Add a "Ruler" to allow for measuring of distance and bearings.  
     (elevation plot of the line drawn via this ruler will hopefully come next)  
+- [x] Station PopUps now have tabs for the different sections (main, services, links).  
+- [x] Search and zoom to a node now implemented.  
+- [x] Import/Export the "Non-Mesh" Markers via CSV file.  
 - [ ] Change css file for the "?" slide-out menu.  
 - [ ] Make "Parallel Threads" work again in get-map-info script, with limits on how many can be run at once.  
     (this will greatly speed up network polling)  
-- [ ] Implement N2MH's "Link aging" idea(s).  
 - [ ] The "Planning" Tab.  
-- [ ] Make it so other networks can export their data for use on a "Mega Map" type page. :)
+- [ ] Make it so other networks can export their data for use on a "Mega Map" type page. :)  
+- [ ] ~~Implement N2MH's "Link aging" idea(s)~~. (Temporal Databases are crazy! this may not ever happen)  
   
 ## Contributing
 ----------
