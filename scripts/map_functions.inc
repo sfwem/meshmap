@@ -315,8 +315,8 @@ function load_LinkList($NodeList, $TopoList)
                     $linkList .= 'L.polyline([[' . $node_lat . ',' . $node_lon . '],[' . $link_lat .
                         ',' . $link_lon . ']], {color: "' . $display_color . '", opacity: ' . $display_opacity .
                         ', weight: ' . $display_weight . ', offset: ' . $display_offset . '})
-						.bindPopup("<strong>' .  $nodeName . '</strong> to <strong>' . $linkName . '</strong><br><strong>Cost</strong>: ' .
-                        $value['cost'] . '")
+						.bindPopup("<div class=\"linkPopupContent\"><strong>' .  $nodeName . '</strong> to <strong>' . $linkName . '</strong><br><strong>Cost</strong>: ' .
+                        $value['cost'] . '</div>")
 						.addTo(' . $map_LayerAssigned . '),' . "\n";
 
                 }
