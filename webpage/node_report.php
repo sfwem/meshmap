@@ -75,7 +75,7 @@ $node_remove_js = <<< EOD
 $(".remove_node_from_main_db_form").submit(function(event) {
 
 	event.preventDefault();
-
+	
 	var form = $(this),
 		remove_node_from_main_db = form.find("input[type='hidden'][name='remove_node_from_main_db']").val(),
 		wifi_mac_address = form.find("input[type='hidden'][name='wifi_mac_address']").val(),
@@ -84,7 +84,7 @@ $(".remove_node_from_main_db_form").submit(function(event) {
 		wlan_ip = form.find("input[type='hidden'][name='wlan_ip']").val(),
 		admin_page = form.find("input[type='hidden'][name='admin_page']").val(),
 		url = form.attr("action");
-
+		
 	var posting = $.post(url, {
 						admin_page: admin_page,
 						remove_node_from_main_db: remove_node_from_main_db,
@@ -94,7 +94,7 @@ $(".remove_node_from_main_db_form").submit(function(event) {
 						wlan_ip: wlan_ip
 						
 	});
-
+	
 	posting.done(function(data) {
 		$("#admin_content").html(data);
 	});
@@ -150,13 +150,14 @@ echo "</head>\n";
  * Modifications from here down to fit your specific needs
  **********************************************************************************************************************/
 
-echo "\n\n<body class=\"wide comments meshdata\">";
-echo "<a name=\"top\" id=\"top\"></a>\n";
-echo "<h1 class=\"page_title\">Mesh Map Nodes</h1>\n";
+echo "\n\n<body class='wide comments meshdata'>";
+echo "<a name='top' id='top'></a>\n";
+echo "<h1 class='page_title' style='display: inline;'>Mesh Map Nodes</h1>\n";
+echo "<a href='map_display.php' style='float: right;'>View on Map</a>\n";
 echo "</div>\n";
-echo "<div class=\"fw-container\">\n";
-echo "<div class=\"fw-body\">\n";
-echo "<div class=\"content\">\n";
+echo "<div class='fw-container'>\n";
+echo "<div class='fw-body'>\n";
+echo "<div class='content'>\n";
 
 //added kg6wxc may 2018
 /*****START*****/

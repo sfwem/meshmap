@@ -1234,6 +1234,36 @@ map.fullscreenControl.setPosition('verticalcenterleft');
 EOD;
 
     $Content .= <<< EOD
+//********* "VIEW AS LIST" button ***********
+	//view as list (node_report.php)
+	L.Control.viewAsList = L.Control.extend({
+		options: {
+			position: 'verticalcenterleft'
+		},
+		onAdd: function(map) {
+
+			var viewAsListControl = L.DomUtil.create('div', 'leaflet-control-custom leaflet-bar');
+			viewAsListControl.style.backgroundColor = 'white';
+			viewAsListControl.style.width = '30px';
+			viewAsListControl.style.height = '30px';
+			viewAsListControl.title = 'View as list (node report)';
+			var link = L.DomUtil.create('a', 'leaflet-bar-part leaflet-bar-part-single', viewAsListControl);
+			var listIcon = L.DomUtil.create('div', 'viewAsListControl', link);
+			listIcon.style.fontSize = '20px';
+			listIcon.style.verticalAlign = 'middle';
+
+			viewAsListControl.onclick = function() {
+				window.location = "node_report.php"
+			}
+			return viewAsListControl;
+		}
+	});
+	L.control.viewAsList = function(opts) {
+		return new L.Control.viewAsList(opts);
+	}
+	L.control.viewAsList().addTo(map);
+//*********** END "VIEW AS LIST" button *************
+
 
 //the search button
 L.control.search({

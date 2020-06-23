@@ -329,3 +329,18 @@ MAP_DETAILS {
 .popupTab:target {
 	display: block;
 }
+.viewAsListControl{
+  height: 30px;
+  width: 30px;
+  background-image: url("../images/list-icon.png");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.leaflet-ruler {
+	height: 30px !important;
+	width: 30px !important;
+}
+.leaflet-control-layers-toggle {
+	height: 30px !important;
+	width: 30px !important;
+}
