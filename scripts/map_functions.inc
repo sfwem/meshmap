@@ -197,7 +197,7 @@ function load_LinkList($NodeList, $TopoList)
     {
         foreach ($TopoList as $value)
         {
-            if ($value['nodelat'] && $value['linklon'])
+            if ((isset($value['nodelat'])) && (isset($value['linklon'])))
                 //if there's no location info ignore the entry
             {
                 $node_lat = $value['nodelat'];
@@ -366,7 +366,7 @@ function load_LinkedTO($node_info, $TopoList)
         foreach ($TopoList as $value)
         {
             //if there's no location info (at each end of the link) ignore the entry
-            if ($value['nodelat'] && $value['linklon'])
+        	if ((isset($value['nodelat'])) && (isset($value['linklon'])))
             {
                 
                 //this is the section that is exploding in php7.2.3
@@ -536,7 +536,11 @@ function build_Marker($node_info, $node_ServiceList, $node_LinkedList, $node_Fir
     	if ($node_info['loadavg'] !== "Not Available") {
     		$loadavgs = unserialize($node_info['loadavg']);
     		//var_dump($loadavgs);
-    		echo 'LoadAvg: 1 min ' . $loadavgs[0] . ', 5 min ' . $loadavgs[1] . ', 15 min ' . $loadavgs[2] . "<br></div></div>';" . "\n";
+    		if (is_array($loadavgs)) {
+    			echo 'LoadAvg: 1 min ' . $loadavgs[0] . ', 5 min ' . $loadavgs[1] . ', 15 min ' . $loadavgs[2] . "<br></div></div>';" . "\n";
+    		}else {
+    			echo "</div></div>';" . "\n";
+    		}
     	}else {
     		echo "</div></div>';" . "\n";
     	}
