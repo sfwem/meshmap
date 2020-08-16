@@ -9,7 +9,7 @@
 [![MattermostChat](https://img.shields.io/badge/Chat-Mattermost-blueviolet.svg)](https://mattermost.kg6wxc.net)  
 Automated mapping of [AREDN](https://arednmesh.org) Networks.  
 
-2016-2019 - Eric Satterlee / KG6WXC  
+2016-2020 - Eric Satterlee / KG6WXC  
 
 Addtional Credit to: Mark/N2MH and Glen/K6GSE for their work on this project and to the rest of the [AREDN](https://arednmesh.org) team, without them this would not be a project.  
 
