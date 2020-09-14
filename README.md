@@ -30,7 +30,8 @@ Licensed under GPL v3 and later.
 (One or more of these extensions may need to be enabled in php.ini)  
 (if you do not already have mysqlnd, you might need to install it, `apt-get install php[5 or 7]-mysqlnd`)  
 (<em>the requirement for the mysqlnd extension will be removed in the near future</em>)  
-- **MySQL/MariaDB**  
+- **MariaDB**  
+(MariaDB is preferred over Mysql due to inconsistencies between the 2)  
 (Other database systems are up to you)  
 - **An AREDN Mesh node available over the local network**  
 (Preferably connected to an AREDN network...)  
