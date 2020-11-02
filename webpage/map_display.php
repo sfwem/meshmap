@@ -415,9 +415,9 @@ $Content .= add_MapLayers();
 $Content .= add_MapImages($numNodes, $numLinks, $numMarkers);
 $Content .= create_MapLayers($numNodes, $numLinks, $numMarkers);
 $Content .= create_MapOverlays($numNodes, $numLinks, $numMarkers);
+$Content .= create_MapImage();
 $Content .= build_NodesAndLinks($NodeList, $TopoList, $MarkerList);
 $Content .= create_MapLegend();
-$Content .= create_MapImage();
 $Content .= show_MapMarkerDetails($numNodes, $numLinks, $numMarkers, $numNodesTotal, $numLinksTotal);
 $Content .= instantiate_Map();
 /*
