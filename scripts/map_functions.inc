@@ -576,9 +576,9 @@ function build_Marker($node_info, $node_ServiceList, $node_LinkedList, $node_Fir
     echo "</script>\n";
     
     //*now* create the marker
-    $markerList .= "L.marker([" . $node_info['lat'] . "," . $node_info['lon'] . "], {title: '" . $node_info['node'] .
-    	"', icon: " . $icon . "}).bindPopup(popupTabs_" . str_replace("-", "_", $node_info['node']) .
-    	", { maxWidth: 500 } ).addTo(" . $AssignedLayer . ") ,\n";
+    $markerList .= "oms.addMarker(L.marker([" . $node_info['lat'] . "," . $node_info['lon'] . "], {title: '" . $node_info['node'] .
+		"', icon: " . $icon . "}).bindPopup(popupTabs_" . str_replace("-", "_", $node_info['node']) .
+		", { maxWidth: 500 } ).addTo(" . $AssignedLayer . ")) ,\n";
 
     //
     // If Upgrade Suggested add Node to that layer and change the popup
@@ -1154,6 +1154,28 @@ function create_MapImage()
 			fullscreenControl: true
 	    });\n\n
 	}
+	//SPIDERFY
+	var oms = new Spiderfy(map);
+
+	oms.disable();
+	map.on('zoomend', function(e) {
+		currZoom = e.target._zoom;
+		if(currZoom >= 12) {
+			oms.enable();
+			oms.addListener('activate', function(markers) {
+				for(var i = 0; i < markers.length; i++) {
+					markers[i].closePopup();
+				}
+			});
+		}else {
+			oms.disable();
+			oms.removeListener('activate', function(markers) {
+				for(var i = 0; i < markers.length; i++) {
+					markers[i].closePopup();
+				}
+			});
+		}
+	});
 ";
 
     return $Content;

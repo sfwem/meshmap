@@ -125,10 +125,13 @@ function testForInet() {
 <meta property="og:type" content="website">
 <meta property="og:title" content="Map your local Amateur Radio MESH Network">
 <meta property="og:description" content="The KG6WXC MeshMap is Automated Mapping of AREDN MESH Networks.">
+
 EOD;
 
-echo "<meta property='og:url' content='" . $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['CONTEXT_PREFIX'] . "'>\n";
-echo "<meta property='og:image' content='" . $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['CONTEXT_PREFIX'] . "/images/MESHMAP_LOGO.png'>\n";
+//echo "<meta property='og:url' content='" . $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['CONTEXT_PREFIX'] . "'>\n";
+//echo "<meta property='og:image' content='" . $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['CONTEXT_PREFIX'] . "/images/MESHMAP_LOGO.png'>\n";
+$page .= "<meta property='og:url' content='" . $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['CONTEXT_PREFIX'] . "'>\n";
+$page .= "<meta property='og:image' content='" . $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['CONTEXT_PREFIX'] . "/images/MESHMAP_LOGO.png'>\n";
 
 $page .= <<< EOD
 <script src='javascripts/ping.min.js'></script>
@@ -275,6 +278,8 @@ echo "<script src='javascripts/leaflet-ruler.js'></script>\n";
 echo "<link rel='stylesheet' type='text/css' href='css/leaflet-ruler.css'>\n";
 echo "<link rel='stylesheet' href='css/leaflet-search.css'>\n";
 echo "<script src='javascripts/leaflet-search.src.js'></script>\n";
+echo "<!-- SPIDERFY ( https://github.com/robertleeplummerjr/OverlappingMarkerSpiderfier-Leaflet ) -->\n";
+echo "<script src='javascripts/spiderfy.js'></script>\n";
 
 
 /*
@@ -410,8 +415,6 @@ $Content .= add_MapLayers();
 $Content .= add_MapImages($numNodes, $numLinks, $numMarkers);
 $Content .= create_MapLayers($numNodes, $numLinks, $numMarkers);
 $Content .= create_MapOverlays($numNodes, $numLinks, $numMarkers);
-//        echo $Content;
-//        $Content = "";
 $Content .= build_NodesAndLinks($NodeList, $TopoList, $MarkerList);
 $Content .= create_MapLegend();
 $Content .= create_MapImage();
