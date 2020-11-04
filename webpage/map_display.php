@@ -570,7 +570,7 @@ $scaling = <<<EOD
 EOD;
 
 echo $scaling;
-
+echo "<div id='spiderfyActive'>SPIDERFY ACTIVE</div>\n";
 echo "</body>\n";
 echo "</html>\n";
 ?>

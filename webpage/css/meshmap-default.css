@@ -359,3 +359,19 @@ MAP_DETAILS {
     padding-right: 5px;
     padding-left: 5px;
 }
+#spiderfyActive {
+	background: black;
+	color: white;
+	opacity: 0.5;
+	position: absolute;
+	width: 158px;
+	font-size: 1em;
+	text-align: center;
+	z-index: 9999;
+	top: 2px;
+	left: 50%;
+	right: 50%;
+	border-radius: 5px;
+	visibility: hidden;
+}
+
