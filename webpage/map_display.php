@@ -325,7 +325,7 @@ if (isset($USER_SETTINGS['map_iFrame_Enabled']) && ($USER_SETTINGS['map_iFrame_E
     	echo $GLOBALS['map_div_embedded'];
     }else {
     	echo "<div id='meshmap'>\n"; // Closing tag at end of primary routine
-    	echo "<div id='mapid'></div>\n";
+    	echo "<div id='mapid'><div id='spiderfyActive'>SPIDERFY ACTIVE</div></div>\n";
     }
 }else {
     echo "<div id='meshmap'>\n"; // Closing tag at end of primary routine
@@ -377,7 +377,7 @@ if (isset($GLOBALS['hide_admin'])) {
 }
 
 if (isset($USER_SETTINGS['map_iFrame_Enabled']) && !($USER_SETTINGS['map_iFrame_Enabled'])) {
-	echo "<div id='mapid'></div>\n";
+	echo "<div id='mapid'><div id='spiderfyActive'>SPIDERFY ACTIVE</div></div>\n";
 }
 
 //$numNodes = count($NodeList);	// WXC change: this was giving the wrong number.
@@ -570,7 +570,7 @@ $scaling = <<<EOD
 EOD;
 
 echo $scaling;
-echo "<div id='spiderfyActive'>SPIDERFY ACTIVE</div>\n";
+
 echo "</body>\n";
 echo "</html>\n";
 ?>
