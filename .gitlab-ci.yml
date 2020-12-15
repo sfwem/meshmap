@@ -1,6 +1,0 @@
-include:
-  template: Verify/Browser-Performance.gitlab-ci.yml
-
-performance:
-  variables:
-    URL: https://mapping.kg6wxc.net/meshmap
