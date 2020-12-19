@@ -24,12 +24,6 @@ Licensed under GPL v3 and later.
 (or equiv)  
 - **PHP5+**  
 - **mysqli PHP extension**   
-- **mysqlnd PHP extension**  
-- **openssl PHP extension**  
-(you may only need mysqlnd, it should be safe to enable both for now)  
-(One or more of these extensions may need to be enabled in php.ini)  
-(if you do not already have mysqlnd, you might need to install it, `apt-get install php[5 or 7]-mysqlnd`)  
-(<em>the requirement for the mysqlnd extension will be removed in the near future</em>)  
 - **MariaDB**  
 (MariaDB is preferred over Mysql due to inconsistencies between the 2)  
 (Other database systems are up to you)  
