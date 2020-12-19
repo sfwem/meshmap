@@ -1,10 +1,3 @@
--- --------------------------------------------------------
--- Host:                         192.168.81.222
--- Server version:               10.3.7-MariaDB-log - MariaDB Server
--- Server OS:                    Linux
--- HeidiSQL Version:             9.4.0.5125
--- --------------------------------------------------------
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET NAMES utf8 */;
 /*!50503 SET NAMES utf8mb4 */;
