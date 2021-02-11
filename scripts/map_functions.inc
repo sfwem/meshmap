@@ -1155,29 +1155,26 @@ function create_MapImage()
 	    });\n\n
 	}
 	//SPIDERFY
-	var oms = new Spiderfy(map);
-
-	oms.disable();
-	map.on('zoomend', function(e) {
-		currZoom = e.target._zoom;
-		if(currZoom >= 12) {
-			oms.enable();
-			document.getElementById('spiderfyActive').style.visibility = 'visible';
-			oms.addListener('activate', function(markers) {
-				for(var i = 0; i < markers.length; i++) {
-					markers[i].closePopup();
-				}
-			});
-		}else {
-			oms.disable();
-			document.getElementById('spiderfyActive').style.visibility = 'hidden';
-			oms.removeListener('activate', function(markers) {
-				for(var i = 0; i < markers.length; i++) {
-					markers[i].closePopup();
-				}
-			});
+	currZoom = e.target._zoom;
+        if(currZoom >= 0) {
+            oms.enable();
+            document.getElementById('spiderfyActive').style.visibility = 'visible';
+				oms.addListener('activate', function(markers) {
+						for(var i = 0; i < markers.length; i++) {
+								markers[i].closePopup();
+						}
+				});
+		}if(currZoom <= 11) {
+				oms.disable();
+				document.getElementById('spiderfyActive').style.visibility = 'hidden';
+				oms.removeListener('activate', function(markers) {
+						for(var i = 0; i < markers.length; i++) {
+								markers[i].closePopup();
+						}
+				});
 		}
-	});
+    });
+
 ";
 
     return $Content;
