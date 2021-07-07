@@ -19,9 +19,9 @@
 * The Mesh Mapping System is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.  
+* GNU General Public License for more details.
 *
-* You should have received a copy of the GNU General Public License   
+* You should have received a copy of the GNU General Public License
 * along with The Mesh Mapping System.  If not, see <http://www.gnu.org/licenses/>.
 ******/
 
@@ -52,14 +52,14 @@ function wxc_netcat ($host, $port = null, $command = null, $option = null) {
 		}
 		if ($port == "2004" && ($option == "linkInfo" || $option == "ipOnly")) {
 			$olsrDotDrawInfo = stream_get_contents($netcatStream);
-			
+
 			//apparently the olsr_dot_draw mod will sometimes give us the same information over and over.
 			//this was causing there to be way way too many links in the topology table
 			//sometimes 3x or more links would be drawn for the same link.
 			//this is here to stop this behavior and just get the one set of info
 			//it doesn't seem to effect the other olsrd files since the string is only for the .dot file
 			$olsrDotDrawInfo = preg_replace("/\r?\n\r?\ndigraph.*/s", "", $olsrDotDrawInfo);
-			
+
 			$remove_from_olsr_info = "HNA|box|diamond|solid|shape|style|graph|{|}"; //list of lines we definitely do not want (not for this project at least, not now, ya never know tho)
 			$replace_match = '/^.*(?:' . $remove_from_olsr_info . ').*$(?:\r\r|\n)?/m'; //sets up for the preg_replace function to remove the proper lines
 			$olsrDotDrawInfo = preg_replace($replace_match, '', $olsrDotDrawInfo); //actually removes the lines
@@ -71,28 +71,28 @@ function wxc_netcat ($host, $port = null, $command = null, $option = null) {
 				$olsrDotDrawInfo = preg_replace("/ ->/", "", $olsrDotDrawInfo);
 			}
 			$olsrDotDrawInfo = preg_replace("/\"/", "", $olsrDotDrawInfo);
-			
+
 			if ($option == "ipOnly") {
 				$olsrDotDrawInfo = preg_replace("/ ->.*/", "", $olsrDotDrawInfo);
 				$olsrDotDrawInfo = preg_replace("/ .*/", "", $olsrDotDrawInfo);	//the info gets massaged in the wxc_ function, it returns a list of nodes
 				$olsrDotDrawInfo = explode("\n", $olsrDotDrawInfo);		//and the links for those nodes, the problem is there are multiples
 				$olsrDotDrawInfo = array_unique($olsrDotDrawInfo);		//we only need one IP for each node on the network
 				$olsrDotDrawInfo = implode("\n", $olsrDotDrawInfo);		//that is what this part does, we're now left with a list of IP's, one per line.
-				
+
 				return $olsrDotDrawInfo;		//return only the list of IP's
 			}else {
 				$olsrDotDrawInfo = preg_replace("/\]\;/", "", $olsrDotDrawInfo);
 				$olsrDotDrawInfo = preg_replace("/\[/", "", $olsrDotDrawInfo);
-				
+
 				//and one that just about got forgotten about, easier to do some math this way. :)
 				$olsrDotDrawInfo= preg_replace("/INFINITE/", "99.99", $olsrDotDrawInfo);
-				
+
 				//apparently the olsr_dot_draw mod will sometimes give us the same information over and over.
 				//this was causing there to be way way too many links in the topology table
 				//sometimes 3x or more links would be drawn for the same link.
 				//this is here to stop this behavior and just get the one set of info
 				//$olsrDotDrawInfo = preg_replace("/^\n.*/m", "", $olsrDotDrawInfo);
-				
+
 				//trim off any empty lines at the ends (it shouldn't have any, but just in case)
 				$olsrDotDrawInfo = trim($olsrDotDrawInfo);
 				///////echo $olsrDotDrawInfo;
@@ -131,7 +131,7 @@ function wxc_checkErrorMessage ($error, $nodeName) {
 	if (strpos($error['message'], 'No route to host') !== false) {
 		//on our network this is not always a permanent thing.
 		//We can keep track of these and try them again later.
-		
+
 		//save the IP
 		$ip = $nodeName;
 		//reset $nodeName to nothing
@@ -152,7 +152,7 @@ function wxc_checkErrorMessage ($error, $nodeName) {
 		if ($GLOBALS['testNodePolling'] && $nodeName) {
 			echo "\033[31mError while getting sysinfo.json\033[0m from \033[35m" . $nodeName . "\033[0m: no route to host!\n\n";
 		}
-		
+
 	}
 	if (strpos($error['message'], 'Temporary failure in name resolution') !== false) {
 		//the DNS server told us this host did not currently exist.
@@ -167,7 +167,7 @@ function wxc_checkErrorMessage ($error, $nodeName) {
 		$ip = $nodeName;
 		//reset $nodeName to nothing
 		$nodeName = null;
-		
+
 		$nodeName = wxc_resolveIP($nodeName);
 		if (filter_var($nodeName, FILTER_VALIDATE_IP) != false) {
 			return;
@@ -191,12 +191,12 @@ function wxc_checkErrorMessage ($error, $nodeName) {
 		//but then I've actually seen "connection refused" from live nodes that I know are ok.
 		//I think it can also happen when OLSRd restarts or is rehashing it's files or something.
 		//these hosts get ignored for a while, but not too long.
-		
+
 		//save the IP
 		$ip = $nodeName;
 		//reset $nodeName to nothing
 		$nodeName = null;
-		
+
 		$nodeName = wxc_resolveIP($ip);
 		if (filter_var($nodeName, FILTER_VALIDATE_IP) != false) {
 			if ($GLOBALS['testNodePolling']) {
@@ -217,12 +217,12 @@ function wxc_checkErrorMessage ($error, $nodeName) {
 		//404 errors are probably nodes at firmware  < 3.15, or something else entirely
 		//these are only going to be checked once a day.
 		//if they *are* nodes hopefully someone can convince the owner to upgrade. :)
-		
+
 		//save the IP
 		$ip = $nodeName;
 		//reset $nodeName to nothing
 		$nodeName = null;
-		
+
 		$nodeName = wxc_resolveIP($ip);
 		if (filter_var($nodeName, FILTER_VALIDATE_IP) != false) {
 			if ($GLOBALS['testNodePolling']) {
@@ -234,13 +234,13 @@ function wxc_checkErrorMessage ($error, $nodeName) {
 		}
 		if ($GLOBALS['do_sql']) {
 			wxc_putMySQL("INSERT INTO hosts_ignore SET ip = '$ip', name = '$nodeName', reason = '404', timestamp = NOW() ON DUPLICATE KEY UPDATE ip = '$ip', name = '$nodeName', reason = '404', timestamp = NOW()");
-			
+
 			/*
 			if (!wxc_getMySql("SELECT node FROM node_info WHERE wlan_ip = '$ip'")) {
 				wxc_putMySql("INSERT INTO node_info SET node = '$nodeName', wlan_ip = '$ip' ON DUPLICATE KEY UPDATE wlan_ip = '$ip'");
 			}
 			*/
-			
+
 		}
 		if ($GLOBALS['testNodePolling'] && $nodeName) {
 			echo "\033[31mError while getting sysinfo.json\033[0m from \033[35m" . $nodeName . "\033[0m: 404 - Not Found!\n\n";
@@ -258,10 +258,10 @@ function wxc_resolveIP ($ipAddr) {
 	if (filter_var($ipAddr, FILTER_VALIDATE_IP) != false) {							//check if the IP is valid
 		$hostName = preg_replace("/.local.mesh/", "", gethostbyaddr("$ipAddr"));	//resolve the IP into a name
 																					//(without ".local.mesh")
-		
+
 		if (filter_var($hostName, FILTER_VALIDATE_IP) != false) {	//check again if we actually resolved the name from the ip.
 			///////echo $hostName . " did not resolve, trying again...\n";
-			
+
 			//ask localnode directly to resolve this IP for us
 			$hostName = preg_replace("/.local.mesh/", "", gethostbyaddr_timeout("$hostName", $GLOBALS['USER_SETTINGS']['localnode'], 1));
 		}
@@ -308,7 +308,7 @@ function wxc_scriptGetLastDateTime ($id, $name) {
 //		$lastRunSelf = wxc_getMySql("SELECT script_last_run FROM map_info WHERE id = '$id' AND table_or_script_name = '$name'");
 		return 0;
 	}
-	
+
 	//timezone fixes - wxc 11-27-2018
 	$datetime = new DateTime($lastRunSelf['script_last_run'], $GLOBALS['localTimeZone']);
 	//$dtz = new DateTimeZone($GLOBALS['USER_SETTINGS']['localTimeZone']);
@@ -330,15 +330,25 @@ function wxc_scriptUpdateDateTime ($id, $name) {
 ***********/
 //main sql connection
 function wxc_connectToMySQL() {
-	$GLOBALS['sql_connection'] = mysqli_connect($GLOBALS['USER_SETTINGS']['sql_server'],$GLOBALS['USER_SETTINGS']['sql_user'],$GLOBALS['USER_SETTINGS']['sql_passwd'],$GLOBALS['USER_SETTINGS']['sql_db']) or die('Could not connect to mySQL database: ' . mysqli_error($GLOBALS['connection']) . "\n");
+    // Support for ClearDB on Heroku:
+    if (getenv("CLEARDB_DATABASE_URL")) {
+        $url = parse_url(getenv("CLEARDB_DATABASE_URL"));
+        $server = $url["host"];
+        $username = $url["user"];
+        $password = $url["pass"];
+        $db = substr($url["path"], 1);
+    	$GLOBALS['sql_connection'] = mysqli_connect($server, $username, $password, $db) or die('Could not connect to mySQL database: ' . mysqli_error($GLOBALS['connection']) . "\n");
+	} else {
+    	$GLOBALS['sql_connection'] = mysqli_connect($GLOBALS['USER_SETTINGS']['sql_server'],$GLOBALS['USER_SETTINGS']['sql_user'],$GLOBALS['USER_SETTINGS']['sql_passwd'],$GLOBALS['USER_SETTINGS']['sql_db']) or die('Could not connect to mySQL database: ' . mysqli_error($GLOBALS['connection']) . "\n");
+	}
 	return $GLOBALS['sql_connection'];
 }
 
 
 //get things from the MySQL DB.
 function wxc_getMySql ($query) {
-	
-	
+
+
 	if (is_null($query)) {
 		echo "No query sent to \"fetchMySql\" function\n";
 		return 0;
@@ -346,7 +356,7 @@ function wxc_getMySql ($query) {
 		$theQuery = mysqli_query($GLOBALS['sql_connection'], $query) or die ("Could not fetch from SQL server. " . mysqli_error($GLOBALS['sql_connection']));
 		//just return the "fetch_array" it's usually what we want anyways.
 		return mysqli_fetch_array($theQuery, MYSQLI_ASSOC);
-		
+
 	}
 }
 
@@ -377,17 +387,17 @@ function wxc_getMysqlFetchAll ($query) {
 }
 /**
 * checkBand
-* 
+*
 * Check the channel number given to us by the node
 * and try to determine the band it is running on.
-* 
+*
 * @param $channel
 *
 * @return string Indicator of the assigned band
 */
 function wxc_checkBand ($channel, $board_id = null) {
 		//band channel number arrays
-		
+
 		//900Mhz
 		//On 900MHz you dont get "channels", the node lets you choose the center frequency.
 		//there are 4 to choose from: "(907)", "(912)", "(917)", and "(922)".
@@ -397,16 +407,16 @@ function wxc_checkBand ($channel, $board_id = null) {
 		//finding 900MHz devices by board_id now (there's only 3 of them!!)
 		//should have done it this way long ago.
 		$bid900 = array('0xe009','0xe1b9','0xe239');
-		
+
 		//2.4GHz
 		$twoGhz = array('-1', '-2', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11');
-		
+
 		//3GHz channel numbers and also sometimes the node shows frequency
 		$threeGhz = array('76','77','78','79','80','81','82','83','84','85','86','87','88',
 					'89','90','91','92','93','94','95','96','97','98','99','3380','3385','3390',
 					'3395','3400','3405','3410','3415','3420','3425','3430','3435','3440','3445',
 					'3450','3455','3460','3465','3470','3475','3480','3485','3490','3495');
-		
+
 		//5GHz channel numbers
 		//133 and up are US channel numbers
 		//info taken from "channelmaps.pm" in the AREDN code base
@@ -417,27 +427,27 @@ function wxc_checkBand ($channel, $board_id = null) {
 					'153','154','155','156','157','158','159','160','161','162',
 					'163','164','165','166','167','168','169','170','171','172',
 					'173','174','175','176','177','178','179','180','181','182','183','184');
-		
-		
+
+
 		//K6GSE nice switch statement!
 		switch (true) {
 			case (in_array($board_id, $bid900)):
 				//case (in_array($channel, $nineHundredMhz)):
 				return '900MHz';
 				break;
-				
+
 			case (in_array($channel, $twoGhz)):
 				return '2GHz';
 				break;
-				
+
 			case (in_array($channel, $threeGhz)):
 				return '3GHz';
 				break;
-				
+
 			case (in_array($channel, $fiveGhz)):
 				return '5GHz';
 				break;
-				
+
 			default:
 				return 'Unknown';
 		}
@@ -516,9 +526,9 @@ function wxc_checkOldNodes() {
 	}else {
 		return;
 	}
-	
+
 	if (is_array($oldNodes)) {
-		$oldNodeQuery = 
+		$oldNodeQuery =
 			"INSERT INTO removed_nodes (
 			wifi_mac_address, node, model, firmware_version, lat, lon, ssid, chanbw, api_version, board_id,
 			tunnel_installed, active_tunnel_count, channel, firmware_mfg, lan_ip, wlan_ip, uptime, loadavg, services, last_seen, time_removed)
@@ -548,11 +558,11 @@ function wxc_checkOldNodes() {
 			//$sysinfo_json = $row['sysinfo_json'];
 			//$olsrinfo_json = $row['olsrinfo_json'];
 			$last_seen = $row['last_seen'];
-			
+
 			$valuesArray[] = "('$wifi_mac_address', '$node', '$model', '$firmware_version', '$lat', '$lon', '$ssid', '$chanbw', '$api_version', '$board_id',
 				'$tunnel_installed', '$active_tunnel_count', '$channel', '$firmware_mfg', '$lan_ip', '$wlan_ip', '$uptime', '$loadavg', '$services', '$last_seen', NOW())";
 		}
-		
+
 		if ($valuesArray) {
 			$oldNodeQuery .= implode(',', $valuesArray);
 			wxc_putMySql($oldNodeQuery);
@@ -611,29 +621,29 @@ function wxc_getDistanceAndBearing (float $node_lat, float $node_lon, float $lin
 	//the bearing expression is:
 	// round(mod(degrees(atan2(sin(radians(linklon)-radians(nodelon))*cos(radians(linklat)), cos(radians(nodelat))*sin(radians(linklat))-sin(radians(nodelat))*cos(radians(linklat))*cos(radians(linklon)-radians(nodelon)))) + 360,360),1)
 	//or I guess you could use this function, but I'm not even sure it works
-	
+
 	//That can be done in later MySQL version (and in MariaDB 10) but now all the distance and bearing
 	//is calculated via a trigger on the topology table in the database.
 	//it was changed this way to have it be more compatible with other versions of MySQL
-	
+
 	//Find the distance and bearing between the 2 nodes
 	$earthRadiusMiles	= 3959;
 	$distanceLatFrom 	= deg2rad($node_lat);
 	$distanceLonFrom 	= deg2rad($node_lon);
 	$distanceLatTo		= deg2rad($linked_node_lat);
 	$distanceLonTo		= deg2rad($linked_node_lon);
-	
+
 	$latDelta			= $distanceLatTo - $distanceLatFrom;
 	$lonDelta			= $distanceLonTo - $distanceLonFrom;
-	
+
 	$angleBetweenTheTwoPoints = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) + cos($distanceLatFrom) * cos($distanceLatTo) * pow(sin($lonDelta / 2), 2)));
-	
+
 	$distance = $angleBetweenTheTwoPoints * $earthRadiusMiles;
 	$distance = round($distance, 2);
 	//an sql expression for distance? (to make the SQL server do this!)
-	
+
 	$bearing = (rad2deg(atan2(sin(deg2rad($linked_node_lon) - deg2rad($node_lon)) * cos(deg2rad($linked_node_lat)), cos(deg2rad($node_lat)) * sin(deg2rad($linked_node_lat)) - sin(deg2rad($node_lat)) * cos(deg2rad($linked_node_lat)) * cos(deg2rad($linked_node_lon) - deg2rad($node_lon)))) + 360) % 360;
-	
+
 	return array("distance" => $distance, "bearing" => $bearing);
 }
 
@@ -648,15 +658,15 @@ function wxc_getDistanceAndBearing (float $node_lat, float $node_lon, float $lin
 */
 function checkVersion($node_firmware, $stable_firmware)
 {
-	
+
 	if (version_compare($node_firmware, $stable_firmware) < 0)
 	{
-		return 1;	
+		return 1;
 	}
 	elseif (version_compare($node_firmware, $stable_firmware) > 0)
 	{
-		return 2;	
+		return 2;
 	}
-	return 0;	
+	return 0;
 }
 ?>
