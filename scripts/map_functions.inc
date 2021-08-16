@@ -695,7 +695,7 @@ function load_Nodes($whereClause = null, $orderBy = null)
             ($orderBy ? $orderBy : " ORDER BY node");
         // Retrieve the data
         $node_info_db = mysqli_query($GLOBALS['sql_connection'], $query)
-        or die('Could not Select Items from Node Table: ' . mysqli_error());
+        or die('Could not Select Items from Node Table: ' . mysqli_error($GLOBALS['sql_connection']));
         // Load the data into an array for ease of handling
         while ($node_info = mysqli_fetch_array($node_info_db, MYSQLI_ASSOC))
         {
